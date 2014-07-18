@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Utils
+Bundle-Name: PTS Utility Package
 Bundle-SymbolicName: com.intel.tools.utils;singleton:=true
 Bundle-Version: 1.0.1.qualifier
 Bundle-Activator: com.intel.tools.utils.Activator
