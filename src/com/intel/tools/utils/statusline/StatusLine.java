@@ -1,6 +1,7 @@
 package com.intel.tools.utils.statusline;
 
 import org.eclipse.jface.action.StatusLineManager;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.internal.WorkbenchWindow;
@@ -21,6 +22,13 @@ public class StatusLine {
         }
     }
 
+    public static void showMessage(Image image, String message) {
+        if (getStatusLineManager() != null)
+        {
+            getStatusLineManager().setMessage(image, message);
+        }
+    }
+
     public static StatusLineManager getStatusLineManager()
     {
         if (manager == null) {
@@ -31,5 +39,6 @@ public class StatusLine {
                 return null;
         }
         return manager;
+        
     }
 }
