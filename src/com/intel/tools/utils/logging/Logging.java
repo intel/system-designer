@@ -37,8 +37,6 @@ import org.eclipse.core.runtime.FileLocator;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.FrameworkUtil;
 
-import com.intel.tools.utils.DirectoryUtils;
-
 // import com.intel.tools.tfw.core.exceptions.TfwRuntimeException;
 
 /**
