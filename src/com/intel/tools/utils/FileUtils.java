@@ -92,7 +92,7 @@ public class FileUtils {
             return lines.toArray(new String[lines.size()]);
         }
 
-        return null;
+        return lines.toArray(new String[0]);
     }
 
 
