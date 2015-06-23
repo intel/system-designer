@@ -44,8 +44,10 @@ public final class ZipUtils {
 	}
 
 	/**
-	 * Create a ZIP archive of a list of files
-	 * @param files the list of files to be archived
+	 * Create a ZIP archive of a list of files.
+	 * The input list of files may contains files and/or directories.
+	 * The algorithm used to browse directories is not recursive.
+	 * @param files the list of files/directories to be archived
 	 * @param output the ZIP archived file
 	 */
 	public static void zipFiles(List<File> files, File output) {
@@ -80,23 +82,6 @@ public final class ZipUtils {
 					in.close();
 				}
 			}
-
-//			for (File current : files) {
-//				if (current.isFile()) {
-//					ZipEntry ze = new ZipEntry(current.getName());
-//					zos.putNextEntry(ze);
-//					FileInputStream in = new FileInputStream(current);
-//
-//					byte[] buffer = new byte[1024];
-//					int len;
-//					while ((len = in.read(buffer)) > 0) {
-//						zos.write(buffer, 0, len);
-//
-//					}
-//
-//					in.close();
-//				}
-//			}
 
 			zos.closeEntry();
 			zos.close();
@@ -168,17 +153,14 @@ public final class ZipUtils {
 
 	    	}
 
-	    	// get the zip file content
 	    	ZipInputStream zis = new ZipInputStream(new FileInputStream(input));
-	    	// get the zipped file list entry
 	    	ZipEntry ze = zis.getNextEntry();
 
-	    	while (ze!=null) {
+	    	while (ze != null) {
 	    	   String fileName = ze.getName();
 	           File newFile = new File(output, fileName);
 
-	           //create all non exists folders
-	           //else you will hit FileNotFoundException for compressed folder
+	           // create all non-existing folders to avoid FileNotFoundException
 	           new File(newFile.getParent()).mkdirs();
 
 	           FileOutputStream fos = new FileOutputStream(newFile);
