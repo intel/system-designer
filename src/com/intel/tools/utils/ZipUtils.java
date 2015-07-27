@@ -143,17 +143,17 @@ public final class ZipUtils {
 
 	/**
 	 * Unzip a ZIP archive into the specified output directory
-	 * @param input a ZIP archive file
+	 * @param archive a ZIP archive file
 	 * @param output the directory where the ZIP archive file has to be unzipped
 	 */
-	public static void unzip(File input, File output) {
+	public static void unzip(File archive, File output) {
 	     try {
 	    	if (!output.exists()) {
 	    		output.mkdir();
 
 	    	}
 
-	    	ZipInputStream zis = new ZipInputStream(new FileInputStream(input));
+	    	ZipInputStream zis = new ZipInputStream(new FileInputStream(archive));
 	    	ZipEntry ze = zis.getNextEntry();
 
 	    	while (ze != null) {
