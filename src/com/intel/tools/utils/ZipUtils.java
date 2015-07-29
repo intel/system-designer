@@ -5,6 +5,8 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayDeque;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Deque;
 import java.util.List;
 import java.util.zip.ZipEntry;
@@ -55,7 +57,14 @@ public final class ZipUtils {
 			FileOutputStream fos = new FileOutputStream(output);
 			ZipOutputStream zos = new ZipOutputStream(fos);
 
-			File baseDirectory = files.get(0).getParentFile();			
+			Collections.sort(files, new Comparator<File>() {
+				@Override
+				public int compare(File f1, File f2) {
+					return f1.getAbsolutePath().compareTo(f2.getAbsolutePath());
+				}
+			});
+
+			File baseDirectory = files.get(0).getParentFile();
 			Deque<File> entries = new ArrayDeque<File>(files);
 
 			while (!entries.isEmpty()) {
@@ -69,6 +78,7 @@ public final class ZipUtils {
 
 				} else if (entry.isFile()) {
 					ZipEntry ze = new ZipEntry(entry.getAbsolutePath().substring(baseDirectory.getAbsolutePath().length() + 1));
+//					ZipEntry ze = new ZipEntry(entry.getName());
 					zos.putNextEntry(ze);
 					FileInputStream in = new FileInputStream(entry);
 
