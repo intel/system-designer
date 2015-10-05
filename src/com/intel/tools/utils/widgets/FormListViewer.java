@@ -186,7 +186,7 @@ public class FormListViewer<I, S> implements IFormListContentProviderListener {
                 }
             });
 
-            itemCompositeMap.put(item, new ArrayList<>());
+            itemCompositeMap.put(item, new ArrayList<Control>());
             for (final S subItem : contentProvider.getSubItemList(item)) {
                 final Composite sc3 = new Composite(subComposite, SWT.NONE);
                 sc3.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 2, 1));
