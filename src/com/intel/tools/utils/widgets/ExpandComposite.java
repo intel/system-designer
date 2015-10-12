@@ -70,11 +70,12 @@ public class ExpandComposite {
     private final Set<Composite> expandedSet = new HashSet<>();
     private final HashMap<Composite, FlatButton> expandButtonMap = new HashMap<>();
     private final HashMap<Composite, List<Control>> itemCompositeMap = new HashMap<>();
+    private final ScrolledComposite scrolledComposite;
 
     public ExpandComposite(final Composite parent) {
         this.parent = parent;
 
-        final ScrolledComposite scrolledComposite = new ScrolledComposite(parent, SWT.V_SCROLL);
+        scrolledComposite = new ScrolledComposite(parent, SWT.V_SCROLL);
         final GridData scrollGridData = new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1);
 
         scrolledComposite.setLayoutData(scrollGridData);
@@ -100,6 +101,17 @@ public class ExpandComposite {
             }
         });
         scrolledComposite.forceFocus();
+    }
+
+    /**
+     * Set the layout data to the expand composite. (This will set the layout data to the main composite of the expand
+     * "meta" composite
+     *
+     * @param layoutData
+     *            Layout data to set.
+     */
+    public void setLayoutData(final Object layoutData) {
+        scrolledComposite.setLayoutData(layoutData);
     }
 
     public Composite addComposite(final String title) {
