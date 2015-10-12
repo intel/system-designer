@@ -66,23 +66,32 @@ public class TitleLabel extends Canvas {
         });
     }
 
+    /**
+     * Change the default title font.
+     *
+     * @param font
+     *            The new font to apply.
+     */
+    public void setTitleFont(final Font font) {
+        titleFont = font;
+    }
+
+    /**
+     * Change the default Sub Title font.
+     *
+     * @param font
+     *            The new font to apply.
+     */
+    public void setSubTitleFont(final Font font) {
+        subtitleFont = font;
+    }
+
     private void paint(final PaintEvent e) {
         final GC gc = e.gc;
-
-        drawBackground(gc);
 
         if (titleText != null) {
             drawText(gc);
         }
-    }
-
-    private void drawBackground(final GC gc) {
-        // Color color;
-        //
-        // color = IntelPalette.GREEN;
-        // gc.setBackground(color);
-        // gc.fillRectangle(getClientArea());
-
     }
 
     private void drawText(final GC gc) {
