@@ -61,10 +61,6 @@ public class ExpandComposite {
     private static final Color HIGHLIGHT_COLOR = IntelPalette.ORANGE;
     private static final Color CARD_COLOR = IntelPalette.WHITE;
     private static final Color BACKGROUND_COLOR = IntelPalette.WHITE;
-    /**
-     * The content provider
-     */
-    private Object input;
     private final Composite parent;
     private final Composite mainComposite;
     private final Set<Composite> expandedSet = new HashSet<>();
