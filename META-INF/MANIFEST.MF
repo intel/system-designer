@@ -21,7 +21,8 @@ Require-Bundle: org.apache.log4j;bundle-version="1.2.15",
  org.eclipse.e4.core.contexts,
  org.eclipse.emf.common,
  org.eclipse.e4.core.di,
- javax.annotation
+ javax.annotation,
+ org.eclipse.draw2d
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Import-Package: javax.annotation;version="1.1.0"
 Bundle-ActivationPolicy: lazy
