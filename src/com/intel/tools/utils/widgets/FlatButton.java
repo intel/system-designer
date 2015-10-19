@@ -26,8 +26,6 @@ package com.intel.tools.utils.widgets;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.text.StyleContext.SmallAttributeSet;
-
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
