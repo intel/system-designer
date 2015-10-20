@@ -221,4 +221,12 @@ public class ExpandComposite {
     public Control getControl() {
         return mainComposite;
     }
+
+    /** Expand all items of this composite */
+    public void expandAllItems() {
+        for (final Composite item : itemCompositeMap.keySet()) {
+            expandItem(item);
+        }
+    }
+
 }
