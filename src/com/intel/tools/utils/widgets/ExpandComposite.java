@@ -51,11 +51,6 @@ import com.intel.tools.utils.widgets.FlatButton.FlatButtonStyle;
 
 /**
  * Creates a form list viewer class.
- *
- * @param <I>
- *            The type of the main elements to display
- * @param <S>
- *            The type of the subitems to display
  */
 public class ExpandComposite {
     private static final Color HIGHLIGHT_COLOR = IntelPalette.ORANGE;
@@ -188,6 +183,8 @@ public class ExpandComposite {
     }
 
     public void collapseItem(final Composite item) {
+        scrolledComposite.setRedraw(false);
+
         for (final Control composite : itemCompositeMap.get(item)) {
             ((GridData) composite.getLayoutData()).exclude = true;
         }
@@ -198,9 +195,11 @@ public class ExpandComposite {
         expandedSet.remove(item);
         mainComposite.pack();
         parent.layout();
+        scrolledComposite.setRedraw(true);
     }
 
     public void expandItem(final Composite item) {
+        scrolledComposite.setRedraw(false);
         for (final Control composite : itemCompositeMap.get(item)) {
             ((GridData) composite.getLayoutData()).exclude = false;
         }
@@ -211,6 +210,7 @@ public class ExpandComposite {
         expandedSet.add(item);
         mainComposite.pack();
         parent.layout();
+        scrolledComposite.setRedraw(true);
     }
 
     /**
@@ -224,9 +224,11 @@ public class ExpandComposite {
 
     /** Expand all items of this composite */
     public void expandAllItems() {
+        scrolledComposite.setRedraw(false);
         for (final Composite item : itemCompositeMap.keySet()) {
             expandItem(item);
         }
+        scrolledComposite.setRedraw(true);
     }
 
 }
