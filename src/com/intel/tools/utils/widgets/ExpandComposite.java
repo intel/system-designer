@@ -22,6 +22,8 @@
  */
 package com.intel.tools.utils.widgets;
 
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -79,9 +81,17 @@ public class ExpandComposite {
         }
     }
 
+    /** Property allowing to subscribe to "section expand" events */
+    public static final String EXPAND_PROPERTY = "expand";
+    /** Property allowing to subscribe to "section collapse" events */
+    public static final String COLLAPSE_PROPERTY = "collapse";
+
     private static final Color HIGHLIGHT_COLOR = IntelPalette.ORANGE;
     private static final Color CARD_COLOR = IntelPalette.WHITE;
     private static final Color BACKGROUND_COLOR = IntelPalette.WHITE;
+
+    private final PropertyChangeSupport changeSupport;
+
     private final Composite parent;
     private final Composite mainComposite;
     private final Set<Composite> expandedSet = new HashSet<>();
@@ -90,6 +100,7 @@ public class ExpandComposite {
 
     public ExpandComposite(final Composite parent) {
         this.parent = parent;
+        this.changeSupport = new PropertyChangeSupport(this);
 
         scrolledComposite = new ScrolledComposite(parent, SWT.V_SCROLL);
         final GridData scrollGridData = new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1);
@@ -221,6 +232,9 @@ public class ExpandComposite {
         mainComposite.pack();
         parent.layout();
         scrolledComposite.setRedraw(true);
+
+        // Notify the collapse
+        changeSupport.firePropertyChange(COLLAPSE_PROPERTY, null, item);
     }
 
     public void expandItem(final Composite item) {
@@ -236,6 +250,9 @@ public class ExpandComposite {
         mainComposite.pack();
         parent.layout();
         scrolledComposite.setRedraw(true);
+
+        // Notify the expand
+        changeSupport.firePropertyChange(EXPAND_PROPERTY, null, item);
     }
 
     /**
@@ -258,6 +275,24 @@ public class ExpandComposite {
 
     public String getSectionTitle(final Composite item) {
         return sections.get(item).getTitle();
+    }
+
+    /**
+     * Add a new listener.
+     *
+     * This method allows a developer to be notified of an expand/collapse events through through EXPAND_PROPERTY and
+     * COLLAPSE_PROPERTY properties. The new value linked to the event will always be the section composite which can be
+     * edited by the user (i.e: the one returned by the addComposite method). The old value will always be set to null.
+     *
+     * @param listener
+     *            the listener to notify
+     */
+    public synchronized void addPropertyChangeListener(final PropertyChangeListener listener) {
+        changeSupport.addPropertyChangeListener(listener);
+    }
+
+    public synchronized void removePropertyChangeListener(final PropertyChangeListener listener) {
+        changeSupport.removePropertyChangeListener(listener);
     }
 
 }
