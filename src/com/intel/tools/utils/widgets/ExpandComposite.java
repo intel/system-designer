@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.swt.SWT;
@@ -53,14 +54,38 @@ import com.intel.tools.utils.widgets.FlatButton.FlatButtonStyle;
  * Creates a form list viewer class.
  */
 public class ExpandComposite {
+
+    /** Expandable section holder */
+    private class Section {
+        private final String title;
+        private final FlatButton expandButton;
+        private final List<Control> controls = new ArrayList<>();
+
+        public Section(final String title, final FlatButton expandButton) {
+            this.title = title;
+            this.expandButton = expandButton;
+        }
+
+        public String getTitle() {
+            return title;
+        }
+
+        public FlatButton getExpandButton() {
+            return expandButton;
+        }
+
+        public List<Control> getControls() {
+            return controls;
+        }
+    }
+
     private static final Color HIGHLIGHT_COLOR = IntelPalette.ORANGE;
     private static final Color CARD_COLOR = IntelPalette.WHITE;
     private static final Color BACKGROUND_COLOR = IntelPalette.WHITE;
     private final Composite parent;
     private final Composite mainComposite;
     private final Set<Composite> expandedSet = new HashSet<>();
-    private final HashMap<Composite, FlatButton> expandButtonMap = new HashMap<>();
-    private final HashMap<Composite, List<Control>> itemCompositeMap = new HashMap<>();
+    private final Map<Composite, Section> sections = new HashMap<>();
     private final ScrolledComposite scrolledComposite;
 
     public ExpandComposite(final Composite parent) {
@@ -149,13 +174,13 @@ public class ExpandComposite {
         // expandButton.setText("Expand");
         expandButton.setImage(ResourceManager.getPluginImage(Activator.getContext().getBundle().getSymbolicName(),
                 "images/expand.png"));
+        final Section section = new Section(title, expandButton);
 
         final Composite sc3 = new Composite(subComposite, SWT.NONE);
         sc3.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 2, 1));
         ((GridData) sc3.getLayoutData()).exclude = true;
         sc3.setBackground(CARD_COLOR);
-        itemCompositeMap.put(sc3, new ArrayList<Control>());
-        itemCompositeMap.get(sc3).add(sc3);
+        section.getControls().add(sc3);
 
         // This underlines each sub item.. with a beautifull orange line.
         final Label underlineLabel2 = new Label(subComposite, SWT.NONE);
@@ -164,7 +189,7 @@ public class ExpandComposite {
         gd2.exclude = true;
         underlineLabel2.setLayoutData(gd2);
         underlineLabel2.setBackground(BACKGROUND_COLOR);
-        itemCompositeMap.get(sc3).add(underlineLabel2);
+        section.getControls().add(underlineLabel2);
 
         expandButton.addSelectionListener(new SelectionAdapter() {
             @Override
@@ -176,7 +201,7 @@ public class ExpandComposite {
                 }
             }
         });
-        expandButtonMap.put(sc3, expandButton);
+        sections.put(sc3, section);
         mainComposite.pack();
         parent.layout();
         return sc3;
@@ -185,10 +210,10 @@ public class ExpandComposite {
     public void collapseItem(final Composite item) {
         scrolledComposite.setRedraw(false);
 
-        for (final Control composite : itemCompositeMap.get(item)) {
+        for (final Control composite : sections.get(item).getControls()) {
             ((GridData) composite.getLayoutData()).exclude = true;
         }
-        expandButtonMap.get(item)
+        sections.get(item).getExpandButton()
         .setImage(ResourceManager.getPluginImage(Activator.getContext().getBundle().getSymbolicName(),
                 "images/expand.png"));
 
@@ -200,10 +225,10 @@ public class ExpandComposite {
 
     public void expandItem(final Composite item) {
         scrolledComposite.setRedraw(false);
-        for (final Control composite : itemCompositeMap.get(item)) {
+        for (final Control composite : sections.get(item).getControls()) {
             ((GridData) composite.getLayoutData()).exclude = false;
         }
-        expandButtonMap.get(item)
+        sections.get(item).getExpandButton()
         .setImage(ResourceManager.getPluginImage(Activator.getContext().getBundle().getSymbolicName(),
                 "images/collapse.png"));
 
@@ -225,10 +250,14 @@ public class ExpandComposite {
     /** Expand all items of this composite */
     public void expandAllItems() {
         scrolledComposite.setRedraw(false);
-        for (final Composite item : itemCompositeMap.keySet()) {
+        for (final Composite item : sections.keySet()) {
             expandItem(item);
         }
         scrolledComposite.setRedraw(true);
+    }
+
+    public String getSectionTitle(final Composite item) {
+        return sections.get(item).getTitle();
     }
 
 }
