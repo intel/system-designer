@@ -53,7 +53,7 @@ public class SubHeader extends Canvas {
     private final List<Control> buttonList = new ArrayList<>();
 
     public SubHeader(final Composite parent) {
-        super(parent, SWT.TRANSPARENT);
+        super(parent, SWT.NONE);
 
         Font font = SWTResourceManager.getFont("Intel Clear", 10, SWT.BOLD);
         if (!font.getFontData()[0].getName().equals("Intel Clear")) {
@@ -61,7 +61,6 @@ public class SubHeader extends Canvas {
         }
         setFont(font);
 
-        setBackground(IntelPalette.WHITE);
         setForeground(IntelPalette.BLACK);
 
         addPaintListener(new PaintListener() {
@@ -133,8 +132,12 @@ public class SubHeader extends Canvas {
         width = textSize.x;
         height = textSize.y + DEFAULT_PADDING * 2;
 
-        width = Math.max(width, wHint);
-        height = Math.max(height, hHint);
+        if (wHint != SWT.DEFAULT) {
+            width = wHint;
+        }
+        if (hHint != SWT.DEFAULT) {
+            height = hHint;
+        }
 
         return new Point(width, height);
     }
