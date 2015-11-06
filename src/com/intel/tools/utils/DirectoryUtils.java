@@ -171,9 +171,9 @@ public class DirectoryUtils {
 	 *            the destination directory path to copy to
 	 * @throws IOException
 	 */
-	public static void copy(String sourcePath, String destinationPath) throws IOException {
-		Path source = Paths.get(sourcePath.trim());
-		Path destination = Paths.get(destinationPath.trim());
+	public static void copy(final String sourcePath, final String destinationPath) throws IOException {
+		final Path source = Paths.get(sourcePath.trim());
+		final Path destination = Paths.get(destinationPath.trim());
 
 		if (Files.isDirectory(source)) {
 			final CopyOption[] copyOptions = new CopyOption[] { StandardCopyOption.COPY_ATTRIBUTES,
