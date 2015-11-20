@@ -128,7 +128,7 @@ public class FormListViewer<I, S> implements IFormListContentProviderListener {
 
     @Override
     public void contentUpdated() {
-        if (compositeProvider == null || contentProvider == null) {
+        if (compositeProvider == null || contentProvider == null || mainComposite.isDisposed()) {
             return;
         }
         for (final Control control : mainComposite.getChildren()) {
