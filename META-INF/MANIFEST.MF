@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Graphframework
+Bundle-SymbolicName: com.intel.tools.fdk.graphframework;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Bundle-Vendor: INTEL
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Export-Package: com.intel.tools.fdk.graphframework.figure,
+ com.intel.tools.fdk.graphframework.graph,
+ com.intel.tools.fdk.graphframework.layout
+Require-Bundle: org.eclipse.draw2d,
+ com.intel.tools.utils
