@@ -205,6 +205,10 @@ public class FormListViewer<I, S> implements IFormListContentProviderListener {
                 itemCompositeMap.get(item).add(underlineLabel2);
 
             }
+            // Re-expand the item if needed
+            if (expandedSet.contains(item)) {
+                expandItem(item);
+            }
         }
         mainComposite.pack();
         parent.layout();
