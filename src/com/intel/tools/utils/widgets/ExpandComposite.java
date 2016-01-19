@@ -27,8 +27,10 @@ import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import org.eclipse.swt.SWT;
@@ -141,6 +143,13 @@ public class ExpandComposite {
         scrolledComposite.setLayoutData(layoutData);
     }
 
+    /**
+     * Add a new composite.
+     * 
+     * @param title
+     *            the title of the composite
+     * @return the newly created composite
+     */
     public Composite addComposite(final String title) {
 
         // sub composite contains all information relative to an Item.
@@ -168,13 +177,13 @@ public class ExpandComposite {
         sc1.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
         sc1.setBackground(CARD_COLOR);
         sc1.setLayout(new GridLayout(1, true));
-        final TitleLabel titleLabel = new TitleLabel(sc1);
 
+        final TitleLabel titleLabel = new TitleLabel(sc1);
         final Font titleFont = SWTResourceManager.getFont("Intel Clear", 10, SWT.BOLD);
         titleLabel.setTitleFont(titleFont);
         titleLabel.setTitleText(title);
 
-        // This underlines the subComposite. with a beautiful orange line.
+        // This underlines the subComposite... with a beautiful orange line.
         final Label underLineLabel = new Label(subComposite, SWT.NONE);
         final GridData gd = new GridData(SWT.FILL, SWT.BOTTOM, true, false, 2, 1);
         gd.heightHint = 2;
@@ -193,7 +202,7 @@ public class ExpandComposite {
         sc3.setBackground(CARD_COLOR);
         section.getControls().add(sc3);
 
-        // This underlines each sub item.. with a beautifull orange line.
+        // This underlines each sub item... with this still beautiful orange line.
         final Label underlineLabel2 = new Label(subComposite, SWT.NONE);
         final GridData gd2 = new GridData(SWT.FILL, SWT.BOTTOM, true, false, 2, 1);
         gd2.heightHint = 2;
@@ -218,6 +227,71 @@ public class ExpandComposite {
         return sc3;
     }
 
+    /**
+     * Remove a composite.
+     * 
+     * @param title
+     *            the title of the composite
+     */
+    public void removeComposite(final String title) {
+        scrolledComposite.setRedraw(true);
+
+        final Composite itemComposite = findComposite(title);
+        if (itemComposite != null) {
+            sections.remove(itemComposite);
+            itemComposite.getParent().dispose();
+        }
+
+        mainComposite.pack();
+        parent.layout();
+        scrolledComposite.setRedraw(true);
+    }
+
+    /**
+     * Remove all composites.
+     */
+    public void removeAllComposites() {
+        scrolledComposite.setRedraw(false);
+
+        // Clear all the sections
+        final Iterator<Entry<Composite, Section>> iterator = sections.entrySet().iterator();
+        while (iterator.hasNext()) {
+            final Entry<Composite, Section> entry = iterator.next();
+            // Clear the item's parent composite (and all its children)
+            entry.getKey().getParent().dispose();
+            iterator.remove();
+        }
+
+        mainComposite.pack();
+        parent.layout();
+        scrolledComposite.setRedraw(true);
+    }
+
+    /**
+     * Search for an existing composite.
+     * 
+     * @param title
+     *            the title of the composite
+     * @return the composite instance, otherwise {@code null}
+     */
+    public Composite findComposite(final String title) {
+        Composite itemComposite = null;
+        for (final Entry<Composite, Section> entry : sections.entrySet()) {
+            if (entry.getValue().getTitle().equalsIgnoreCase(title)) {
+                itemComposite = entry.getKey();
+                break;
+            }
+        }
+
+        return itemComposite;
+    }
+
+    /**
+     * Collapse an item of this composite
+     * 
+     * @param item
+     *            the item to collapse
+     */
     public void collapseItem(final Composite item) {
         scrolledComposite.setRedraw(false);
 
@@ -237,6 +311,12 @@ public class ExpandComposite {
         changeSupport.firePropertyChange(COLLAPSE_PROPERTY, null, item);
     }
 
+    /**
+     * Expand an item of this composite
+     * 
+     * @param item
+     *            the item to expand
+     */
     public void expandItem(final Composite item) {
         scrolledComposite.setRedraw(false);
         for (final Control composite : sections.get(item).getControls()) {
@@ -255,13 +335,13 @@ public class ExpandComposite {
         changeSupport.firePropertyChange(EXPAND_PROPERTY, null, item);
     }
 
-    /**
-     * Get the composite control representing the list.
-     *
-     * @return
-     */
-    public Control getControl() {
-        return mainComposite;
+    /** Expand all items of this composite */
+    public void collapseAllItems() {
+        scrolledComposite.setRedraw(false);
+        for (final Composite item : sections.keySet()) {
+            collapseItem(item);
+        }
+        scrolledComposite.setRedraw(true);
     }
 
     /** Expand all items of this composite */
@@ -273,6 +353,7 @@ public class ExpandComposite {
         scrolledComposite.setRedraw(true);
     }
 
+    /** Retrieve the title of a section */
     public String getSectionTitle(final Composite item) {
         return sections.get(item).getTitle();
     }
@@ -293,6 +374,15 @@ public class ExpandComposite {
 
     public synchronized void removePropertyChangeListener(final PropertyChangeListener listener) {
         changeSupport.removePropertyChangeListener(listener);
+    }
+
+    /**
+     * Get the composite control representing the list.
+     * 
+     * @return the composite control representing the list
+     */
+    public Control getControl() {
+        return mainComposite;
     }
 
 }
