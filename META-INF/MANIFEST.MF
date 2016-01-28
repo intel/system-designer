@@ -5,8 +5,15 @@ Bundle-SymbolicName: com.intel.tools.fdk.graphframework;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Bundle-Vendor: INTEL
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
-Export-Package: com.intel.tools.fdk.graphframework.figure,
+Export-Package: com.intel.tools.fdk.graphframework.displayer,
+ com.intel.tools.fdk.graphframework.displayer.controller,
+ com.intel.tools.fdk.graphframework.figure,
+ com.intel.tools.fdk.graphframework.figure.controller,
+ com.intel.tools.fdk.graphframework.figure.edge,
+ com.intel.tools.fdk.graphframework.figure.node,
+ com.intel.tools.fdk.graphframework.figure.pin,
  com.intel.tools.fdk.graphframework.graph,
+ com.intel.tools.fdk.graphframework.graph.factory,
  com.intel.tools.fdk.graphframework.layout
 Require-Bundle: org.eclipse.draw2d,
  com.intel.tools.utils
