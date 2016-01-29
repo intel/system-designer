@@ -33,6 +33,7 @@ import org.eclipse.draw2d.geometry.Point;
 
 import com.intel.tools.fdk.graphframework.graph.Edge;
 import com.intel.tools.fdk.graphframework.graph.Graph;
+import com.intel.tools.fdk.graphframework.graph.GraphException;
 import com.intel.tools.fdk.graphframework.graph.Node;
 
 /**
@@ -81,12 +82,14 @@ public class AutoLayoutComputer {
      * @param node
      *            the instance we want the coordinates
      * @return a point containing instance coordinate
+     * @throws GraphException
+     *             if the given node has not been computed by the algorithm
      */
-    public Point getCoordinate(final Node node) {
+    public Point getCoordinate(final Node node) throws GraphException {
         if (abscisses.containsKey(node) && ordinates.containsKey(node)) {
             return new Point(abscisses.get(node) + ordinates.get(node), ordinates.get(node) - abscisses.get(node));
         } else {
-            throw new IndexOutOfBoundsException("Node does not have coordinates");
+            throw new GraphException("Node does not have coordinates");
         }
     }
 
