@@ -30,6 +30,7 @@ import java.util.Optional;
 
 import org.eclipse.draw2d.FigureListener;
 import org.eclipse.draw2d.IFigure;
+import org.eclipse.draw2d.Label;
 import org.eclipse.draw2d.RectangleFigure;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.Rectangle;
@@ -76,6 +77,8 @@ public class NodeController {
 
     /** List of all main displayable figures which compose the node */
     private final List<IFigure> displayableFigures = new ArrayList<>();
+    /** List of all displayable decorations of the node */
+    private final List<IFigure> displayableDecorations = new ArrayList<>();
 
     /**
      * @param node
@@ -129,6 +132,44 @@ public class NodeController {
     }
 
     /**
+     * Decorates a sub-figure of the node with a label.
+     *
+     * The label will be placed right under the binded figure and will follow its movement.
+     *
+     * @param text
+     *            label text
+     * @param bindedFigure
+     *            the figure under which the label will be positioned
+     */
+    protected void addLabel(final String text, final IFigure bindedFigure) {
+        final Label label = new Label();
+        label.setText(text);
+        label.setForegroundColor(IGraphFigure.DEFAULT_COLOR);
+
+        // Label width is expanded to avoid cutting some text, then it is centered under the main rectangle
+        final int labelWidth = (int) Math.round(label.getTextBounds().width * 1.1);
+        label.setSize(labelWidth, label.getTextBounds().height);
+        // Label width is expanded to avoid cutting some text, then it is centered under the component rectangle
+        bindedFigure.addFigureListener(source -> {
+            final Rectangle bounds = source.getBounds().getCopy();
+            source.getParent().translateToAbsolute(bounds);
+            if (label.getParent() != null) {
+                label.getParent().translateToRelative(bounds);
+                label.setLocation(new Point(bounds.x + (bounds.width - labelWidth) / 2, bounds.y + bounds.height));
+            }
+        });
+        displayableDecorations.add(label);
+    }
+
+    protected PinFigure getInput(final int id) {
+        return this.inputs.get(id);
+    }
+
+    protected PinFigure getOutput(final int id) {
+        return this.outputs.get(id);
+    }
+
+    /**
      * Retrieve an anchor associated to an edge
      *
      * @param edge
@@ -146,6 +187,16 @@ public class NodeController {
      */
     public List<IFigure> getDisplayableFigures() {
         return displayableFigures;
+    }
+
+    /**
+     * Retrieves figures used as node decoration.</br>
+     * By default, there is none, child class are free to add needed decoration.
+     *
+     * @return list of all sub-figures decoration to display
+     */
+    public List<IFigure> getDisplayableDecoration() {
+        return displayableDecorations;
     }
 
     /**
