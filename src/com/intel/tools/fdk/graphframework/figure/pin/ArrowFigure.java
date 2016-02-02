@@ -34,6 +34,7 @@ public final class ArrowFigure extends PolygonShape {
      */
     public ArrowFigure(final int size) {
         setLineJoin(SWT.JOIN_ROUND);
+        setAntialias(1);
         // if the line width is changed, you must adapt triangle point accordingly
         setLineWidth(2);
 

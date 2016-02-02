@@ -55,6 +55,7 @@ public abstract class PinFigure extends PolylineShape implements IGraphFigure {
         line.setBounds(getBounds());
 
         connector.setOutline(false);
+        connector.setAntialias(1);
 
         setColor(DEFAULT_COLOR);
         setLineWidth(LINE_WIDTH);

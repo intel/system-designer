@@ -46,6 +46,7 @@ public class NodeBodyFigure extends RoundedRectangle implements IGraphFigure {
     public NodeBodyFigure(final int width, final int height) {
         setSize(new Dimension(width, height));
         setFill(true);
+        setAntialias(1);
         setLineWidth(LINE_WIDTH);
         setBackgroundColor(IntelPalette.WHITE);
         setColor(IGraphFigure.DEFAULT_COLOR);
