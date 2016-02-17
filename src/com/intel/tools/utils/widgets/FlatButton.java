@@ -26,6 +26,7 @@ package com.intel.tools.utils.widgets;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.jface.window.DefaultToolTip;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
@@ -40,21 +41,54 @@ import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 
 import com.intel.tools.utils.IntelPalette;
 
+/**
+ * Flat button
+ */
 public class FlatButton extends Canvas {
+    /**
+     * Enum with allowed styles:
+     * <ul>
+     * <li>LARGE_BUTTON</li>
+     * <li>SMALL_BUTTON</li/
+     * <ul>
+     */
     public enum FlatButtonStyle {
         LARGE_BUTTON,
         SMALL_BUTTON
     }
 
+    /**
+     * Inner class for custom tooltip
+     */
+    class TooltipEx extends DefaultToolTip {
+
+        /**
+         * Default Constructor
+         */
+        public TooltipEx(final Control control) {
+            super(control);
+            this.setBackgroundColor(IntelPalette.WHITE);
+        }
+
+        /**
+         * @return the text of the tooltip
+         */
+        public String getText() {
+            return getText(null);
+        }
+
+    }
+
     private static final int DEFAULT_PADDING = 4;
 
-    private Image image;
-    private Image disabledImage;
+    private Image image = null;
+    private Image disabledImage = null;
 
     private String text;
     private final FlatButtonStyle style;
@@ -73,12 +107,21 @@ public class FlatButton extends Canvas {
 
     private boolean arrowVisible = false;
 
+    private TooltipEx tooltip = null;
+
+    /**
+     * Default constructor
+     *
+     * @param parent
+     *            the parent composite
+     * @param style
+     *            the {@link FlatButtonStyle} style to apply
+     */
     public FlatButton(final Composite parent, final FlatButtonStyle style) {
         super(parent, SWT.NONE);
 
         this.style = style;
         listeners = new ArrayList<SelectionListener>();
-        disabledImage = null;
 
         addDisposeListener(new DisposeListener() {
 
@@ -89,6 +132,7 @@ public class FlatButton extends Canvas {
                 }
             }
         });
+
         addPaintListener(new PaintListener() {
             @Override
             public void paintControl(final PaintEvent pe) {
@@ -123,7 +167,6 @@ public class FlatButton extends Canvas {
                     listener.widgetSelected(new SelectionEvent(event));
                 }
             }
-
         });
 
         addListener(SWT.MouseDown, new Listener() {
@@ -133,8 +176,15 @@ public class FlatButton extends Canvas {
                 redraw();
             }
         });
+
     }
 
+    /**
+     * Paint the button
+     *
+     * @param e
+     *            the paint event
+     */
     private void paint(final PaintEvent e) {
         final GC gc = e.gc;
 
@@ -189,15 +239,15 @@ public class FlatButton extends Canvas {
 
         int x;
         switch (style) {
-        case SMALL_BUTTON:
-            x = DEFAULT_PADDING;
-            break;
-        case LARGE_BUTTON:
-            x = (rect.width - imageSize.x) / 2;
-            break;
-        default:
-            x = (rect.width - imageSize.x) / 2;
-            break;
+            case SMALL_BUTTON:
+                x = DEFAULT_PADDING;
+                break;
+            case LARGE_BUTTON:
+                x = (rect.width - imageSize.x) / 2;
+                break;
+            default:
+                x = (rect.width - imageSize.x) / 2;
+                break;
         }
 
         if (isEnabled()) {
@@ -230,18 +280,18 @@ public class FlatButton extends Canvas {
         int x, y;
 
         switch (style) {
-        case LARGE_BUTTON:
-            x = (rect.width - textSize.x) / 2;
-            break;
-        case SMALL_BUTTON:
-            x = DEFAULT_PADDING;
-            if (imageSize != null) {
-                x += imageSize.x + DEFAULT_PADDING;
-            }
-            break;
-        default:
-            x = (rect.width - textSize.x) / 2;
-            break;
+            case LARGE_BUTTON:
+                x = (rect.width - textSize.x) / 2;
+                break;
+            case SMALL_BUTTON:
+                x = DEFAULT_PADDING;
+                if (imageSize != null) {
+                    x += imageSize.x + DEFAULT_PADDING;
+                }
+                break;
+            default:
+                x = (rect.width - textSize.x) / 2;
+                break;
 
         }
 
@@ -249,7 +299,7 @@ public class FlatButton extends Canvas {
             y = DEFAULT_PADDING;
         } else {
             if (style != FlatButtonStyle.SMALL_BUTTON) {
-                y = 2 * DEFAULT_PADDING + image.getBounds().height;
+                y = (2 * DEFAULT_PADDING) + image.getBounds().height;
             } else {
                 y = (rect.height - textSize.y) / 2;
             }
@@ -287,13 +337,13 @@ public class FlatButton extends Canvas {
             }
             if (text != null) {
                 width += textSize.x + DEFAULT_PADDING;
-                height = Math.max(height, textSize.y + 2 * DEFAULT_PADDING);
+                height = Math.max(height, textSize.y + (2 * DEFAULT_PADDING));
             }
             if (arrowVisible) {
                 width += DEFAULT_PADDING;
                 arrowPos = width;
                 width += 4;
-                height = Math.max(height, 8 + 2 * DEFAULT_PADDING);
+                height = Math.max(height, 8 + (2 * DEFAULT_PADDING));
             }
             width += DEFAULT_PADDING;
         } else {
@@ -306,13 +356,13 @@ public class FlatButton extends Canvas {
             }
             if (text != null) {
                 height += textSize.y + DEFAULT_PADDING;
-                width = Math.max(width, textSize.x + 2 * DEFAULT_PADDING);
+                width = Math.max(width, textSize.x + (2 * DEFAULT_PADDING));
             }
             if (arrowVisible) {
                 height += DEFAULT_PADDING;
                 arrowPos = height;
                 height += 4;
-                width = Math.max(width, 8 + 2 * DEFAULT_PADDING);
+                width = Math.max(width, 8 + (2 * DEFAULT_PADDING));
             }
             height += DEFAULT_PADDING;
         }
@@ -349,6 +399,20 @@ public class FlatButton extends Canvas {
         return text;
     }
 
+    /*
+     * (non-Javadoc)
+     *
+     * @see org.eclipse.swt.widgets.Control#getToolTipText()
+     */
+    @Override
+    public String getToolTipText() {
+        if (tooltip == null) {
+            return "";
+        }
+
+        return tooltip.getText();
+    }
+
     public void removeSelectionListener(final SelectionListener listener) {
         checkWidget();
         listeners.remove(listener);
@@ -365,7 +429,7 @@ public class FlatButton extends Canvas {
         if (this.disabledImage != null) {
             this.disabledImage.dispose();
         }
-        this.disabledImage  = new Image(getDisplay(), this.image, SWT.IMAGE_DISABLE);
+        this.disabledImage = new Image(getDisplay(), this.image, SWT.IMAGE_DISABLE);
         redraw();
     }
 
@@ -400,4 +464,25 @@ public class FlatButton extends Canvas {
         arrowVisible = b;
         redraw();
     }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see org.eclipse.swt.widgets.Control#setToolTipText(java.lang.String)
+     */
+    @Override
+    public void setToolTipText(final String string) {
+        // NOTE: Discard the call to the super class because of an random issue on repainting the background
+        // while a tooltip text is defined...
+
+        tooltip = new TooltipEx(this);
+        tooltip.setText(string);
+        if (image != null) {
+            final Rectangle bounds = image.getBounds();
+            if (bounds != null) {
+                tooltip.setShift(new Point(bounds.width, bounds.height));
+            }
+        }
+    }
+
 }
