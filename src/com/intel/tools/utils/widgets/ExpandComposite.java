@@ -104,17 +104,12 @@ public class ExpandComposite {
         this.parent = parent;
         this.changeSupport = new PropertyChangeSupport(this);
 
-        scrolledComposite = new ScrolledComposite(parent, SWT.V_SCROLL);
+        scrolledComposite = new ScrolledComposite(parent, SWT.V_SCROLL | SWT.H_SCROLL);
         final GridData scrollGridData = new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1);
 
         scrolledComposite.setLayoutData(scrollGridData);
         scrolledComposite.setBackground(BACKGROUND_COLOR);
-        final FillLayout fillLayout = new FillLayout();
-        fillLayout.marginHeight = 0;
-        fillLayout.marginWidth = 0;
-        scrolledComposite.setLayout(fillLayout);
         scrolledComposite.setExpandHorizontal(true);
-
         mainComposite = new Composite(scrolledComposite, SWT.NONE);
         scrolledComposite.setContent(mainComposite);
         final GridLayout gridLayout = new GridLayout(1, false);
@@ -145,7 +140,7 @@ public class ExpandComposite {
 
     /**
      * Add a new composite.
-     * 
+     *
      * @param title
      *            the title of the composite
      * @return the newly created composite
@@ -222,14 +217,13 @@ public class ExpandComposite {
             }
         });
         sections.put(sc3, section);
-        mainComposite.pack();
-        parent.layout();
+        refreshLayouting();
         return sc3;
     }
 
     /**
      * Remove a composite.
-     * 
+     *
      * @param title
      *            the title of the composite
      */
@@ -241,9 +235,7 @@ public class ExpandComposite {
             sections.remove(itemComposite);
             itemComposite.getParent().dispose();
         }
-
-        mainComposite.pack();
-        parent.layout();
+        refreshLayouting();
         scrolledComposite.setRedraw(true);
     }
 
@@ -261,15 +253,13 @@ public class ExpandComposite {
             entry.getKey().getParent().dispose();
             iterator.remove();
         }
-
-        mainComposite.pack();
-        parent.layout();
+        refreshLayouting();
         scrolledComposite.setRedraw(true);
     }
 
     /**
      * Search for an existing composite.
-     * 
+     *
      * @param title
      *            the title of the composite
      * @return the composite instance, otherwise {@code null}
@@ -288,7 +278,7 @@ public class ExpandComposite {
 
     /**
      * Collapse an item of this composite
-     * 
+     *
      * @param item
      *            the item to collapse
      */
@@ -303,8 +293,7 @@ public class ExpandComposite {
                 "images/expand.png"));
 
         expandedSet.remove(item);
-        mainComposite.pack();
-        parent.layout();
+        refreshLayouting();
         scrolledComposite.setRedraw(true);
 
         // Notify the collapse
@@ -312,8 +301,17 @@ public class ExpandComposite {
     }
 
     /**
+     * Refreshes the layout of the widget.
+     */
+    private void refreshLayouting() {
+        mainComposite.pack();
+        scrolledComposite.setMinSize(mainComposite.computeSize(SWT.DEFAULT, SWT.DEFAULT));
+        parent.layout();
+    }
+
+    /**
      * Expand an item of this composite
-     * 
+     *
      * @param item
      *            the item to expand
      */
@@ -327,8 +325,7 @@ public class ExpandComposite {
                 "images/collapse.png"));
 
         expandedSet.add(item);
-        mainComposite.pack();
-        parent.layout();
+        refreshLayouting();
         scrolledComposite.setRedraw(true);
 
         // Notify the expand
@@ -378,7 +375,7 @@ public class ExpandComposite {
 
     /**
      * Get the composite control representing the list.
-     * 
+     *
      * @return the composite control representing the list
      */
     public Control getControl() {
