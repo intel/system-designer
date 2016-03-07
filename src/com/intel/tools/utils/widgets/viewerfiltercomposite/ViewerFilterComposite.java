@@ -142,7 +142,7 @@ public class ViewerFilterComposite extends Composite {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.eclipse.swt.widgets.Control#setToolTipText(java.lang.String)
      */
     @Override
@@ -151,7 +151,7 @@ public class ViewerFilterComposite extends Composite {
     }
 
     public void showConfigureButton(final boolean visible) {
-        ((GridData) buttonConfigure.getLayoutData()).exclude = !visible;
+        ((GridData) buttonConfigure.getLayoutData()).exclude = (!visible) || (filter == null);
     }
 
     /**
@@ -298,6 +298,7 @@ public class ViewerFilterComposite extends Composite {
         buttonConfigure.setImage(grayedImage);
         buttonConfigure.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false));
         buttonConfigure.setToolTipText("Configure...");
+        showConfigureButton(false);
 
         buttonConfigure.addSelectionListener(new SelectionAdapter() {
             @Override
@@ -305,7 +306,7 @@ public class ViewerFilterComposite extends Composite {
                 if (new FilterDialog(new Shell(), filter).open() == IDialogConstants.OK_ID) {
                     textSearch.setText(filter.getFilterString());
                     textSearch.setSelection(textSearch.getText().length());
-                    updateFilterText(false);
+                    updateFilterText(true);
                 }
             }
         });

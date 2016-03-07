@@ -228,7 +228,7 @@ public class ExpandComposite {
      *            the title of the composite
      */
     public void removeComposite(final String title) {
-        scrolledComposite.setRedraw(true);
+        scrolledComposite.setRedraw(false);
 
         final Composite itemComposite = findComposite(title);
         if (itemComposite != null) {
