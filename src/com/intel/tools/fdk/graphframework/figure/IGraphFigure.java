@@ -36,32 +36,9 @@ public interface IGraphFigure extends IFigure {
     Color DEFAULT_COLOR = IntelPalette.INTEL_BLUE;
 
     /** Highlight the figure */
-    default void select() {
-        setLineWidth(getLineWidth() + 1);
-    }
+    void select();
 
     /** Remove the highlight decoration of the figure */
-    default void unselect() {
-        setLineWidth(getLineWidth() - 1);
-    }
-
-    default void setColor(final Color color) {
-        setForegroundColor(color);
-    }
-
-    /**
-     * Allows to change the thickness of a figure borders.</br>
-     * Required method for selection behavior
-     *
-     * @param w
-     *            the width to apply on figure border
-     */
-    void setLineWidth(int w);
-
-    /**
-     * Allows to retrieve the thickness of a figure borders.</br>
-     * Required method for selection behavior
-     */
-    int getLineWidth();
+    void unselect();
 
 }

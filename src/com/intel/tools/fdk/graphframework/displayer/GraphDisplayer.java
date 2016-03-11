@@ -53,8 +53,10 @@ public class GraphDisplayer {
     private static final String CONNECTION_LAYER = "connection";
     /** Name of the layer containing indication for the user */
     private static final String FEEDBACK_LAYER = "feedback";
-    /** Name of the layer containing decoration of content this layer is not scaled */
+    /** Name of the layer containing decoration of content. This layer is not scaled */
     private static final String DECORATION_LAYER = "decoration";
+    /** Name of the layer containing tools (probes, etc...) of content. This layer is not scaled */
+    private static final String TOOLS_LAYER = "tools";
 
     /** Property allowing to subscribe to display scale updates */
     public static final String SCALE_PROPERTY = "scale";
@@ -84,6 +86,8 @@ public class GraphDisplayer {
         layers.add(scalablePane, SCALABLE_PANE);
         // Add the decoration pane which is not scalable
         layers.addLayerAfter(new FreeformLayer(), DECORATION_LAYER, SCALABLE_PANE);
+        // Add the tools pane which is not scalable
+        layers.addLayerAfter(new FreeformLayer(), TOOLS_LAYER, DECORATION_LAYER);
 
         // Associate the viewport to the canvas
         final Viewport viewport = new FreeformViewport();
@@ -139,13 +143,22 @@ public class GraphDisplayer {
         return scalablePane.getLayer(CONNECTION_LAYER);
     }
 
-    /** Retrieves the decoration layer
-     *  This layer is not scalable. It is over all other layers.
+    /**
+     * Retrieves the decoration layer This layer is not scalable.
      *
      * @return the decoration layer
      */
     public IFigure getDecorationLayer() {
         return layers.getLayer(DECORATION_LAYER);
+    }
+
+    /**
+     * Retrieves the tools layer This layer is not scalable. It is over all other layers.
+     *
+     * @return the tools layer
+     */
+    public Layer getToolsLayer() {
+        return layers.getLayer(TOOLS_LAYER);
     }
 
     /** Retrieves the current scale of the layers holder */

@@ -76,6 +76,7 @@ public class LayoutGenerator<T extends NodeController> {
         getControllers().forEach(controller -> {
             controller.getDisplayableFigures().forEach(displayer.getContentLayer()::add);
             controller.getDisplayableDecoration().forEach(displayer.getDecorationLayer()::add);
+            controller.getDisplayableTools().forEach(displayer.getToolsLayer()::add);
         });
         this.graph.getEdges().forEach(edge -> {
             displayer.getConnectionLayer().add(new EdgeFigure(

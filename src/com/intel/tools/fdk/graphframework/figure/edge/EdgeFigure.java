@@ -36,7 +36,17 @@ public class EdgeFigure extends PolylineConnection implements IGraphFigure {
 
         setLineCap(SWT.CAP_ROUND);
         setLineJoin(SWT.JOIN_ROUND);
-        setColor(IGraphFigure.DEFAULT_COLOR);
+        setForegroundColor(IGraphFigure.DEFAULT_COLOR);
+    }
+
+    @Override
+    public void select() {
+        setLineWidth(getLineWidth() + 1);
+    }
+
+    @Override
+    public void unselect() {
+        setLineWidth(getLineWidth() - 1);
     }
 
 }

@@ -102,7 +102,6 @@ public abstract class PinFigure extends PolylineShape implements IGraphFigure {
         return line.getLineWidth();
     }
 
-    @Override
     public void setColor(final Color color) {
         arrow.setForegroundColor(color);
         arrow.setBackgroundColor(color);
@@ -110,6 +109,16 @@ public abstract class PinFigure extends PolylineShape implements IGraphFigure {
         line.setBackgroundColor(color);
         connector.setBackgroundColor(color);
         connector.setForegroundColor(color);
+    }
+
+    @Override
+    public void select() {
+        setLineWidth(getLineWidth() + 1);
+    }
+
+    @Override
+    public void unselect() {
+        setLineWidth(getLineWidth() - 1);
     }
 
 }

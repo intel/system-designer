@@ -22,79 +22,71 @@
  */
 package com.intel.tools.fdk.graphframework.displayer.controller;
 
-import java.beans.PropertyChangeListener;
-import java.beans.PropertyChangeSupport;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.eclipse.draw2d.Layer;
 import org.eclipse.draw2d.MouseEvent;
 import org.eclipse.draw2d.MouseListener;
 
 import com.intel.tools.fdk.graphframework.displayer.GraphDisplayer;
 import com.intel.tools.fdk.graphframework.figure.IGraphFigure;
 
-/** Controller allowing to select an element of a displayer
+/**
+ * Controller allowing to select an element of a displayer
  *
- *  When a selection is made, all listener receive a CURRENT_SELECTION_PROPERTY property change event.
+ * When a selection is made, select() is called on all listeners.<br/>
+ * When a right-click is made, showContextMenu() is called on all listeners.
  */
 public class SelectionController {
 
-    private static final String CURRENT_SELECTION_PROPERTY = "current_selection";
-
-    private final PropertyChangeSupport changeSupport;
+    public interface IListener {
+        default void select(final IGraphFigure figure) {
+        }
+        default void showContextMenu(final IGraphFigure figure) {
+        }
+    }
 
     private IGraphFigure currentSelection;
     private final List<Class<? extends IGraphFigure>> selectionClasses;
 
+    private final List<IListener> listeners = new ArrayList<>();
+
     @SafeVarargs
     /**
-     * @param displayer the displayer which contains elements which can be selected
-     * @param selectionClasses type of elements which can be selected.
-     *                         selectionClasses is a variadic parameter which use its order as priority.
-     *                         An object of a type which is passed before another one will be selected in
-     *                         priority. This is useful when working with composed objects.
+     * @param displayer
+     *            the displayer which contains elements which can be selected
+     * @param selectionClasses
+     *            type of elements which can be selected. selectionClasses is a variadic parameter which use its order
+     *            as priority. An object of a type which is passed before another one will be selected in priority. This
+     *            is useful when working with composed objects.
      */
     public SelectionController(final GraphDisplayer displayer,
             final Class<? extends IGraphFigure>... selectionClasses) {
-        this.changeSupport = new PropertyChangeSupport(this);
         this.selectionClasses = Arrays.asList(selectionClasses);
-
-        displayer.getContentLayer().addMouseListener(new MouseListener.Stub() {
-            @Override
-            public void mousePressed(final MouseEvent event) {
-                final IGraphFigure old = currentSelection;
-                if (old != null) {
-                    old.unselect();
-                }
-                for (final Class<? extends IGraphFigure> selectionClass : selectionClasses) {
-                    currentSelection = (IGraphFigure) displayer.getContentLayer().findFigureAt(
-                            event.getLocation().x, event.getLocation().y,
-                            new TypeTreeSearch(selectionClass));
-                    if (currentSelection != null) {
-                        currentSelection.select();
-                        // we found a selection which is matching, let's stop the search
-                        changeSupport.firePropertyChange(CURRENT_SELECTION_PROPERTY, old, currentSelection);
-                        return;
-                    }
-                }
-            }
-        });
+        final SelectionListener contentListener = new SelectionListener(displayer.getContentLayer());
+        final SelectionListener toolsListener = new SelectionListener(displayer.getToolsLayer());
+        displayer.getContentLayer().addMouseListener(contentListener);
+        displayer.getToolsLayer().addMouseListener(toolsListener);
         displayer.getBackgroundLayer().addMouseListener(new MouseListener.Stub() {
             @Override
             public void mousePressed(final MouseEvent event) {
                 // background cliked, deselect
                 if (currentSelection != null) {
                     currentSelection.unselect();
-                    changeSupport.firePropertyChange(CURRENT_SELECTION_PROPERTY, currentSelection, null);
+                    fireSelect(null);
                     currentSelection = null;
                 }
             }
         });
     }
 
-    /** Select a given figure
+    /**
+     * Select a given figure
      *
-     * @param figure the figure to select
+     * @param figure
+     *            the figure to select
      */
     public void select(final IGraphFigure figure) {
         for (final Class<? extends IGraphFigure> selectionClass : selectionClasses) {
@@ -105,17 +97,65 @@ public class SelectionController {
                 }
                 currentSelection = figure;
                 currentSelection.select();
-                changeSupport.firePropertyChange(CURRENT_SELECTION_PROPERTY, old, currentSelection);
+                fireSelect(currentSelection);
                 return;
             }
         }
     }
 
-    public synchronized void addPropertyChangeListener(final PropertyChangeListener listener) {
-        changeSupport.addPropertyChangeListener(listener);
+    public void addListener(final IListener listener) {
+        listeners.add(listener);
     }
 
-    public synchronized void removePropertyChangeListener(final PropertyChangeListener listener) {
-        changeSupport.removePropertyChangeListener(listener);
+    public void removeListener(final IListener listener) {
+        listeners.remove(listener);
     }
+
+    private void fireSelect(final IGraphFigure figure) {
+        for (final IListener listener : listeners) {
+            listener.select(figure);
+        }
+    }
+
+    private void fireShowContextMenu(final IGraphFigure figure) {
+        for (final IListener listener : listeners) {
+            listener.showContextMenu(figure);
+        }
+    }
+
+    /**
+     * Selection listener operating on the given layer. Handles left and right clicks on figures present on the
+     * specified layer.
+     */
+    private class SelectionListener extends MouseListener.Stub {
+
+        private final Layer layer;
+
+        SelectionListener(final Layer layer) {
+            this.layer = layer;
+        }
+
+        @Override
+        public void mousePressed(final MouseEvent event) {
+            final IGraphFigure old = currentSelection;
+            if (old != null) {
+                old.unselect();
+            }
+            for (final Class<? extends IGraphFigure> selectionClass : selectionClasses) {
+                currentSelection = (IGraphFigure) layer.findFigureAt(
+                        event.getLocation().x, event.getLocation().y,
+                        new TypeTreeSearch(selectionClass));
+                if (currentSelection != null) {
+                    currentSelection.select();
+                    // we found a matching selection, let's stop the search
+                    fireSelect(currentSelection);
+                    if (event.button == 3) { // Handle right-click
+                        fireShowContextMenu(currentSelection);
+                    }
+                    return;
+                }
+            }
+        }
+    }
+
 }

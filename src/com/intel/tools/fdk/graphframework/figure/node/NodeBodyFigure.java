@@ -49,7 +49,16 @@ public class NodeBodyFigure extends RoundedRectangle implements IGraphFigure {
         setAntialias(1);
         setLineWidth(LINE_WIDTH);
         setBackgroundColor(IntelPalette.WHITE);
-        setColor(IGraphFigure.DEFAULT_COLOR);
+        setForegroundColor(IGraphFigure.DEFAULT_COLOR);
     }
 
+    @Override
+    public void select() {
+        setLineWidth(getLineWidth() + 1);
+    }
+
+    @Override
+    public void unselect() {
+        setLineWidth(getLineWidth() - 1);
+    }
 }

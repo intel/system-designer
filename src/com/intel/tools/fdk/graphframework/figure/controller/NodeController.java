@@ -79,6 +79,8 @@ public class NodeController {
     private final List<IFigure> displayableFigures = new ArrayList<>();
     /** List of all displayable decorations of the node */
     private final List<IFigure> displayableDecorations = new ArrayList<>();
+    /** List of all displayable tools of the node */
+    private final List<IFigure> displayableTools = new ArrayList<>();
 
     /**
      * @param node
@@ -197,6 +199,16 @@ public class NodeController {
      */
     public List<IFigure> getDisplayableDecoration() {
         return displayableDecorations;
+    }
+
+    /**
+     * Retrieves figures used as node tools (probes, etc...)</br>
+     * By default, there is none, child class are free to add needed tools icons.
+     *
+     * @return list of all tools sub-figures to display
+     */
+    public List<IFigure> getDisplayableTools() {
+        return displayableTools;
     }
 
     /**

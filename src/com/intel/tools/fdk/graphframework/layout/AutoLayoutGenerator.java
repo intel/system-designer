@@ -57,4 +57,11 @@ public class AutoLayoutGenerator<T extends NodeController> extends LayoutGenerat
         }
     }
 
+    /**
+     * Updates the graph, keeping current zoom location and scale
+     */
+    public void updateGraph(final GraphDisplayer displayer) throws GraphException {
+        super.displayGraph(displayer);
+    }
+
 }
