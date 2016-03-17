@@ -55,6 +55,8 @@ import com.intel.tools.utils.widgets.FlatButton.FlatButtonStyle;
  */
 public class ViewerFilterComposite extends Composite {
 
+    private static final String BUNDLE_SYMBOLIC_NAME = "com.intel.tools.utils";
+
     /**
      * The default text displayed in the search text box.
      */
@@ -266,8 +268,7 @@ public class ViewerFilterComposite extends Composite {
      *            parent <code>Composite</code> of toolbar button
      */
     private void createClearButton(final Composite parent) {
-        final Image clearImage = ResourceManager.getPluginImage(Activator.getContext().getBundle().getSymbolicName(),
-                "images/clear_search.png");
+        final Image clearImage = ResourceManager.getPluginImage(BUNDLE_SYMBOLIC_NAME, "images/clear_search.png");
         final Image inactiveImage = new Image(getDisplay(), clearImage, SWT.IMAGE_GRAY);
         buttonClear = new FlatButton(parent, FlatButtonStyle.SMALL_BUTTON);
         buttonClear.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false));
@@ -292,8 +293,7 @@ public class ViewerFilterComposite extends Composite {
      */
     private void createConfigureButton(final Composite parent) {
         buttonConfigure = new FlatButton(parent, FlatButtonStyle.SMALL_BUTTON);
-        final Image image = ResourceManager.getPluginImage(Activator.getContext().getBundle().getSymbolicName(),
-                "images/configure_search.png");
+        final Image image = ResourceManager.getPluginImage(BUNDLE_SYMBOLIC_NAME, "images/configure_search.png");
         final Image grayedImage = new Image(getDisplay(), image, SWT.IMAGE_GRAY);
         buttonConfigure.setImage(grayedImage);
         buttonConfigure.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false));
