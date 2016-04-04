@@ -8,10 +8,10 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Export-Package: com.intel.tools.fdk.graphframework.displayer,
  com.intel.tools.fdk.graphframework.displayer.controller,
  com.intel.tools.fdk.graphframework.figure,
- com.intel.tools.fdk.graphframework.figure.controller,
  com.intel.tools.fdk.graphframework.figure.edge,
  com.intel.tools.fdk.graphframework.figure.node,
  com.intel.tools.fdk.graphframework.figure.pin,
+ com.intel.tools.fdk.graphframework.figure.presenter,
  com.intel.tools.fdk.graphframework.graph,
  com.intel.tools.fdk.graphframework.graph.factory,
  com.intel.tools.fdk.graphframework.layout

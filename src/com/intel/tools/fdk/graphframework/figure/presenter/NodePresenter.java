@@ -20,7 +20,7 @@
  * express and approved by Intel in writing.
  * ============================================================================
  */
-package com.intel.tools.fdk.graphframework.figure.controller;
+package com.intel.tools.fdk.graphframework.figure.presenter;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -45,10 +45,10 @@ import com.intel.tools.fdk.graphframework.graph.Edge;
 import com.intel.tools.fdk.graphframework.graph.Node;
 
 /**
- * Basic Controller which link some figures to create a complete and functional graph node.</br>
+ * Basic Presenter which link some figures to create a complete and functional graph node.</br>
  * This class can be extended by the user to enable some customization.
  */
-public class NodeController {
+public class NodePresenter {
 
     /** Body Width in {@link IGraphFigure#SIZE_UNIT} */
     private static final int BODY_WIDTH = 4 * IGraphFigure.SIZE_UNIT;
@@ -86,7 +86,7 @@ public class NodeController {
      * @param node
      *            the graph node to represent
      */
-    public NodeController(final Node node) {
+    public NodePresenter(final Node node) {
         this.node = node;
         // hides the global bounds figure which is used only for technical purpose
         this.boundsFigure.setVisible(false);

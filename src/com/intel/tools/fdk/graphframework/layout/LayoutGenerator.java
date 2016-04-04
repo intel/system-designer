@@ -32,8 +32,8 @@ import java.util.stream.Collectors;
 import org.eclipse.draw2d.IFigure;
 
 import com.intel.tools.fdk.graphframework.displayer.GraphDisplayer;
-import com.intel.tools.fdk.graphframework.figure.controller.NodeController;
 import com.intel.tools.fdk.graphframework.figure.edge.EdgeFigure;
+import com.intel.tools.fdk.graphframework.figure.presenter.NodePresenter;
 import com.intel.tools.fdk.graphframework.graph.Graph;
 import com.intel.tools.fdk.graphframework.graph.GraphException;
 import com.intel.tools.fdk.graphframework.graph.Node;
@@ -43,12 +43,12 @@ import com.intel.tools.fdk.graphframework.graph.factory.IGraphFactory;
  * Class allowing to display a complete graph on a displayer
  *
  * @param <T>
- *            type of node controller used
+ *            type of node presenter used
  */
-public class LayoutGenerator<T extends NodeController> {
+public class LayoutGenerator<T extends NodePresenter> {
 
     private final Graph graph;
-    private final Map<Node, T> controllers = new HashMap<>();
+    private final Map<Node, T> presenters = new HashMap<>();
 
     /**
      * @param graphFactory
@@ -56,7 +56,7 @@ public class LayoutGenerator<T extends NodeController> {
      */
     public LayoutGenerator(final IGraphFactory<T> graphFactory) {
         this.graph = graphFactory.createGraph();
-        this.graph.getNodes().forEach(node -> controllers.put(node, graphFactory.createController(node)));
+        this.graph.getNodes().forEach(node -> presenters.put(node, graphFactory.createPresenter(node)));
     }
 
     /**
@@ -73,15 +73,15 @@ public class LayoutGenerator<T extends NodeController> {
         displayer.reset();
 
         // Display figures
-        getControllers().forEach(controller -> {
-            controller.getDisplayableFigures().forEach(displayer.getContentLayer()::add);
-            controller.getDisplayableDecoration().forEach(displayer.getDecorationLayer()::add);
-            controller.getDisplayableTools().forEach(displayer.getToolsLayer()::add);
+        getPresenters().forEach(presenter -> {
+            presenter.getDisplayableFigures().forEach(displayer.getContentLayer()::add);
+            presenter.getDisplayableDecoration().forEach(displayer.getDecorationLayer()::add);
+            presenter.getDisplayableTools().forEach(displayer.getToolsLayer()::add);
         });
         this.graph.getEdges().forEach(edge -> {
             displayer.getConnectionLayer().add(new EdgeFigure(
-                    this.controllers.get(edge.getInputNode()).getAnchor(edge),
-                    this.controllers.get(edge.getOutputNode()).getAnchor(edge)));
+                    this.presenters.get(edge.getInputNode()).getAnchor(edge),
+                    this.presenters.get(edge.getOutputNode()).getAnchor(edge)));
         });
 
         /**
@@ -101,12 +101,12 @@ public class LayoutGenerator<T extends NodeController> {
     }
 
     /**
-     * Retrieve generated controllers
+     * Retrieve generated presenters
      *
-     * @return controllers which are or will be displayed
+     * @return presenters which are or will be displayed
      */
-    public List<T> getControllers() {
-        return this.controllers.values().stream().collect(Collectors.toList());
+    public List<T> getPresenters() {
+        return this.presenters.values().stream().collect(Collectors.toList());
     }
 
     /**

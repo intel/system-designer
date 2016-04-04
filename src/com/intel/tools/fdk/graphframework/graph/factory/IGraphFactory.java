@@ -22,7 +22,7 @@
  */
 package com.intel.tools.fdk.graphframework.graph.factory;
 
-import com.intel.tools.fdk.graphframework.figure.controller.NodeController;
+import com.intel.tools.fdk.graphframework.figure.presenter.NodePresenter;
 import com.intel.tools.fdk.graphframework.graph.Graph;
 import com.intel.tools.fdk.graphframework.graph.Node;
 
@@ -30,9 +30,9 @@ import com.intel.tools.fdk.graphframework.graph.Node;
  * Interface providing a way to generate a {@link Graph}.
  *
  * @param <T>
- *            the controller type to use, must be a {@link NodeController} or one of its child class
+ *            the presenter type to use, must be a {@link NodePresenter} or one of its child class
  */
-public interface IGraphFactory<T extends NodeController> {
+public interface IGraphFactory<T extends NodePresenter> {
 
     /**
      * Create a new graph.
@@ -42,15 +42,15 @@ public interface IGraphFactory<T extends NodeController> {
     Graph createGraph();
 
     /**
-     * Create a new controller.
+     * Create a new presenter.
      *
-     * This method provide a way to let the user introduce custom node controllers when using framework's layout to
+     * This method provide a way to let the user introduce custom node presenters when using framework's layout to
      * display their graph.</br>
      *
      * @param node
      *            the node to represent
-     * @return a controller representing the node
+     * @return a presenter representing the node
      */
-    T createController(final Node node);
+    T createPresenter(final Node node);
 
 }

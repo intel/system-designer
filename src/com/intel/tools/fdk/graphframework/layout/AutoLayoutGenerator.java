@@ -25,7 +25,7 @@ package com.intel.tools.fdk.graphframework.layout;
 import org.eclipse.draw2d.geometry.Point;
 
 import com.intel.tools.fdk.graphframework.displayer.GraphDisplayer;
-import com.intel.tools.fdk.graphframework.figure.controller.NodeController;
+import com.intel.tools.fdk.graphframework.figure.presenter.NodePresenter;
 import com.intel.tools.fdk.graphframework.graph.GraphException;
 import com.intel.tools.fdk.graphframework.graph.factory.IGraphFactory;
 
@@ -35,9 +35,9 @@ import com.intel.tools.fdk.graphframework.graph.factory.IGraphFactory;
  * The algorithm used is the one defined in {@link AutoLayoutComputer}.
  *
  * @param <T>
- *            type of node controller used
+ *            type of node presenter used
  */
-public class AutoLayoutGenerator<T extends NodeController> extends LayoutGenerator<T> {
+public class AutoLayoutGenerator<T extends NodePresenter> extends LayoutGenerator<T> {
 
     public AutoLayoutGenerator(final IGraphFactory<T> graphFactory) {
         super(graphFactory);
@@ -47,13 +47,13 @@ public class AutoLayoutGenerator<T extends NodeController> extends LayoutGenerat
     public void displayGraph(final GraphDisplayer displayer) throws GraphException {
         super.displayGraph(displayer);
         final AutoLayoutComputer computer = new AutoLayoutComputer(getGraph());
-        for (final NodeController controller : getControllers()) {
-            final Point coord = computer.getCoordinate(controller.getNode());
+        for (final NodePresenter presenter : getPresenters()) {
+            final Point coord = computer.getCoordinate(presenter.getNode());
             /**
              * FIXME: Let the layout adapt the coordinate and do not use hardcoded value to create absolute
              * coordinates
              */
-            controller.getNodeBody().setLocation(new Point(coord.x * 90, coord.y * 45));
+            presenter.getNodeBody().setLocation(new Point(coord.x * 90, coord.y * 45));
         }
     }
 
