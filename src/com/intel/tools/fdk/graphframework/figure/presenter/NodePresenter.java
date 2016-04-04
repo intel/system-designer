@@ -30,7 +30,6 @@ import java.util.Optional;
 
 import org.eclipse.draw2d.FigureListener;
 import org.eclipse.draw2d.IFigure;
-import org.eclipse.draw2d.Label;
 import org.eclipse.draw2d.RectangleFigure;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.Rectangle;
@@ -48,7 +47,7 @@ import com.intel.tools.fdk.graphframework.graph.Link;
  * Basic Presenter which link some figures to create a complete and functional graph node.</br>
  * This class can be extended by the user to enable some customization.
  */
-public class NodePresenter {
+public class NodePresenter extends Presenter<Leaf> {
 
     /** Body Width in {@link IGraphFigure#SIZE_UNIT} */
     private static final int BODY_WIDTH = 4 * IGraphFigure.SIZE_UNIT;
@@ -58,9 +57,6 @@ public class NodePresenter {
     public static final int PIN_DISTANCE = 2 * IGraphFigure.SIZE_UNIT;
     /** Distance between body upper/lower link and first/last pin in {@link IGraphFigure#SIZE_UNIT} */
     public static final int PIN_OFFSET = IGraphFigure.SIZE_UNIT;
-
-    /** The represented node */
-    private final Leaf node;
 
     /**
      * Union of bounds of all figures which compose the node </br>
@@ -75,19 +71,12 @@ public class NodePresenter {
     private final List<OutputFigure> outputs = new ArrayList<>();
     private final Map<Link, LinkAnchor> anchors = new HashMap<>();
 
-    /** List of all main displayable figures which compose the node */
-    private final List<IFigure> displayableFigures = new ArrayList<>();
-    /** List of all displayable decorations of the node */
-    private final List<IFigure> displayableDecorations = new ArrayList<>();
-    /** List of all displayable tools of the node */
-    private final List<IFigure> displayableTools = new ArrayList<>();
-
     /**
      * @param node
      *            the graph node to represent
      */
     public NodePresenter(final Leaf node) {
-        this.node = node;
+        super(node);
         // hides the global bounds figure which is used only for technical purpose
         this.boundsFigure.setVisible(false);
 
@@ -102,10 +91,10 @@ public class NodePresenter {
         node.getInputLinks().forEach(link -> setupPinFigure(link, InputFigure.class, this.inputs));
         node.getOutputLinks().forEach(link -> setupPinFigure(link, OutputFigure.class, this.outputs));
 
-        displayableFigures.add(boundsFigure);
-        displayableFigures.addAll(inputs);
-        displayableFigures.addAll(outputs);
-        displayableFigures.add(body);
+        getDisplayableFigures().add(boundsFigure);
+        getDisplayableFigures().addAll(inputs);
+        getDisplayableFigures().addAll(outputs);
+        getDisplayableFigures().add(body);
 
         // Track body movement to keep sub-elements together
         body.addFigureListener(new FigureListener() {
@@ -125,42 +114,9 @@ public class NodePresenter {
         updateBoundsFigure();
     }
 
-    public NodeBodyFigure getNodeBody() {
+    @Override
+    public IGraphFigure getNodeBody() {
         return body;
-    }
-
-    public Leaf getNode() {
-        return node;
-    }
-
-    /**
-     * Decorates a sub-figure of the node with a label.
-     *
-     * The label will be placed right under the binded figure and will follow its movement.
-     *
-     * @param text
-     *            label text
-     * @param bindedFigure
-     *            the figure under which the label will be positioned
-     */
-    protected void addLabel(final String text, final IFigure bindedFigure) {
-        final Label label = new Label();
-        label.setText(text);
-        label.setForegroundColor(IGraphFigure.DEFAULT_COLOR);
-
-        // Label width is expanded to avoid cutting some text, then it is centered under the main rectangle
-        final int labelWidth = (int) Math.round(label.getTextBounds().width * 1.1);
-        label.setSize(labelWidth, label.getTextBounds().height);
-        // Label width is expanded to avoid cutting some text, then it is centered under the component rectangle
-        bindedFigure.addFigureListener(source -> {
-            final Rectangle bounds = source.getBounds().getCopy();
-            source.getParent().translateToAbsolute(bounds);
-            if (label.getParent() != null) {
-                label.getParent().translateToRelative(bounds);
-                label.setLocation(new Point(bounds.x + (bounds.width - labelWidth) / 2, bounds.y + bounds.height));
-            }
-        });
-        displayableDecorations.add(label);
     }
 
     protected PinFigure getInput(final int id) {
@@ -180,35 +136,6 @@ public class NodePresenter {
      */
     public LinkAnchor getAnchor(final Link link) {
         return anchors.get(link);
-    }
-
-    /**
-     * Retrieves figures which compose the node
-     *
-     * @return list of all sub-figures to display
-     */
-    public List<IFigure> getDisplayableFigures() {
-        return displayableFigures;
-    }
-
-    /**
-     * Retrieves figures used as node decoration.</br>
-     * By default, there is none, child class are free to add needed decoration.
-     *
-     * @return list of all sub-figures decoration to display
-     */
-    public List<IFigure> getDisplayableDecoration() {
-        return displayableDecorations;
-    }
-
-    /**
-     * Retrieves figures used as node tools (probes, etc...)</br>
-     * By default, there is none, child class are free to add needed tools icons.
-     *
-     * @return list of all tools sub-figures to display
-     */
-    public List<IFigure> getDisplayableTools() {
-        return displayableTools;
     }
 
     /**
