@@ -23,6 +23,8 @@
 package com.intel.tools.fdk.graphframework.displayer.controller;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.KeyAdapter;
+import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseWheelListener;
 
@@ -30,6 +32,8 @@ import com.intel.tools.fdk.graphframework.displayer.GraphDisplayer;
 
 /** Zoom/Unzoom a ComponentLayoutDisplayer by when CTRL+Scroll is realized by the user */
 public class ZoomController {
+
+    private static final int KEY_0 = 224;
 
     /** Zoom step applied after a zoom action is required */
     private static double zoomStep = 1.1;
@@ -40,10 +44,31 @@ public class ZoomController {
             public void mouseScrolled(final MouseEvent e) {
                 // CTRL + mouse wheel -> zoom
                 if ((e.stateMask & SWT.CTRL) == SWT.CTRL) {
-                    displayer.setScale(displayer.getScale() / (e.count < 0 ? zoomStep : 1 / zoomStep));
+                    zoom(displayer, e.count > 0 ? zoomStep : 1 / zoomStep);
                 }
             }
         });
+        displayer.getControl().addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(final KeyEvent e) {
+                if ((e.stateMask & SWT.CTRL) == SWT.CTRL) {
+                    if (e.keyCode == SWT.KEYPAD_ADD) {
+                        // Ctrl +
+                        zoom(displayer, zoomStep);
+                    } else if (e.keyCode == SWT.KEYPAD_SUBTRACT) {
+                        // Ctrl -
+                        zoom(displayer, 1 / zoomStep);
+                    } else if (e.keyCode == KEY_0 || e.keyCode == SWT.KEYPAD_0) {
+                        // Ctrl 0
+                        FitToScreenController.fitToScreen(displayer);
+                    }
+                }
+            }
+        });
+    }
+
+    private void zoom(final GraphDisplayer displayer, final double factor) {
+        displayer.setScale(displayer.getScale() * factor);
     }
 
 }
