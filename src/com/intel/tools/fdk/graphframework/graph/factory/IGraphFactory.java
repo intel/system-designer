@@ -28,11 +28,8 @@ import com.intel.tools.fdk.graphframework.graph.Leaf;
 
 /**
  * Interface providing a way to generate a {@link Graph}.
- *
- * @param <T>
- *            the presenter type to use, must be a {@link NodePresenter} or one of its child class
  */
-public interface IGraphFactory<T extends NodePresenter> {
+public interface IGraphFactory {
 
     /**
      * Create a new graph.
@@ -51,6 +48,6 @@ public interface IGraphFactory<T extends NodePresenter> {
      *            the node to represent
      * @return a presenter representing the node
      */
-    T createPresenter(final Leaf node);
+    NodePresenter createPresenter(final Leaf leaf);
 
 }

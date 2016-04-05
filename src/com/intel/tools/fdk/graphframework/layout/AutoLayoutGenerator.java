@@ -37,9 +37,9 @@ import com.intel.tools.fdk.graphframework.graph.factory.IGraphFactory;
  * @param <T>
  *            type of node presenter used
  */
-public class AutoLayoutGenerator<T extends NodePresenter> extends LayoutGenerator<T> {
+public class AutoLayoutGenerator extends LayoutGenerator {
 
-    public AutoLayoutGenerator(final IGraphFactory<T> graphFactory) {
+    public AutoLayoutGenerator(final IGraphFactory graphFactory) {
         super(graphFactory);
     }
 

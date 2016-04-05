@@ -41,22 +41,19 @@ import com.intel.tools.fdk.graphframework.graph.factory.IGraphFactory;
 
 /**
  * Class allowing to display a complete graph on a displayer
- *
- * @param <T>
- *            type of node presenter used
  */
-public class LayoutGenerator<T extends NodePresenter> {
+public class LayoutGenerator {
 
     private final Graph graph;
-    private final Map<Leaf, T> presenters = new HashMap<>();
+    private final Map<Leaf, NodePresenter> leafPresenters = new HashMap<>();
 
     /**
      * @param graphFactory
      *            the factory to use to create the graph
      */
-    public LayoutGenerator(final IGraphFactory<T> graphFactory) {
+    public LayoutGenerator(final IGraphFactory graphFactory) {
         this.graph = graphFactory.createGraph();
-        this.graph.getLeaves().forEach(node -> presenters.put(node, graphFactory.createPresenter(node)));
+        this.graph.getLeaves().forEach(leaf -> leafPresenters.put(leaf, graphFactory.createPresenter(leaf)));
     }
 
     /**
@@ -73,15 +70,15 @@ public class LayoutGenerator<T extends NodePresenter> {
         displayer.reset();
 
         // Display figures
-        getPresenters().forEach(presenter -> {
+        this.leafPresenters.values().stream().forEach(presenter -> {
             presenter.getDisplayableFigures().forEach(displayer.getContentLayer()::add);
             presenter.getDisplayableDecoration().forEach(displayer.getDecorationLayer()::add);
             presenter.getDisplayableTools().forEach(displayer.getToolsLayer()::add);
         });
         this.graph.getLinks().forEach(link -> {
             displayer.getConnectionLayer().add(new LinkFigure(
-                    this.presenters.get(link.getInputNode()).getAnchor(link),
-                    this.presenters.get(link.getOutputNode()).getAnchor(link)));
+                    this.leafPresenters.get(link.getInputNode()).getAnchor(link),
+                    this.leafPresenters.get(link.getOutputNode()).getAnchor(link)));
         });
 
         /**
@@ -105,8 +102,8 @@ public class LayoutGenerator<T extends NodePresenter> {
      *
      * @return presenters which are or will be displayed
      */
-    public List<T> getPresenters() {
-        return this.presenters.values().stream().collect(Collectors.toList());
+    protected List<NodePresenter> getPresenters() {
+        return this.leafPresenters.values().stream().collect(Collectors.toList());
     }
 
     /**
