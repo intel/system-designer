@@ -36,13 +36,13 @@ import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.Rectangle;
 
 import com.intel.tools.fdk.graphframework.figure.IGraphFigure;
-import com.intel.tools.fdk.graphframework.figure.edge.EdgeAnchor;
+import com.intel.tools.fdk.graphframework.figure.link.LinkAnchor;
 import com.intel.tools.fdk.graphframework.figure.node.NodeBodyFigure;
 import com.intel.tools.fdk.graphframework.figure.pin.InputFigure;
 import com.intel.tools.fdk.graphframework.figure.pin.OutputFigure;
 import com.intel.tools.fdk.graphframework.figure.pin.PinFigure;
-import com.intel.tools.fdk.graphframework.graph.Edge;
-import com.intel.tools.fdk.graphframework.graph.Node;
+import com.intel.tools.fdk.graphframework.graph.Leaf;
+import com.intel.tools.fdk.graphframework.graph.Link;
 
 /**
  * Basic Presenter which link some figures to create a complete and functional graph node.</br>
@@ -56,11 +56,11 @@ public class NodePresenter {
     private static final int BODY_BASE_HEIGHT = BODY_WIDTH;
     /** Distance between two pins in {@link IGraphFigure#SIZE_UNIT} */
     public static final int PIN_DISTANCE = 2 * IGraphFigure.SIZE_UNIT;
-    /** Distance between body upper/lower edge and first/last pin in {@link IGraphFigure#SIZE_UNIT} */
+    /** Distance between body upper/lower link and first/last pin in {@link IGraphFigure#SIZE_UNIT} */
     public static final int PIN_OFFSET = IGraphFigure.SIZE_UNIT;
 
     /** The represented node */
-    private final Node node;
+    private final Leaf node;
 
     /**
      * Union of bounds of all figures which compose the node </br>
@@ -73,7 +73,7 @@ public class NodePresenter {
     private final NodeBodyFigure body;
     private final List<InputFigure> inputs = new ArrayList<>();
     private final List<OutputFigure> outputs = new ArrayList<>();
-    private final Map<Edge, EdgeAnchor> anchors = new HashMap<>();
+    private final Map<Link, LinkAnchor> anchors = new HashMap<>();
 
     /** List of all main displayable figures which compose the node */
     private final List<IFigure> displayableFigures = new ArrayList<>();
@@ -86,21 +86,21 @@ public class NodePresenter {
      * @param node
      *            the graph node to represent
      */
-    public NodePresenter(final Node node) {
+    public NodePresenter(final Leaf node) {
         this.node = node;
         // hides the global bounds figure which is used only for technical purpose
         this.boundsFigure.setVisible(false);
 
         // body configuration
-        int height = Integer.max(node.getInputEdges().size(), node.getOutputEdges().size());
+        int height = Integer.max(node.getInputLinks().size(), node.getOutputLinks().size());
         if (height <= 1) {
             height = BODY_BASE_HEIGHT;
         } else {
             height = height * PIN_DISTANCE + PIN_OFFSET;
         }
         this.body = new NodeBodyFigure(BODY_WIDTH, height);
-        node.getInputEdges().forEach(edge -> setupPinFigure(edge, InputFigure.class, this.inputs));
-        node.getOutputEdges().forEach(edge -> setupPinFigure(edge, OutputFigure.class, this.outputs));
+        node.getInputLinks().forEach(link -> setupPinFigure(link, InputFigure.class, this.inputs));
+        node.getOutputLinks().forEach(link -> setupPinFigure(link, OutputFigure.class, this.outputs));
 
         displayableFigures.add(boundsFigure);
         displayableFigures.addAll(inputs);
@@ -129,7 +129,7 @@ public class NodePresenter {
         return body;
     }
 
-    public Node getNode() {
+    public Leaf getNode() {
         return node;
     }
 
@@ -172,14 +172,14 @@ public class NodePresenter {
     }
 
     /**
-     * Retrieve an anchor associated to an edge
+     * Retrieve an anchor associated to a {@link Link}
      *
-     * @param edge
-     *            the connected edge
-     * @return the anchor connected to the given edge or null if the edge is not linked to the input
+     * @param link
+     *            the connected link
+     * @return the anchor connected to the given link or null if link link is not linked to the input
      */
-    public EdgeAnchor getAnchor(final Edge edge) {
-        return anchors.get(edge);
+    public LinkAnchor getAnchor(final Link link) {
+        return anchors.get(link);
     }
 
     /**
@@ -232,20 +232,20 @@ public class NodePresenter {
     /**
      * Setup a PinFigure
      *
-     * @param edge
-     *            the edge linked to the pin to create
+     * @param link
+     *            the link linked to the pin to create
      * @param clazz
      *            the type of pin to create
      * @param pinList
      *            the list to store the created pin
      */
-    private <T extends PinFigure> void setupPinFigure(final Optional<Edge> edge, final Class<T> clazz,
+    private <T extends PinFigure> void setupPinFigure(final Optional<Link> link, final Class<T> clazz,
             final List<T> pinList) {
         try {
             final T pin = clazz.newInstance();
             pinList.add(pin);
-            if (edge.isPresent()) {
-                this.anchors.put(edge.get(), new EdgeAnchor(boundsFigure, pin));
+            if (link.isPresent()) {
+                this.anchors.put(link.get(), new LinkAnchor(boundsFigure, pin));
             }
         } catch (InstantiationException | IllegalAccessException e) {
             throw new IllegalArgumentException("When configuring node pin: The class used does not match expectation;");

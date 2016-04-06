@@ -32,11 +32,11 @@ import java.util.stream.Collectors;
 import org.eclipse.draw2d.IFigure;
 
 import com.intel.tools.fdk.graphframework.displayer.GraphDisplayer;
-import com.intel.tools.fdk.graphframework.figure.edge.EdgeFigure;
+import com.intel.tools.fdk.graphframework.figure.link.LinkFigure;
 import com.intel.tools.fdk.graphframework.figure.presenter.NodePresenter;
 import com.intel.tools.fdk.graphframework.graph.Graph;
 import com.intel.tools.fdk.graphframework.graph.GraphException;
-import com.intel.tools.fdk.graphframework.graph.Node;
+import com.intel.tools.fdk.graphframework.graph.Leaf;
 import com.intel.tools.fdk.graphframework.graph.factory.IGraphFactory;
 
 /**
@@ -48,7 +48,7 @@ import com.intel.tools.fdk.graphframework.graph.factory.IGraphFactory;
 public class LayoutGenerator<T extends NodePresenter> {
 
     private final Graph graph;
-    private final Map<Node, T> presenters = new HashMap<>();
+    private final Map<Leaf, T> presenters = new HashMap<>();
 
     /**
      * @param graphFactory
@@ -56,7 +56,7 @@ public class LayoutGenerator<T extends NodePresenter> {
      */
     public LayoutGenerator(final IGraphFactory<T> graphFactory) {
         this.graph = graphFactory.createGraph();
-        this.graph.getNodes().forEach(node -> presenters.put(node, graphFactory.createPresenter(node)));
+        this.graph.getLeaves().forEach(node -> presenters.put(node, graphFactory.createPresenter(node)));
     }
 
     /**
@@ -78,10 +78,10 @@ public class LayoutGenerator<T extends NodePresenter> {
             presenter.getDisplayableDecoration().forEach(displayer.getDecorationLayer()::add);
             presenter.getDisplayableTools().forEach(displayer.getToolsLayer()::add);
         });
-        this.graph.getEdges().forEach(edge -> {
-            displayer.getConnectionLayer().add(new EdgeFigure(
-                    this.presenters.get(edge.getInputNode()).getAnchor(edge),
-                    this.presenters.get(edge.getOutputNode()).getAnchor(edge)));
+        this.graph.getLinks().forEach(link -> {
+            displayer.getConnectionLayer().add(new LinkFigure(
+                    this.presenters.get(link.getInputNode()).getAnchor(link),
+                    this.presenters.get(link.getOutputNode()).getAnchor(link)));
         });
 
         /**

@@ -20,33 +20,12 @@
  * express and approved by Intel in writing.
  * ============================================================================
  */
-package com.intel.tools.fdk.graphframework.figure.edge;
+package com.intel.tools.fdk.graphframework.graph;
 
-import org.eclipse.draw2d.PolylineConnection;
-import org.eclipse.swt.SWT;
+/** These interface describe the standard API of a node of a {@link Graph} */
+public interface INode {
 
-import com.intel.tools.fdk.graphframework.figure.IGraphFigure;
-
-/** Represent a graph edge */
-public class EdgeFigure extends PolylineConnection implements IGraphFigure {
-
-    public EdgeFigure(final EdgeAnchor source, final EdgeAnchor target) {
-        setSourceAnchor(source);
-        setTargetAnchor(target);
-
-        setLineCap(SWT.CAP_ROUND);
-        setLineJoin(SWT.JOIN_ROUND);
-        setForegroundColor(IGraphFigure.DEFAULT_COLOR);
-    }
-
-    @Override
-    public void select() {
-        setLineWidth(getLineWidth() + 1);
-    }
-
-    @Override
-    public void unselect() {
-        setLineWidth(getLineWidth() - 1);
-    }
+    /** @return the parent container of this Node */
+    NodeContainer getParent();
 
 }

@@ -31,10 +31,10 @@ import java.util.stream.Collectors;
 
 import org.eclipse.draw2d.geometry.Point;
 
-import com.intel.tools.fdk.graphframework.graph.Edge;
 import com.intel.tools.fdk.graphframework.graph.Graph;
 import com.intel.tools.fdk.graphframework.graph.GraphException;
-import com.intel.tools.fdk.graphframework.graph.Node;
+import com.intel.tools.fdk.graphframework.graph.Leaf;
+import com.intel.tools.fdk.graphframework.graph.Link;
 
 /**
  * Basic graph drawing algorithm implementation for graph
@@ -45,16 +45,16 @@ import com.intel.tools.fdk.graphframework.graph.Node;
 public class AutoLayoutComputer {
 
     /** Browsed inputs */
-    private final List<Edge> visitedEdges = new ArrayList<>();
-    private final Map<Node, Integer> abscisses = new HashMap<>();
-    private final Map<Node, Integer> ordinates = new HashMap<>();
+    private final List<Link> visitedLinks = new ArrayList<>();
+    private final Map<Leaf, Integer> abscisses = new HashMap<>();
+    private final Map<Leaf, Integer> ordinates = new HashMap<>();
 
     /** Current coordinate */
     private int currentCoordinate = 0;
 
     public AutoLayoutComputer(final Graph graph) {
         // Find all component which are sources
-        final List<Node> sources = graph.getNodes().stream().filter(this::isSourceInstance)
+        final List<Leaf> sources = graph.getLeaves().stream().filter(this::isSourceInstance)
                 .collect(Collectors.toList());
 
         sources.forEach(node -> {
@@ -64,7 +64,7 @@ public class AutoLayoutComputer {
         });
 
         // Reset algorithm
-        visitedEdges.clear();
+        visitedLinks.clear();
         currentCoordinate = 0;
 
         sources.stream().collect(Collectors.toCollection(ArrayDeque::new))
@@ -85,7 +85,7 @@ public class AutoLayoutComputer {
      * @throws GraphException
      *             if the given node has not been computed by the algorithm
      */
-    public Point getCoordinate(final Node node) throws GraphException {
+    public Point getCoordinate(final Leaf node) throws GraphException {
         if (abscisses.containsKey(node) && ordinates.containsKey(node)) {
             return new Point(abscisses.get(node) + ordinates.get(node), ordinates.get(node) - abscisses.get(node));
         } else {
@@ -100,9 +100,9 @@ public class AutoLayoutComputer {
      *            the instance to check
      * @return true if the instance is a source, else otherwise
      */
-    private boolean isSourceInstance(final Node node) {
+    private boolean isSourceInstance(final Leaf node) {
         // If there is no inputs, or if none is connected, then it can be a source
-        return node.getLinkedInputEdges().isEmpty();
+        return node.getLinkedInputLinks().isEmpty();
     }
 
     /**
@@ -112,14 +112,14 @@ public class AutoLayoutComputer {
      *            the node to check
      * @return true if some inputs have not been visited, false otherwise
      */
-    private boolean hasUnvisitedLinkedInput(final Node linked) {
-        return linked.getLinkedInputEdges().stream().anyMatch(edge -> !visitedEdges.contains(edge));
+    private boolean hasUnvisitedLinkedInput(final Leaf linked) {
+        return linked.getLinkedInputLinks().stream().anyMatch(link -> !visitedLinks.contains(link));
     }
 
-    private void leftNumbering(final Node origin) {
-        origin.getLinkedOutputEdges().forEach(edge -> {
-            visitedEdges.add(edge);
-            final Node linked = edge.getInputNode();
+    private void leftNumbering(final Leaf origin) {
+        origin.getLinkedOutputLinks().forEach(link -> {
+            visitedLinks.add(link);
+            final Leaf linked = link.getInputNode();
             if (!hasUnvisitedLinkedInput(linked)) {
                 // Last link to the node let's check it
                 abscisses.put(linked, ++currentCoordinate);
@@ -128,12 +128,13 @@ public class AutoLayoutComputer {
         });
     }
 
-    private void rightNumbering(final Node origin) {
-        origin.getLinkedOutputEdges().stream().collect(Collectors.toCollection(ArrayDeque::new))
+    private void rightNumbering(final Leaf origin) {
+        origin.getLinkedOutputLinks().stream()
+                .collect(Collectors.toCollection(ArrayDeque::new))
                 .descendingIterator()
-                .forEachRemaining(edge -> {
-                    visitedEdges.add(edge);
-                    final Node linked = edge.getInputNode();
+                .forEachRemaining(link -> {
+                    visitedLinks.add(link);
+                    final Leaf linked = link.getInputNode();
                     // Check that linked instance has no unvisited linked link
                     if (!hasUnvisitedLinkedInput(linked)) {
                         // Last link to the node let's check it

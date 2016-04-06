@@ -22,47 +22,19 @@
  */
 package com.intel.tools.fdk.graphframework.graph;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * Represent a basic graph.</br>
  *
- * A graph is composed of {@link Node} interconnected by {@link Edge}
+ * A graph is composed of {@link INode}.</br>
+ * Those nodes can be {@link Leaf} interconnected by {@link Link} or {@link Group} which can contains other
+ * {@link INode}
  */
-public final class Graph {
+public final class Graph extends NodeContainer {
 
-    private final List<Node> nodes = new ArrayList<>();
-
-    /**
-     * Create a new graph.
-     *
-     * @param nodes
-     *            nodes of the graph. All nodes of the list are added in the internal one.
-     */
-    public Graph(final List<Node> nodes) {
-        this.nodes.addAll(nodes);
-    }
-
-    /**
-     * @return an unmodifiable list of nodes which compose this graph.
-     */
-    public List<Node> getNodes() {
-        return Collections.unmodifiableList(nodes);
-    }
-
-    /**
-     * @return a set containing all {@link Edge} which interconnect {@link Node} of this graph.
-     */
-    public Set<Edge> getEdges() {
-        return nodes.stream()
-                .flatMap(node -> Stream.concat(
-                        node.getLinkedInputEdges().stream(), node.getLinkedOutputEdges().stream()))
-                .collect(Collectors.toSet());
+    public Graph(final List<Leaf> leaves, final List<Group> groups) {
+        super(leaves, groups);
     }
 
 }

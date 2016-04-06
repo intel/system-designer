@@ -20,37 +20,33 @@
  * express and approved by Intel in writing.
  * ============================================================================
  */
-package com.intel.tools.fdk.graphframework.graph.factory;
+package com.intel.tools.fdk.graphframework.figure.link;
 
-import com.intel.tools.fdk.graphframework.figure.presenter.NodePresenter;
-import com.intel.tools.fdk.graphframework.graph.Graph;
-import com.intel.tools.fdk.graphframework.graph.Leaf;
+import org.eclipse.draw2d.PolylineConnection;
+import org.eclipse.swt.SWT;
 
-/**
- * Interface providing a way to generate a {@link Graph}.
- *
- * @param <T>
- *            the presenter type to use, must be a {@link NodePresenter} or one of its child class
- */
-public interface IGraphFactory<T extends NodePresenter> {
+import com.intel.tools.fdk.graphframework.figure.IGraphFigure;
 
-    /**
-     * Create a new graph.
-     *
-     * @return the generated graph
-     */
-    Graph createGraph();
+/** Represent a graph link */
+public class LinkFigure extends PolylineConnection implements IGraphFigure {
 
-    /**
-     * Create a new presenter.
-     *
-     * This method provide a way to let the user introduce custom node presenters when using framework's layout to
-     * display their graph.</br>
-     *
-     * @param node
-     *            the node to represent
-     * @return a presenter representing the node
-     */
-    T createPresenter(final Leaf node);
+    public LinkFigure(final LinkAnchor source, final LinkAnchor target) {
+        setSourceAnchor(source);
+        setTargetAnchor(target);
+
+        setLineCap(SWT.CAP_ROUND);
+        setLineJoin(SWT.JOIN_ROUND);
+        setForegroundColor(IGraphFigure.DEFAULT_COLOR);
+    }
+
+    @Override
+    public void select() {
+        setLineWidth(getLineWidth() + 1);
+    }
+
+    @Override
+    public void unselect() {
+        setLineWidth(getLineWidth() - 1);
+    }
 
 }

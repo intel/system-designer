@@ -62,7 +62,7 @@ public abstract class PinFigure extends PolylineShape implements IGraphFigure {
     }
 
     /**
-     * Retrieves the position of the connector center where edge will be connected.
+     * Retrieves the position of the connector center where link will be connected.
      *
      * @return the connector center location in absolute coordinates
      */

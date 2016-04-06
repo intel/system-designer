@@ -20,37 +20,28 @@
  * express and approved by Intel in writing.
  * ============================================================================
  */
-package com.intel.tools.fdk.graphframework.graph.factory;
+package com.intel.tools.fdk.graphframework.graph;
 
-import com.intel.tools.fdk.graphframework.figure.presenter.NodePresenter;
-import com.intel.tools.fdk.graphframework.graph.Graph;
-import com.intel.tools.fdk.graphframework.graph.Leaf;
+import java.util.List;
 
 /**
- * Interface providing a way to generate a {@link Graph}.
- *
- * @param <T>
- *            the presenter type to use, must be a {@link NodePresenter} or one of its child class
+ * Represent a group {@link INode} which are part of a {@link Graph}.</br>
  */
-public interface IGraphFactory<T extends NodePresenter> {
+public class Group extends NodeContainer implements INode {
 
-    /**
-     * Create a new graph.
-     *
-     * @return the generated graph
-     */
-    Graph createGraph();
+    private NodeContainer parent;
 
-    /**
-     * Create a new presenter.
-     *
-     * This method provide a way to let the user introduce custom node presenters when using framework's layout to
-     * display their graph.</br>
-     *
-     * @param node
-     *            the node to represent
-     * @return a presenter representing the node
-     */
-    T createPresenter(final Leaf node);
+    public Group(final List<Leaf> leaves, final List<Group> groups) {
+        super(leaves, groups);
+    }
+
+    @Override
+    public NodeContainer getParent() {
+        return parent;
+    }
+
+    protected void setParent(final NodeContainer parent) {
+        this.parent = parent;
+    }
 
 }

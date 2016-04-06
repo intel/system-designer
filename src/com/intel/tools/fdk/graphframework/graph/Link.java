@@ -20,33 +20,30 @@
  * express and approved by Intel in writing.
  * ============================================================================
  */
-package com.intel.tools.fdk.graphframework.figure.edge;
+package com.intel.tools.fdk.graphframework.graph;
 
-import org.eclipse.draw2d.AbstractConnectionAnchor;
-import org.eclipse.draw2d.IFigure;
-import org.eclipse.draw2d.geometry.Point;
+/**
+ * Represent a graph Link (i.e Edge).</br>
+ *
+ * A link connects a node to another node (or itself).</br>
+ * The link does not carry the information of which inputs/outputs are connected.
+ */
+public final class Link {
 
-import com.intel.tools.fdk.graphframework.figure.pin.PinFigure;
+    private final Leaf inputNode;
+    private final Leaf outputNode;
 
-/** Represent the anchor of a pin where an edge is connected */
-public class EdgeAnchor extends AbstractConnectionAnchor {
-
-    private final PinFigure pin;
-
-    /**
-     * @param node
-     *            the complete node figure (not only the body)
-     * @param pin
-     *            the pin to link on
-     */
-    public EdgeAnchor(final IFigure node, final PinFigure pin) {
-        super(node);
-        this.pin = pin;
+    public Link(final Leaf input, final Leaf output) {
+        this.inputNode = input;
+        this.outputNode = output;
     }
 
-    @Override
-    public Point getLocation(final Point reference) {
-        return pin.getConnectorCenterLocation();
+    public Leaf getInputNode() {
+        return inputNode;
+    }
+
+    public Leaf getOutputNode() {
+        return outputNode;
     }
 
 }
