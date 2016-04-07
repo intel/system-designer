@@ -25,7 +25,7 @@ package com.intel.tools.fdk.graphframework.layout;
 import org.eclipse.draw2d.geometry.Point;
 
 import com.intel.tools.fdk.graphframework.displayer.GraphDisplayer;
-import com.intel.tools.fdk.graphframework.figure.presenter.NodePresenter;
+import com.intel.tools.fdk.graphframework.figure.presenter.LeafPresenter;
 import com.intel.tools.fdk.graphframework.graph.GraphException;
 import com.intel.tools.fdk.graphframework.graph.factory.IGraphFactory;
 
@@ -47,7 +47,7 @@ public class AutoLayoutGenerator extends LayoutGenerator {
     public void displayGraph(final GraphDisplayer displayer) throws GraphException {
         super.displayGraph(displayer);
         final AutoLayoutComputer computer = new AutoLayoutComputer(getGraph());
-        for (final NodePresenter presenter : getPresenters()) {
+        for (final LeafPresenter presenter : getPresenters()) {
             final Point coord = computer.getCoordinate(presenter.getNode());
             /**
              * FIXME: Let the layout adapt the coordinate and do not use hardcoded value to create absolute

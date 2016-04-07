@@ -33,7 +33,7 @@ import org.eclipse.draw2d.IFigure;
 
 import com.intel.tools.fdk.graphframework.displayer.GraphDisplayer;
 import com.intel.tools.fdk.graphframework.figure.link.LinkFigure;
-import com.intel.tools.fdk.graphframework.figure.presenter.NodePresenter;
+import com.intel.tools.fdk.graphframework.figure.presenter.LeafPresenter;
 import com.intel.tools.fdk.graphframework.graph.Graph;
 import com.intel.tools.fdk.graphframework.graph.GraphException;
 import com.intel.tools.fdk.graphframework.graph.Leaf;
@@ -45,7 +45,7 @@ import com.intel.tools.fdk.graphframework.graph.factory.IGraphFactory;
 public class LayoutGenerator {
 
     private final Graph graph;
-    private final Map<Leaf, NodePresenter> leafPresenters = new HashMap<>();
+    private final Map<Leaf, LeafPresenter> leafPresenters = new HashMap<>();
 
     /**
      * @param graphFactory
@@ -102,7 +102,7 @@ public class LayoutGenerator {
      *
      * @return presenters which are or will be displayed
      */
-    protected List<NodePresenter> getPresenters() {
+    protected List<LeafPresenter> getPresenters() {
         return this.leafPresenters.values().stream().collect(Collectors.toList());
     }
 

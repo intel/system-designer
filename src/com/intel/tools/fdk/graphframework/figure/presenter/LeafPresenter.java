@@ -47,7 +47,7 @@ import com.intel.tools.fdk.graphframework.graph.Link;
  * Basic Presenter which link some figures to create a complete and functional graph node.</br>
  * This class can be extended by the user to enable some customization.
  */
-public class NodePresenter extends Presenter<Leaf> {
+public class LeafPresenter extends Presenter<Leaf> {
 
     /** Body Width in {@link IGraphFigure#SIZE_UNIT} */
     private static final int BODY_WIDTH = 4 * IGraphFigure.SIZE_UNIT;
@@ -75,7 +75,7 @@ public class NodePresenter extends Presenter<Leaf> {
      * @param node
      *            the graph node to represent
      */
-    public NodePresenter(final Leaf node) {
+    public LeafPresenter(final Leaf node) {
         super(node);
         // hides the global bounds figure which is used only for technical purpose
         this.boundsFigure.setVisible(false);

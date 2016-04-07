@@ -22,7 +22,7 @@
  */
 package com.intel.tools.fdk.graphframework.graph.factory;
 
-import com.intel.tools.fdk.graphframework.figure.presenter.NodePresenter;
+import com.intel.tools.fdk.graphframework.figure.presenter.LeafPresenter;
 import com.intel.tools.fdk.graphframework.graph.Graph;
 import com.intel.tools.fdk.graphframework.graph.Leaf;
 
@@ -48,6 +48,6 @@ public interface IGraphFactory {
      *            the node to represent
      * @return a presenter representing the node
      */
-    NodePresenter createPresenter(final Leaf leaf);
+    LeafPresenter createPresenter(final Leaf leaf);
 
 }
