@@ -179,4 +179,9 @@ public class LeafPresenter extends Presenter<Leaf> {
         }
     }
 
+    @Override
+    protected IFigure getBoundsFigure() {
+        return boundsFigure;
+    }
+
 }

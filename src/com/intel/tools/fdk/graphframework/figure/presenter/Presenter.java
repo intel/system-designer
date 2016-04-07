@@ -68,6 +68,9 @@ public abstract class Presenter<T extends INode> {
     /** @return the main figure of the presenter */
     public abstract IGraphFigure getNodeBody();
 
+    /** @return a figure wrapping all presenter figure */
+    protected abstract IFigure getBoundsFigure();
+
     /**
      * Retrieves figures which compose the node
      *
