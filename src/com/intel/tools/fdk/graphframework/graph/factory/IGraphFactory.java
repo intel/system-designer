@@ -22,8 +22,10 @@
  */
 package com.intel.tools.fdk.graphframework.graph.factory;
 
+import com.intel.tools.fdk.graphframework.figure.presenter.GroupPresenter;
 import com.intel.tools.fdk.graphframework.figure.presenter.LeafPresenter;
 import com.intel.tools.fdk.graphframework.graph.Graph;
+import com.intel.tools.fdk.graphframework.graph.Group;
 import com.intel.tools.fdk.graphframework.graph.Leaf;
 
 /**
@@ -39,15 +41,27 @@ public interface IGraphFactory {
     Graph createGraph();
 
     /**
-     * Create a new presenter.
+     * Create a new leaf presenter.
      *
      * This method provide a way to let the user introduce custom node presenters when using framework's layout to
      * display their graph.</br>
      *
-     * @param node
+     * @param leaf
      *            the node to represent
      * @return a presenter representing the node
      */
     LeafPresenter createPresenter(final Leaf leaf);
+
+    /**
+     * Create a new group presenter.
+     *
+     * This method provide a way to let the user introduce custom node presenters when using framework's layout to
+     * display their graph.</br>
+     *
+     * @param group
+     *            the node to represent
+     * @return a presenter representing the node
+     */
+    GroupPresenter createPresenter(final Group group);
 
 }

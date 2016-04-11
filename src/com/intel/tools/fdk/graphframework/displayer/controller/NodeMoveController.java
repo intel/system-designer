@@ -39,6 +39,8 @@ import com.intel.tools.fdk.graphframework.figure.node.NodeBodyFigure;
  */
 public class NodeMoveController {
 
+    private static final TypeTreeSearch NODE_BODY_SEARCHER = new TypeTreeSearch(NodeBodyFigure.class);
+
     /** The clicked figure which is moving */
     private IFigure movedFigure;
     /** The Ghost displayed on the feedback layer during the move */
@@ -69,8 +71,8 @@ public class NodeMoveController {
             @Override
             public void mousePressed(final MouseEvent event) {
                 movedFigure = displayer.getContentLayer().findFigureAt(event.getLocation().x, event.getLocation().y,
-                        new DirectChildTreeSearch(displayer.getContentLayer()));
-                if (movedFigure != null && movedFigure instanceof NodeBodyFigure) {
+                        NODE_BODY_SEARCHER);
+                if (movedFigure != null) {
                     // We have something to move, let's consume the event
                     event.consume();
                     movingGhost.setBounds(movedFigure.getBounds().getCopy());

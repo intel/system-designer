@@ -47,7 +47,7 @@ public class AutoLayoutGenerator extends LayoutGenerator {
     public void displayGraph(final GraphDisplayer displayer) throws GraphException {
         super.displayGraph(displayer);
         final AutoLayoutComputer computer = new AutoLayoutComputer(getGraph());
-        for (final LeafPresenter presenter : getPresenters()) {
+        for (final LeafPresenter presenter : getLeafPresenters()) {
             final Point coord = computer.getCoordinate(presenter.getNode());
             /**
              * FIXME: Let the layout adapt the coordinate and do not use hardcoded value to create absolute

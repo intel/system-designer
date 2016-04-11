@@ -24,18 +24,24 @@ package com.intel.tools.fdk.graphframework.layout;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.eclipse.draw2d.IFigure;
 
 import com.intel.tools.fdk.graphframework.displayer.GraphDisplayer;
 import com.intel.tools.fdk.graphframework.figure.link.LinkFigure;
+import com.intel.tools.fdk.graphframework.figure.presenter.GroupPresenter;
 import com.intel.tools.fdk.graphframework.figure.presenter.LeafPresenter;
+import com.intel.tools.fdk.graphframework.figure.presenter.Presenter;
 import com.intel.tools.fdk.graphframework.graph.Graph;
 import com.intel.tools.fdk.graphframework.graph.GraphException;
+import com.intel.tools.fdk.graphframework.graph.Group;
+import com.intel.tools.fdk.graphframework.graph.INode;
 import com.intel.tools.fdk.graphframework.graph.Leaf;
 import com.intel.tools.fdk.graphframework.graph.factory.IGraphFactory;
 
@@ -46,6 +52,7 @@ public class LayoutGenerator {
 
     private final Graph graph;
     private final Map<Leaf, LeafPresenter> leafPresenters = new HashMap<>();
+    private final Map<Group, GroupPresenter> groupPresenters = new HashMap<>();
 
     /**
      * @param graphFactory
@@ -53,7 +60,8 @@ public class LayoutGenerator {
      */
     public LayoutGenerator(final IGraphFactory graphFactory) {
         this.graph = graphFactory.createGraph();
-        this.graph.getLeaves().forEach(leaf -> leafPresenters.put(leaf, graphFactory.createPresenter(leaf)));
+        this.graph.getAllLeaves().forEach(leaf -> leafPresenters.put(leaf, graphFactory.createPresenter(leaf)));
+        this.graph.getGroups().forEach(group -> groupPresenters.put(group, graphFactory.createPresenter(group)));
     }
 
     /**
@@ -70,12 +78,12 @@ public class LayoutGenerator {
         displayer.reset();
 
         // Display figures
-        this.leafPresenters.values().stream().forEach(presenter -> {
+        getPresenters().forEach(presenter -> {
             presenter.getDisplayableFigures().forEach(displayer.getContentLayer()::add);
             presenter.getDisplayableDecoration().forEach(displayer.getDecorationLayer()::add);
             presenter.getDisplayableTools().forEach(displayer.getToolsLayer()::add);
         });
-        this.graph.getLinks().forEach(link -> {
+        this.graph.getAllLinks().forEach(link -> {
             displayer.getConnectionLayer().add(new LinkFigure(
                     this.leafPresenters.get(link.getInputNode()).getAnchor(link),
                     this.leafPresenters.get(link.getOutputNode()).getAnchor(link)));
@@ -102,8 +110,18 @@ public class LayoutGenerator {
      *
      * @return presenters which are or will be displayed
      */
-    protected List<LeafPresenter> getPresenters() {
-        return this.leafPresenters.values().stream().collect(Collectors.toList());
+    protected Collection<LeafPresenter> getLeafPresenters() {
+        return this.leafPresenters.values();
+    }
+
+    /**
+     * Retrieve generated presenters
+     *
+     * @return presenters which are or will be displayed
+     */
+    protected List<Presenter<? extends INode>> getPresenters() {
+        return Stream.concat(getLeafPresenters().stream(), this.groupPresenters.values().stream())
+                .collect(Collectors.toList());
     }
 
     /**

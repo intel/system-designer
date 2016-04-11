@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.eclipse.draw2d.geometry.Point;
@@ -54,8 +55,8 @@ public class AutoLayoutComputer {
 
     public AutoLayoutComputer(final Graph graph) {
         // Find all component which are sources
-        final List<Leaf> sources = graph.getLeaves().stream().filter(this::isSourceInstance)
-                .collect(Collectors.toList());
+        final Set<Leaf> sources = graph.getAllLeaves().stream()
+                .filter(this::isSourceInstance).collect(Collectors.toSet());
 
         sources.forEach(node -> {
             // Simulate the fact that all sources come from the same point
