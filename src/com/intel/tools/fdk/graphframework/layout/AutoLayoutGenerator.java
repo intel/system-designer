@@ -24,10 +24,10 @@ package com.intel.tools.fdk.graphframework.layout;
 
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.PrecisionPoint;
+import org.eclipse.draw2d.geometry.Rectangle;
 
 import com.intel.tools.fdk.graphframework.displayer.GraphDisplayer;
 import com.intel.tools.fdk.graphframework.figure.presenter.LeafPresenter;
-import com.intel.tools.fdk.graphframework.graph.GraphException;
 import com.intel.tools.fdk.graphframework.graph.factory.IGraphFactory;
 
 /**
@@ -45,23 +45,27 @@ public class AutoLayoutGenerator extends LayoutGenerator {
     }
 
     @Override
-    public void displayGraph(final GraphDisplayer displayer) throws GraphException {
+    public void displayGraph(final GraphDisplayer displayer) {
         super.displayGraph(displayer);
-        final AutoLayoutComputer computer = new AutoLayoutComputer(getGraph());
-        final int widthMax = getLeafPresenters().stream().mapToInt(leaf -> leaf.getBoundsFigure().getBounds().width)
-                .max().orElse(0);
-        final int heightMin = getLeafPresenters().stream().mapToInt(leaf -> leaf.getBoundsFigure().getBounds().height)
-                .min().orElse(0);
+        final AutoGroupLayoutComputer computer = new AutoGroupLayoutComputer(getGraph());
+        int widthMax = 0;
+        int heightMax = 0;
+        for (final LeafPresenter presenters : getLeafPresenters()) {
+            final Rectangle bounds = presenters.getBoundsFigure().getBounds();
+            widthMax = bounds.width > widthMax ? bounds.width : widthMax;
+            heightMax = bounds.height > heightMax ? bounds.height : heightMax;
+        }
         for (final LeafPresenter presenter : getLeafPresenters()) {
             final Point coord = computer.getCoordinate(presenter.getNode());
-            presenter.getBoundsFigure().setLocation(new PrecisionPoint(coord.x * widthMax * 1.5, coord.y * heightMin));
+            presenter.getBoundsFigure()
+                    .setLocation(new PrecisionPoint(coord.x * widthMax * 3, coord.y * heightMax * 1.5));
         }
     }
 
     /**
      * Updates the graph, keeping current zoom location and scale
      */
-    public void updateGraph(final GraphDisplayer displayer) throws GraphException {
+    public void updateGraph(final GraphDisplayer displayer) {
         super.displayGraph(displayer);
     }
 

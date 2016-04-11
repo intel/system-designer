@@ -39,7 +39,6 @@ import com.intel.tools.fdk.graphframework.figure.presenter.GroupPresenter;
 import com.intel.tools.fdk.graphframework.figure.presenter.LeafPresenter;
 import com.intel.tools.fdk.graphframework.figure.presenter.Presenter;
 import com.intel.tools.fdk.graphframework.graph.Graph;
-import com.intel.tools.fdk.graphframework.graph.GraphException;
 import com.intel.tools.fdk.graphframework.graph.Group;
 import com.intel.tools.fdk.graphframework.graph.INode;
 import com.intel.tools.fdk.graphframework.graph.Leaf;
@@ -71,10 +70,8 @@ public class LayoutGenerator {
      *
      * @param displayer
      *            the displayer to diplay the graph on
-     * @throws GraphException
-     *             if an error occurs during graph generation
      */
-    public void displayGraph(final GraphDisplayer displayer) throws GraphException {
+    public void displayGraph(final GraphDisplayer displayer) {
         displayer.reset();
 
         // Display figures

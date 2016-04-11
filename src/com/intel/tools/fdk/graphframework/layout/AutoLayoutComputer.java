@@ -24,18 +24,19 @@ package com.intel.tools.fdk.graphframework.layout;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.eclipse.draw2d.geometry.Point;
 
-import com.intel.tools.fdk.graphframework.graph.Graph;
-import com.intel.tools.fdk.graphframework.graph.GraphException;
 import com.intel.tools.fdk.graphframework.graph.Leaf;
 import com.intel.tools.fdk.graphframework.graph.Link;
+import com.intel.tools.fdk.graphframework.graph.NodeContainer;
 
 /**
  * Basic graph drawing algorithm implementation for graph
@@ -50,10 +51,13 @@ public class AutoLayoutComputer {
     private final Map<Leaf, Integer> abscisses = new HashMap<>();
     private final Map<Leaf, Integer> ordinates = new HashMap<>();
 
+    /** Usable coordinates */
+    private final Map<Leaf, Point> coordinates;
+
     /** Current coordinate */
     private int currentCoordinate = 0;
 
-    public AutoLayoutComputer(final Graph graph) {
+    public AutoLayoutComputer(final NodeContainer graph) {
         // Find all component which are sources
         final Set<Leaf> sources = graph.getAllLeaves().stream()
                 .filter(this::isSourceInstance).collect(Collectors.toSet());
@@ -74,24 +78,39 @@ public class AutoLayoutComputer {
                     ordinates.put(node, ++currentCoordinate);
                     rightNumbering(node);
                 });
+
+        // Rotate coordinates to be usable
+        this.coordinates = abscisses.keySet().stream()
+                .collect(Collectors.toMap(Function.identity(), this::getCoordinate));
+
+        // Make Y be always positive (translate)
+        final int minY = this.coordinates.values().stream().mapToInt(point -> point.y).min().orElse(0);
+        if (minY < 0) {
+            this.coordinates.values().forEach(p -> p.y -= minY);
+        }
     }
 
     /**
      * Retrieve coordinates of a raw instance Coordinate returned are "raw" they symbolize the position of the instance
      * on a grid of NxN (with N the number of instances in the algorithm)
      *
-     * @param node
-     *            the instance we want the coordinates
-     * @return a point containing instance coordinate
-     * @throws GraphException
-     *             if the given node has not been computed by the algorithm
+     * @return a map associating a leaf node to its coordinates
      */
-    public Point getCoordinate(final Leaf node) throws GraphException {
-        if (abscisses.containsKey(node) && ordinates.containsKey(node)) {
-            return new Point(abscisses.get(node) + ordinates.get(node), ordinates.get(node) - abscisses.get(node));
-        } else {
-            throw new GraphException("Node does not have coordinates");
-        }
+    public Map<Leaf, Point> getCoordinates() {
+        return Collections.unmodifiableMap(coordinates);
+    }
+
+    /**
+     * Rotate node coordinates and store them in a {@link Point} object
+     *
+     * @param node
+     *            the node the get the coordinates from
+     * @return rotated coordinates
+     */
+    private Point getCoordinate(final Leaf node) {
+        final int x = ((abscisses.get(node) + ordinates.get(node)) / 2) - 1;
+        final int y = ((ordinates.get(node) - abscisses.get(node)) / 2) - 1;
+        return new Point(x, y);
     }
 
     /**
