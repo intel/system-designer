@@ -22,7 +22,7 @@
  */
 package com.intel.tools.fdk.graphframework.graph;
 
-import java.util.List;
+import java.util.Set;
 
 /**
  * Represent a group {@link INode} which are part of a {@link Graph}.</br>
@@ -31,7 +31,7 @@ public class Group extends NodeContainer implements INode {
 
     private NodeContainer parent;
 
-    public Group(final List<Leaf> leaves, final List<Group> groups) {
+    public Group(final Set<Leaf> leaves, final Set<Group> groups) {
         super(leaves, groups);
     }
 

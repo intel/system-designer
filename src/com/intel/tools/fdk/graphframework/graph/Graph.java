@@ -22,7 +22,7 @@
  */
 package com.intel.tools.fdk.graphframework.graph;
 
-import java.util.List;
+import java.util.Set;
 
 /**
  * Represent a basic graph.</br>
@@ -33,7 +33,7 @@ import java.util.List;
  */
 public final class Graph extends NodeContainer {
 
-    public Graph(final List<Leaf> leaves, final List<Group> groups) {
+    public Graph(final Set<Leaf> leaves, final Set<Group> groups) {
         super(leaves, groups);
     }
 

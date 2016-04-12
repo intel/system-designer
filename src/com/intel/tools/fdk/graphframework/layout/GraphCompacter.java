@@ -62,8 +62,8 @@ public class GraphCompacter {
         linkToCopy.forEach(this::copyLink);
 
         this.compactedGraph = new Graph(Stream.concat(
-                this.compactedGroups.values().stream(), this.leavesCopy.values().stream()).collect(Collectors.toList()),
-                Collections.emptyList());
+                this.compactedGroups.values().stream(), this.leavesCopy.values().stream()).collect(Collectors.toSet()),
+                Collections.emptySet());
     }
 
     public Graph getCompactedGraph() {

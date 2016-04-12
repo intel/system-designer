@@ -22,9 +22,8 @@
  */
 package com.intel.tools.fdk.graphframework.graph;
 
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -34,8 +33,8 @@ import java.util.stream.Stream;
  */
 public abstract class NodeContainer {
 
-    private final List<Leaf> leaves = new ArrayList<>();
-    private final List<Group> groups = new ArrayList<>();
+    private final Set<Leaf> leaves = new HashSet<>();
+    private final Set<Group> groups = new HashSet<>();
 
     /**
      * Create a new container.
@@ -45,7 +44,7 @@ public abstract class NodeContainer {
      * @param groups
      *            group nodes of the graph. All nodes of the list are added in the internal one.
      */
-    public NodeContainer(final List<Leaf> leaves, final List<Group> groups) {
+    public NodeContainer(final Set<Leaf> leaves, final Set<Group> groups) {
         this.leaves.addAll(leaves);
         this.leaves.forEach(leaf -> leaf.setParent(this));
         this.groups.addAll(groups);
@@ -55,23 +54,23 @@ public abstract class NodeContainer {
     /**
      * @return an unmodifiable list of leaf nodes which compose this graph.
      */
-    public List<Leaf> getLeaves() {
-        return Collections.unmodifiableList(leaves);
+    public Set<Leaf> getLeaves() {
+        return Collections.unmodifiableSet(leaves);
     }
 
     /**
      * @return an unmodifiable list of leaf nodes which compose this graph (including leaves of {@link Group} children.
      */
-    public List<Leaf> getAllLeaves() {
+    public Set<Leaf> getAllLeaves() {
         return Stream.concat(leaves.stream(), groups.stream().flatMap(group -> group.getAllLeaves().stream()))
-                .collect(Collectors.toList());
+                .collect(Collectors.toSet());
     }
 
     /**
      * @return an unmodifiable list of group nodes which compose this graph.
      */
-    public List<Group> getGroups() {
-        return Collections.unmodifiableList(groups);
+    public Set<Group> getGroups() {
+        return Collections.unmodifiableSet(groups);
     }
 
     /**
