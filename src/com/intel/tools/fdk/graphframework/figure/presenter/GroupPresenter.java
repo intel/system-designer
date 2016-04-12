@@ -27,6 +27,7 @@ import java.util.List;
 
 import org.eclipse.draw2d.FigureListener;
 import org.eclipse.draw2d.IFigure;
+import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.Rectangle;
 
 import com.intel.tools.fdk.graphframework.figure.IGraphFigure;
@@ -45,6 +46,9 @@ public class GroupPresenter extends Presenter<Group> {
     private final GroupBodyFigure boundsFigure = new GroupBodyFigure();
     private final List<Presenter<? extends INode>> childrenPresenters = new ArrayList<>();
 
+    private boolean blockEvents = false;
+    private Point boundsLocation = new Point(0, 0);
+
     /**
      * @param node
      *            the represented node
@@ -59,11 +63,27 @@ public class GroupPresenter extends Presenter<Group> {
             presenter.getNodeBody().addFigureListener(new FigureListener() {
                 @Override
                 public void figureMoved(final IFigure source) {
-                    updateBoundsFigure();
+                    if (!blockEvents) {
+                        updateBoundsFigure();
+                    }
                 }
             });
 
         });
+        boundsFigure.addFigureListener(new FigureListener() {
+            @Override
+            public void figureMoved(final IFigure source) {
+                if (!blockEvents) {
+                    blockEvents = true;
+                    childrenPresenters.forEach(
+                            p -> p.getBoundsFigure().translate(source.getBounds().x - boundsLocation.x,
+                                    source.getBounds().y - boundsLocation.y));
+                    blockEvents = false;
+                    updateBoundsFigure();
+                }
+            }
+        });
+        updateBoundsFigure();
         getDisplayableFigures().add(boundsFigure);
     }
 
@@ -71,6 +91,7 @@ public class GroupPresenter extends Presenter<Group> {
      * Recalculate complete union of sub-figures bounds and update dedicated field.
      */
     private void updateBoundsFigure() {
+        this.blockEvents = true;
         final Rectangle rectangle = new Rectangle();
         // Make bounds figure empty
         boundsFigure.setBounds(rectangle);
@@ -87,6 +108,8 @@ public class GroupPresenter extends Presenter<Group> {
         rectangle.width += OFFSET;
         rectangle.height += OFFSET;
         boundsFigure.setBounds(rectangle);
+        boundsLocation = boundsFigure.getLocation().getCopy();
+        this.blockEvents = false;
     }
 
     public List<Presenter<? extends INode>> getChildrenPresenters() {
