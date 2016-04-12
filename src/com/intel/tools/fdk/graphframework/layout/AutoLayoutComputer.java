@@ -28,7 +28,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -59,8 +60,8 @@ public class AutoLayoutComputer {
 
     public AutoLayoutComputer(final NodeContainer graph) {
         // Find all component which are sources
-        final Set<Leaf> sources = graph.getAllLeaves().stream()
-                .filter(this::isSourceInstance).collect(Collectors.toSet());
+        final SortedSet<Leaf> sources = new TreeSet<>(graph.getAllLeaves().stream()
+                .filter(this::isSourceInstance).collect(Collectors.toSet()));
 
         sources.forEach(node -> {
             // Simulate the fact that all sources come from the same point

@@ -34,7 +34,12 @@ import com.intel.tools.fdk.graphframework.utils.ListUtils;
  * A leaf node can be connected to many other leaves of the same graph.</br>
  * A leaf is defined with a defined input/output numbers.</br>
  */
-public final class Leaf implements INode {
+public final class Leaf implements INode, Comparable<Leaf> {
+
+    /** Instance counter used to generate instanceId, this is required to handle Leaf ordered Set */
+    private static int instanceCounter = 0;
+
+    private final int id;
 
     private NodeContainer parent;
     /**
@@ -50,12 +55,37 @@ public final class Leaf implements INode {
      */
     private final List<Optional<Link>> outputLinks;
 
+    /**
+     * Create a leaf with desired inputs and outputs numbers
+     *
+     * @param inputNumber
+     *            desired input number
+     * @param outputNumber
+     *            desired output number
+     */
     public Leaf(final int inputNumber, final int outputNumber) {
+        this(instanceCounter++, inputNumber, outputNumber);
+    }
+
+    /**
+     * Create a new leaf with the same IO number than the copied one </br>
+     * Both leaves share the same id.</br>
+     * Links are not copied.
+     *
+     * @param leaf
+     *            the leaf to copy
+     */
+    public Leaf(final Leaf leaf) {
+        this(leaf.id, leaf.inputLinks.size(), leaf.outputLinks.size());
+    }
+
+    private Leaf(final int id, final int inputNumber, final int outputNumber) {
         assert inputNumber >= 0 : "Node input number should be positive or zero";
         assert outputNumber >= 0 : "Node output number should be positive or zero";
 
         this.inputLinks = ListUtils.<Link> initializeFixedSizeList(inputNumber);
         this.outputLinks = ListUtils.<Link> initializeFixedSizeList(outputNumber);
+        this.id = id;
     }
 
     /**
@@ -133,6 +163,11 @@ public final class Leaf implements INode {
 
     protected void setParent(final NodeContainer parent) {
         this.parent = parent;
+    }
+
+    @Override
+    public int compareTo(final Leaf leaf) {
+        return this.id - leaf.id;
     }
 
 }

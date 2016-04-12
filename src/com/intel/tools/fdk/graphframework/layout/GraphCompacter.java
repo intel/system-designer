@@ -53,8 +53,7 @@ public class GraphCompacter {
     public GraphCompacter(final NodeContainer container) {
         this.compactedGroups = container.getGroups().stream().collect(
                 Collectors.toMap(Function.identity(), this::compactGroup));
-        this.leavesCopy = container.getLeaves().stream().collect(Collectors.toMap(Function.identity(),
-                leaf -> new Leaf(leaf.getInputLinks().size(), leaf.getOutputLinks().size())));
+        this.leavesCopy = container.getLeaves().stream().collect(Collectors.toMap(Function.identity(), Leaf::new));
         this.leavesCopy.forEach((key, value) -> leavesOrig.put(value, key));
 
         final Set<Link> linkToCopy = new HashSet<>(container.getLinks());
