@@ -23,6 +23,7 @@
 package com.intel.tools.fdk.graphframework.layout;
 
 import org.eclipse.draw2d.geometry.Point;
+import org.eclipse.draw2d.geometry.PrecisionPoint;
 
 import com.intel.tools.fdk.graphframework.displayer.GraphDisplayer;
 import com.intel.tools.fdk.graphframework.figure.presenter.LeafPresenter;
@@ -47,13 +48,13 @@ public class AutoLayoutGenerator extends LayoutGenerator {
     public void displayGraph(final GraphDisplayer displayer) throws GraphException {
         super.displayGraph(displayer);
         final AutoLayoutComputer computer = new AutoLayoutComputer(getGraph());
+        final int widthMax = getLeafPresenters().stream().mapToInt(leaf -> leaf.getBoundsFigure().getBounds().width)
+                .max().orElse(0);
+        final int heightMin = getLeafPresenters().stream().mapToInt(leaf -> leaf.getBoundsFigure().getBounds().height)
+                .min().orElse(0);
         for (final LeafPresenter presenter : getLeafPresenters()) {
             final Point coord = computer.getCoordinate(presenter.getNode());
-            /**
-             * FIXME: Let the layout adapt the coordinate and do not use hardcoded value to create absolute
-             * coordinates
-             */
-            presenter.getNodeBody().setLocation(new Point(coord.x * 90, coord.y * 45));
+            presenter.getBoundsFigure().setLocation(new PrecisionPoint(coord.x * widthMax * 1.5, coord.y * heightMin));
         }
     }
 

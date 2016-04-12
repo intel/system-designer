@@ -99,7 +99,7 @@ public class GroupPresenter extends Presenter<Group> {
     }
 
     @Override
-    protected IFigure getBoundsFigure() {
+    public IFigure getBoundsFigure() {
         return boundsFigure;
     }
 

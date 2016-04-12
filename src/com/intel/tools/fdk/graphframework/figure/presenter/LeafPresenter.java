@@ -71,6 +71,9 @@ public class LeafPresenter extends Presenter<Leaf> {
     private final List<OutputFigure> outputs = new ArrayList<>();
     private final Map<Link, LinkAnchor> anchors = new HashMap<>();
 
+    private boolean blockEvents = false;
+    private Point boundsLocation = new Point(0, 0);
+
     /**
      * @param node
      *            the graph node to represent
@@ -111,6 +114,14 @@ public class LeafPresenter extends Presenter<Leaf> {
                 updateBoundsFigure();
             }
         });
+        boundsFigure.addFigureListener(new FigureListener() {
+            @Override
+            public void figureMoved(final IFigure source) {
+                if (!blockEvents) {
+                    body.translate(source.getBounds().x - boundsLocation.x, source.getBounds().y - boundsLocation.y);
+                }
+            }
+        });
         updateBoundsFigure();
     }
 
@@ -142,6 +153,7 @@ public class LeafPresenter extends Presenter<Leaf> {
      * Recalculate complete union of sub-figures bounds and update dedicated field.
      */
     private void updateBoundsFigure() {
+        this.blockEvents = true;
         final Rectangle rectangle = new Rectangle();
         // Make bounds figure empty
         boundsFigure.setBounds(rectangle);
@@ -154,6 +166,8 @@ public class LeafPresenter extends Presenter<Leaf> {
             }
         });
         boundsFigure.setBounds(rectangle);
+        boundsLocation = boundsFigure.getLocation().getCopy();
+        this.blockEvents = false;
     }
 
     /**
@@ -180,7 +194,7 @@ public class LeafPresenter extends Presenter<Leaf> {
     }
 
     @Override
-    protected IFigure getBoundsFigure() {
+    public IFigure getBoundsFigure() {
         return boundsFigure;
     }
 
