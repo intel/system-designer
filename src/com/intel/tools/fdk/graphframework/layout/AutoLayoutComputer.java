@@ -89,6 +89,8 @@ public class AutoLayoutComputer {
         if (minY < 0) {
             this.coordinates.values().forEach(p -> p.y -= minY);
         }
+
+        removeCoordinatesEmptyLines();
     }
 
     /**
@@ -163,6 +165,29 @@ public class AutoLayoutComputer {
                         rightNumbering(linked);
                     }
                 });
+    }
+
+    /**
+     * Modify calculated coordinates to remove empty lines.
+     *
+     * Depending on the number of analyzed nodes, the graph layout can be exploded a lot. Removing empty lines enhanced
+     * the layout.
+     */
+    private void removeCoordinatesEmptyLines() {
+        int line = 0;
+        do {
+            final int currentLine = line;
+            if (!this.coordinates.values().stream().mapToInt(point -> point.y).anyMatch(y -> y == currentLine)) {
+                // No node on this line, let's remove it
+                this.coordinates.values().forEach(point -> {
+                    if (point.y > currentLine) {
+                        point.translate(0, -1);
+                    }
+                });
+            } else {
+                line++;
+            }
+        } while (line <= this.coordinates.values().stream().mapToInt(point -> point.y).max().orElse(0));
     }
 
 }
