@@ -28,7 +28,7 @@ import org.eclipse.draw2d.geometry.Rectangle;
 
 import com.intel.tools.fdk.graphframework.displayer.GraphDisplayer;
 import com.intel.tools.fdk.graphframework.figure.presenter.LeafPresenter;
-import com.intel.tools.fdk.graphframework.graph.factory.IGraphFactory;
+import com.intel.tools.fdk.graphframework.graph.adapter.IAdapter;
 
 /**
  * Graph layout which choose a position for each graph node.
@@ -40,8 +40,8 @@ import com.intel.tools.fdk.graphframework.graph.factory.IGraphFactory;
  */
 public class AutoLayoutGenerator extends LayoutGenerator {
 
-    public AutoLayoutGenerator(final IGraphFactory graphFactory) {
-        super(graphFactory);
+    public AutoLayoutGenerator(final IAdapter adapter) {
+        super(adapter);
     }
 
     @Override
@@ -58,7 +58,7 @@ public class AutoLayoutGenerator extends LayoutGenerator {
         for (final LeafPresenter presenter : getLeafPresenters()) {
             final Point coord = computer.getCoordinate(presenter.getNode());
             presenter.getBoundsFigure()
-                    .setLocation(new PrecisionPoint(coord.x * widthMax * 3, coord.y * heightMax * 1.5));
+            .setLocation(new PrecisionPoint(coord.x * widthMax * 3, coord.y * heightMax * 1.5));
         }
     }
 

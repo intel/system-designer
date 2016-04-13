@@ -42,7 +42,7 @@ import com.intel.tools.fdk.graphframework.graph.Graph;
 import com.intel.tools.fdk.graphframework.graph.Group;
 import com.intel.tools.fdk.graphframework.graph.INode;
 import com.intel.tools.fdk.graphframework.graph.Leaf;
-import com.intel.tools.fdk.graphframework.graph.factory.IGraphFactory;
+import com.intel.tools.fdk.graphframework.graph.adapter.IAdapter;
 
 /**
  * Class allowing to display a complete graph on a displayer
@@ -54,13 +54,13 @@ public class LayoutGenerator {
     private final Map<Group, GroupPresenter> groupPresenters = new HashMap<>();
 
     /**
-     * @param graphFactory
-     *            the factory to use to create the graph
+     * @param adapter
+     *            the adapter to use to request the graph
      */
-    public LayoutGenerator(final IGraphFactory graphFactory) {
-        this.graph = graphFactory.createGraph();
-        this.graph.getAllLeaves().forEach(leaf -> leafPresenters.put(leaf, graphFactory.createPresenter(leaf)));
-        this.graph.getGroups().forEach(group -> groupPresenters.put(group, graphFactory.createPresenter(group)));
+    public LayoutGenerator(final IAdapter adapter) {
+        this.graph = adapter.createGraph();
+        this.graph.getAllLeaves().forEach(leaf -> leafPresenters.put(leaf, adapter.createPresenter(leaf)));
+        this.graph.getGroups().forEach(group -> groupPresenters.put(group, adapter.createPresenter(group)));
     }
 
     /**

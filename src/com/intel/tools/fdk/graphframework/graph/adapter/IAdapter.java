@@ -20,7 +20,7 @@
  * express and approved by Intel in writing.
  * ============================================================================
  */
-package com.intel.tools.fdk.graphframework.graph.factory;
+package com.intel.tools.fdk.graphframework.graph.adapter;
 
 import com.intel.tools.fdk.graphframework.figure.presenter.GroupPresenter;
 import com.intel.tools.fdk.graphframework.figure.presenter.LeafPresenter;
@@ -29,9 +29,9 @@ import com.intel.tools.fdk.graphframework.graph.Group;
 import com.intel.tools.fdk.graphframework.graph.Leaf;
 
 /**
- * Interface providing a way to generate a {@link Graph}.
+ * Interface providing a way to generate a {@link Graph} from a custom model.
  */
-public interface IGraphFactory {
+public interface IAdapter {
 
     /**
      * Create a new graph.

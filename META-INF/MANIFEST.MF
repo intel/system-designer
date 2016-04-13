@@ -13,7 +13,7 @@ Export-Package: com.intel.tools.fdk.graphframework.displayer,
  com.intel.tools.fdk.graphframework.figure.pin,
  com.intel.tools.fdk.graphframework.figure.presenter,
  com.intel.tools.fdk.graphframework.graph,
- com.intel.tools.fdk.graphframework.graph.factory,
+ com.intel.tools.fdk.graphframework.graph.adapter,
  com.intel.tools.fdk.graphframework.layout
 Require-Bundle: org.eclipse.draw2d,
  com.intel.tools.utils
