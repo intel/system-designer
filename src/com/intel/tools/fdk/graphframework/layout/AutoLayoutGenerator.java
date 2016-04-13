@@ -40,14 +40,23 @@ import com.intel.tools.fdk.graphframework.graph.adapter.IAdapter;
  */
 public class AutoLayoutGenerator extends LayoutGenerator {
 
-    public AutoLayoutGenerator(final IAdapter adapter) {
-        super(adapter);
-    }
+    /**
+     * Create a layout generator which initialize the displayed graph with position computed through a dedicated
+     * algorithm. </br>
+     *
+     * After a graph update notification, the layout algorithm will not be computed again. Only the original graph is
+     * computed.
+     *
+     * @param adapter
+     *            the model adapter which provide the graph
+     * @param displayer
+     *            the graph displayer to use
+     */
+    public AutoLayoutGenerator(final IAdapter adapter, final GraphDisplayer displayer) {
+        super(adapter, displayer);
 
-    @Override
-    public void displayGraph(final GraphDisplayer displayer) {
-        super.displayGraph(displayer);
-        final AutoGroupLayoutComputer computer = new AutoGroupLayoutComputer(getGraph());
+        // The first display has been done, let's compute initial positions.
+        final AutoGroupLayoutComputer computer = new AutoGroupLayoutComputer(adapter.getGraph());
         int widthMax = 0;
         int heightMax = 0;
         for (final LeafPresenter presenters : getLeafPresenters()) {
@@ -58,15 +67,8 @@ public class AutoLayoutGenerator extends LayoutGenerator {
         for (final LeafPresenter presenter : getLeafPresenters()) {
             final Point coord = computer.getCoordinate(presenter.getNode());
             presenter.getBoundsFigure()
-            .setLocation(new PrecisionPoint(coord.x * widthMax * 3, coord.y * heightMax * 1.5));
+                    .setLocation(new PrecisionPoint(coord.x * widthMax * 3, coord.y * heightMax * 1.5));
         }
-    }
-
-    /**
-     * Updates the graph, keeping current zoom location and scale
-     */
-    public void updateGraph(final GraphDisplayer displayer) {
-        super.displayGraph(displayer);
     }
 
 }

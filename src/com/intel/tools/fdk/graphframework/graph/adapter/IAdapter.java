@@ -30,15 +30,50 @@ import com.intel.tools.fdk.graphframework.graph.Leaf;
 
 /**
  * Interface providing a way to generate a {@link Graph} from a custom model.
+ *
+ * TODO: Adds graph action API
  */
 public interface IAdapter {
 
+    public interface IGraphListener {
+        /**
+         * Method called after a graph modification
+         *
+         * @param graph
+         *            the new graph
+         */
+        void graphUpdated(final Graph graph);
+    }
+
     /**
-     * Create a new graph.
+     * Retrieve the adapted graph.
      *
-     * @return the generated graph
+     * @return the adapted graph
      */
-    Graph createGraph();
+    Graph getGraph();
+
+    /**
+     * Register a new graph listener
+     *
+     * @param listener
+     *            the new listener
+     */
+    void addGraphListener(final IGraphListener listener);
+
+    /**
+     * Unregister a new graph listener
+     *
+     * @param listener
+     *            the listener to remove
+     */
+    void removeGraphListener(final IGraphListener listener);
+
+    /**
+     * This method allows to notify implementors that a graph has been updated.</br>
+     *
+     * Basically it should consist to call {@link IGraphListener#graphUpdated(Graph)} method of each listeners.
+     */
+    void fireGraphUpdate();
 
     /**
      * Create a new leaf presenter.

@@ -179,6 +179,7 @@ public class GraphDisplayer {
         scalablePane.getLayer(FEEDBACK_LAYER).removeAll();
         scalablePane.getLayer(BACKGROUND_LAYER).removeAll();
         layers.getLayer(DECORATION_LAYER).removeAll();
+        layers.getLayer(TOOLS_LAYER).removeAll();
         for (final PropertyChangeListener listener : changeSupport.getPropertyChangeListeners()) {
             changeSupport.removePropertyChangeListener(listener);
         }

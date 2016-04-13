@@ -30,6 +30,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import java.util.Set;
 
 import org.eclipse.draw2d.IFigure;
 
@@ -43,13 +44,15 @@ import com.intel.tools.fdk.graphframework.graph.Group;
 import com.intel.tools.fdk.graphframework.graph.INode;
 import com.intel.tools.fdk.graphframework.graph.Leaf;
 import com.intel.tools.fdk.graphframework.graph.adapter.IAdapter;
+import com.intel.tools.fdk.graphframework.graph.adapter.IAdapter.IGraphListener;
 
 /**
  * Class allowing to display a complete graph on a displayer
  */
-public class LayoutGenerator {
+public class LayoutGenerator implements IGraphListener {
 
-    private final Graph graph;
+    private final IAdapter adapter;
+    private final GraphDisplayer displayer;
     private final Map<Leaf, LeafPresenter> leafPresenters = new HashMap<>();
     private final Map<Group, GroupPresenter> groupPresenters = new HashMap<>();
 
@@ -57,22 +60,26 @@ public class LayoutGenerator {
      * @param adapter
      *            the adapter to use to request the graph
      */
-    public LayoutGenerator(final IAdapter adapter) {
-        this.graph = adapter.createGraph();
-        this.graph.getAllLeaves().forEach(leaf -> leafPresenters.put(leaf, adapter.createPresenter(leaf)));
-        this.graph.getGroups().forEach(group -> groupPresenters.put(group, adapter.createPresenter(group)));
+    public LayoutGenerator(final IAdapter adapter, final GraphDisplayer displayer) {
+        this.adapter = adapter;
+        this.adapter.addGraphListener(this);
+        this.displayer = displayer;
+
+        graphUpdated(this.adapter.getGraph());
     }
 
-    /**
-     * Display the graph.
-     *
-     * The displayer will be reset before any action.
-     *
-     * @param displayer
-     *            the displayer to diplay the graph on
-     */
-    public void displayGraph(final GraphDisplayer displayer) {
+    @Override
+    public void graphUpdated(final Graph graph) {
         displayer.reset();
+        final Set<Leaf> leaves = graph.getAllLeaves();
+        final Set<Group> groups = graph.getGroups();
+
+        // Create new presenters
+        leaves.forEach(leaf -> leafPresenters.putIfAbsent(leaf, adapter.createPresenter(leaf)));
+        groups.forEach(group -> groupPresenters.putIfAbsent(group, adapter.createPresenter(group)));
+        // Remove presenters of nodes which are not any more in the graph
+        removeOldPresenters(leafPresenters, leaves);
+        removeOldPresenters(groupPresenters, groups);
 
         // Display figures
         getPresenters().forEach(presenter -> {
@@ -80,7 +87,7 @@ public class LayoutGenerator {
             presenter.getDisplayableDecoration().forEach(displayer.getDecorationLayer()::add);
             presenter.getDisplayableTools().forEach(displayer.getToolsLayer()::add);
         });
-        this.graph.getAllLinks().forEach(link -> {
+        graph.getAllLinks().forEach(link -> {
             displayer.getConnectionLayer().add(new LinkFigure(
                     this.leafPresenters.get(link.getInputNode()).getAnchor(link),
                     this.leafPresenters.get(link.getOutputNode()).getAnchor(link)));
@@ -102,6 +109,15 @@ public class LayoutGenerator {
         });
     }
 
+    private static <N extends INode, P extends Presenter<N>> void removeOldPresenters(
+            final Map<N, P> presenters, final Set<N> nodes) {
+        presenters.keySet().forEach(node -> {
+            if (!nodes.contains(node)) {
+                presenters.remove(node);
+            }
+        });
+    }
+
     /**
      * Retrieve generated presenters
      *
@@ -119,13 +135,6 @@ public class LayoutGenerator {
     protected List<Presenter<? extends INode>> getPresenters() {
         return Stream.concat(getLeafPresenters().stream(), this.groupPresenters.values().stream())
                 .collect(Collectors.toList());
-    }
-
-    /**
-     * @return the generated graph which is or will be displayed.
-     */
-    protected Graph getGraph() {
-        return this.graph;
     }
 
 }
