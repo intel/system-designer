@@ -33,7 +33,7 @@ import com.intel.tools.utils.IntelPalette;
  *
  * The body has fixed width. The height has a minimum value and grows depending of the node input count.
  */
-public class NodeBodyFigure extends RoundedRectangle implements IGraphFigure {
+public class LeafBodyFigure extends RoundedRectangle implements IGraphFigure {
 
     private static final int LINE_WIDTH = 2;
 
@@ -43,7 +43,7 @@ public class NodeBodyFigure extends RoundedRectangle implements IGraphFigure {
      * @param height
      *            node figure height
      */
-    public NodeBodyFigure(final int width, final int height) {
+    public LeafBodyFigure(final int width, final int height) {
         setSize(new Dimension(width, height));
         setFill(true);
         setAntialias(1);

@@ -32,7 +32,7 @@ import org.eclipse.draw2d.geometry.Rectangle;
 
 import com.intel.tools.fdk.graphframework.displayer.GraphDisplayer;
 import com.intel.tools.fdk.graphframework.figure.node.GroupBodyFigure;
-import com.intel.tools.fdk.graphframework.figure.node.NodeBodyFigure;
+import com.intel.tools.fdk.graphframework.figure.node.LeafBodyFigure;
 
 /**
  * Controller allowing to move a figure which is in the content layer.</br>
@@ -40,7 +40,7 @@ import com.intel.tools.fdk.graphframework.figure.node.NodeBodyFigure;
  */
 public class NodeMoveController {
 
-    private static final TypeTreeSearch NODE_BODY_SEARCHER = new TypeTreeSearch(NodeBodyFigure.class);
+    private static final TypeTreeSearch NODE_BODY_SEARCHER = new TypeTreeSearch(LeafBodyFigure.class);
     private static final TypeTreeSearch GROUP_BODY_SEARCHER = new TypeTreeSearch(GroupBodyFigure.class);
 
     /** The clicked figure which is moving */
@@ -74,10 +74,10 @@ public class NodeMoveController {
             public void mousePressed(final MouseEvent event) {
                 movedFigure = displayer.getContentLayer().findFigureAt(event.getLocation().x, event.getLocation().y,
                         NODE_BODY_SEARCHER);
-                if (movedFigure == null) {
-                    movedFigure = displayer.getContentLayer().findFigureAt(event.getLocation().x, event.getLocation().y,
-                            GROUP_BODY_SEARCHER);
-                }
+                        if (movedFigure == null) {
+                            movedFigure = displayer.getContentLayer().findFigureAt(event.getLocation().x, event.getLocation().y,
+                                    GROUP_BODY_SEARCHER);
+                        }
                 if (movedFigure != null) {
                     // We have something to move, let's consume the event
                     event.consume();

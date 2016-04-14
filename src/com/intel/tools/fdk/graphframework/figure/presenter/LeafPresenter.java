@@ -36,7 +36,7 @@ import org.eclipse.draw2d.geometry.Rectangle;
 
 import com.intel.tools.fdk.graphframework.figure.IGraphFigure;
 import com.intel.tools.fdk.graphframework.figure.link.LinkAnchor;
-import com.intel.tools.fdk.graphframework.figure.node.NodeBodyFigure;
+import com.intel.tools.fdk.graphframework.figure.node.LeafBodyFigure;
 import com.intel.tools.fdk.graphframework.figure.pin.InputFigure;
 import com.intel.tools.fdk.graphframework.figure.pin.OutputFigure;
 import com.intel.tools.fdk.graphframework.figure.pin.PinFigure;
@@ -66,7 +66,7 @@ public class LeafPresenter extends Presenter<Leaf> {
      */
     private final RectangleFigure boundsFigure = new RectangleFigure();
 
-    private final NodeBodyFigure body;
+    private final LeafBodyFigure body;
     private final List<InputFigure> inputs = new ArrayList<>();
     private final List<OutputFigure> outputs = new ArrayList<>();
     private final Map<Link, LinkAnchor> anchors = new HashMap<>();
@@ -90,7 +90,7 @@ public class LeafPresenter extends Presenter<Leaf> {
         } else {
             height = height * PIN_DISTANCE + PIN_OFFSET;
         }
-        this.body = new NodeBodyFigure(BODY_WIDTH, height);
+        this.body = new LeafBodyFigure(BODY_WIDTH, height);
         node.getInputLinks().forEach(link -> setupPinFigure(link, InputFigure.class, this.inputs));
         node.getOutputLinks().forEach(link -> setupPinFigure(link, OutputFigure.class, this.outputs));
 

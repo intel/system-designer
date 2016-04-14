@@ -33,7 +33,7 @@ import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
 
 import com.intel.tools.fdk.graphframework.displayer.GraphDisplayer;
-import com.intel.tools.fdk.graphframework.figure.node.NodeBodyFigure;
+import com.intel.tools.fdk.graphframework.figure.node.LeafBodyFigure;
 
 public class FitToScreenController {
 
@@ -128,8 +128,8 @@ public class FitToScreenController {
 
         // Apply the delta to each children
         for (final Object child : displayer.getContentLayer().getChildren()) {
-            if (child instanceof NodeBodyFigure) {
-                final NodeBodyFigure compView = (NodeBodyFigure) child;
+            if (child instanceof LeafBodyFigure) {
+                final LeafBodyFigure compView = (LeafBodyFigure) child;
                 final Point childBoundsCoordinates = compView.getBounds().getLocation();
                 childBoundsCoordinates.x += delta.width;
                 childBoundsCoordinates.y += delta.height;
