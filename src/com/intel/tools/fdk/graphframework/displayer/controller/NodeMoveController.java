@@ -22,12 +22,16 @@
  */
 package com.intel.tools.fdk.graphframework.displayer.controller;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.eclipse.draw2d.GhostImageFigure;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.MouseEvent;
 import org.eclipse.draw2d.MouseListener;
 import org.eclipse.draw2d.MouseMotionListener;
 import org.eclipse.draw2d.geometry.Dimension;
+import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.Rectangle;
 
 import com.intel.tools.fdk.graphframework.displayer.GraphDisplayer;
@@ -46,6 +50,11 @@ public class NodeMoveController {
     /** Ghost alpha value in range 0-255 */
     private static final int GHOST_ALPHA = 128;
 
+    public interface FigureMoveListener {
+        /** This event is fired when the movement has ended (once the mouse is released) */
+        void figureMoved(IFigure figure, Point destination);
+    }
+
     /** The clicked figure which is moving */
     private IFigure movedFigure;
     /** The Ghost displayed on the feedback layer during the move */
@@ -57,15 +66,16 @@ public class NodeMoveController {
     /** Indicate if the ghost is visible or not */
     private boolean ghostVisible = false;
 
-    /**
-     * @param displayer
-     *            the displayer which will allow component move
-     */
+    private final List<FigureMoveListener> listeners = new ArrayList<>();
+
+    /** @param displayer the displayer which will allow component move */
     public NodeMoveController(final GraphDisplayer displayer) {
         displayer.getContentLayer().addMouseListener(new MouseListener.Stub() {
             @Override
             public void mouseReleased(final MouseEvent event) {
                 if (movedFigure != null) {
+                    final Point destination = new Point(event.x, event.y);
+                    fireFigureMoved(movedFigure, destination);
                     movedFigure.setBounds(movingFigure.getBounds().getCopy());
                     // Reset state
                     offset.setWidth(0);
@@ -122,6 +132,18 @@ public class NodeMoveController {
      */
     public void setGhostVisible(final boolean visible) {
         this.ghostVisible = visible;
+    }
+
+    private void fireFigureMoved(final IFigure figure, final Point destination) {
+        listeners.forEach(listener -> listener.figureMoved(figure, destination));
+    }
+
+    public void addFigureMoveListener(final FigureMoveListener listener) {
+        listeners.add(listener);
+    }
+
+    public void removeFigureMoveListener(final FigureMoveListener listener) {
+        listeners.remove(listener);
     }
 
 }

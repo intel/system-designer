@@ -43,20 +43,21 @@ public class GroupPresenter extends Presenter<IGroup> {
     /** The offset used between the group figure bounds and its child */
     private static final int OFFSET = 60;
 
-    private final GroupBodyFigure boundsFigure = new GroupBodyFigure();
+    private final GroupBodyFigure boundsFigure;
     private final List<Presenter<? extends INode>> childrenPresenters = new ArrayList<>();
 
     private boolean blockEvents = false;
     private Point boundsLocation = new Point(0, 0);
 
     /**
-     * @param node
-     *            the represented node
+     * @param group
+     *            the represented group
      * @param childrenPresenters
      *            presenters of children nodes.
      */
-    public GroupPresenter(final IGroup node, final List<Presenter<? extends INode>> childrenPresenters) {
-        super(node);
+    public GroupPresenter(final IGroup group, final List<Presenter<? extends INode>> childrenPresenters) {
+        super(group);
+        boundsFigure = new GroupBodyFigure(group);
         this.childrenPresenters.addAll(childrenPresenters);
         this.childrenPresenters.forEach(presenter -> {
             // Track body movement to keep sub-elements together

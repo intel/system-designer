@@ -26,6 +26,7 @@ import org.eclipse.draw2d.RoundedRectangle;
 import org.eclipse.draw2d.geometry.Dimension;
 
 import com.intel.tools.fdk.graphframework.figure.IGraphFigure;
+import com.intel.tools.fdk.graphframework.graph.ILeaf;
 import com.intel.tools.utils.IntelPalette;
 
 /**
@@ -37,13 +38,21 @@ public class LeafBodyFigure extends RoundedRectangle implements IGraphFigure {
 
     private static final int LINE_WIDTH = 2;
 
+    // The graph leaf this figure represents
+    private final ILeaf leaf;
+
     /**
+     * Creates a new {@link LeafBodyFigure}
+     *
+     * @param leaf
+     *            the leaf this figure represents
      * @param width
      *            node figure width
      * @param height
      *            node figure height
      */
-    public LeafBodyFigure(final int width, final int height) {
+    public LeafBodyFigure(final ILeaf leaf, final int width, final int height) {
+        this.leaf = leaf;
         setSize(new Dimension(width, height));
         setFill(true);
         setAntialias(1);
@@ -60,5 +69,9 @@ public class LeafBodyFigure extends RoundedRectangle implements IGraphFigure {
     @Override
     public void unselect() {
         setLineWidth(getLineWidth() - 1);
+    }
+
+    public ILeaf getLeaf() {
+        return leaf;
     }
 }

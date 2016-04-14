@@ -75,24 +75,24 @@ public class LeafPresenter extends Presenter<ILeaf> {
     private Point boundsLocation = new Point(0, 0);
 
     /**
-     * @param node
+     * @param leaf
      *            the graph node to represent
      */
-    public LeafPresenter(final ILeaf node) {
-        super(node);
+    public LeafPresenter(final ILeaf leaf) {
+        super(leaf);
         // hides the global bounds figure which is used only for technical purpose
         this.boundsFigure.setVisible(false);
 
         // body configuration
-        int height = Integer.max(node.getInputLinks().size(), node.getOutputLinks().size());
+        int height = Integer.max(leaf.getInputLinks().size(), leaf.getOutputLinks().size());
         if (height <= 1) {
             height = BODY_BASE_HEIGHT;
         } else {
             height = height * PIN_DISTANCE + PIN_OFFSET;
         }
-        this.body = new LeafBodyFigure(BODY_WIDTH, height);
-        node.getInputLinks().forEach(link -> setupPinFigure(link, InputFigure.class, this.inputs));
-        node.getOutputLinks().forEach(link -> setupPinFigure(link, OutputFigure.class, this.outputs));
+        this.body = new LeafBodyFigure(leaf, BODY_WIDTH, height);
+        leaf.getInputLinks().forEach(link -> setupPinFigure(link, InputFigure.class, this.inputs));
+        leaf.getOutputLinks().forEach(link -> setupPinFigure(link, OutputFigure.class, this.outputs));
 
         getDisplayableFigures().add(boundsFigure);
         getDisplayableFigures().addAll(inputs);

@@ -26,13 +26,24 @@ import org.eclipse.draw2d.RoundedRectangle;
 import org.eclipse.swt.SWT;
 
 import com.intel.tools.fdk.graphframework.figure.IGraphFigure;
+import com.intel.tools.fdk.graphframework.graph.IGroup;
 import com.intel.tools.utils.IntelPalette;
 
 public class GroupBodyFigure extends RoundedRectangle implements IGraphFigure {
 
     private static final int LINE_WIDTH = 2;
 
-    public GroupBodyFigure() {
+    // The graph group this figure represents
+    private final IGroup group;
+
+    /**
+     * Creates a new {@link GroupBodyFigure}
+     * 
+     * @param group
+     *            the group this figure represents
+     */
+    public GroupBodyFigure(final IGroup group) {
+        this.group = group;
         setFill(true);
         setAntialias(1);
         setLineWidth(LINE_WIDTH);
@@ -49,6 +60,10 @@ public class GroupBodyFigure extends RoundedRectangle implements IGraphFigure {
     @Override
     public void unselect() {
         setLineWidth(getLineWidth() - 1);
+    }
+
+    public IGroup getGroup() {
+        return group;
     }
 
 }
