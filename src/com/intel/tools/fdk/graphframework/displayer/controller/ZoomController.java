@@ -33,18 +33,20 @@ import com.intel.tools.fdk.graphframework.displayer.GraphDisplayer;
 /** Zoom/Unzoom a ComponentLayoutDisplayer by when CTRL+Scroll is realized by the user */
 public class ZoomController {
 
-    private static final int KEY_0 = 224;
-
     /** Zoom step applied after a zoom action is required */
     private static double zoomStep = 1.1;
 
+    private final GraphDisplayer displayer;
+    private FitToScreenController fitToScreenController;
+
     public ZoomController(final GraphDisplayer displayer) {
+        this.displayer = displayer;
         displayer.getControl().addMouseWheelListener(new MouseWheelListener() {
             @Override
             public void mouseScrolled(final MouseEvent e) {
                 // CTRL + mouse wheel -> zoom
                 if ((e.stateMask & SWT.CTRL) == SWT.CTRL) {
-                    zoom(displayer, e.count > 0 ? zoomStep : 1 / zoomStep);
+                    zoom(e.count > 0 ? zoomStep : 1 / zoomStep);
                 }
             }
         });
@@ -54,20 +56,26 @@ public class ZoomController {
                 if ((e.stateMask & SWT.CTRL) == SWT.CTRL) {
                     if (e.keyCode == SWT.KEYPAD_ADD) {
                         // Ctrl +
-                        zoom(displayer, zoomStep);
+                        zoom(zoomStep);
                     } else if (e.keyCode == SWT.KEYPAD_SUBTRACT) {
                         // Ctrl -
-                        zoom(displayer, 1 / zoomStep);
-                    } else if (e.keyCode == KEY_0 || e.keyCode == SWT.KEYPAD_0) {
-                        // Ctrl 0
-                        FitToScreenController.fitToScreen(displayer);
+                        zoom(1 / zoomStep);
                     }
                 }
             }
         });
     }
 
-    private void zoom(final GraphDisplayer displayer, final double factor) {
+    public void setFitToScreenController(final FitToScreenController fitToScreenController) {
+        this.fitToScreenController = fitToScreenController;
+    }
+
+    private void zoom(final double factor) {
+        // This is a manual zoom, we must disable fit to screen if we have one
+        if (fitToScreenController != null) {
+            fitToScreenController.setFitEnabled(false);
+        }
+
         displayer.setScale(displayer.getScale() * factor);
     }
 
