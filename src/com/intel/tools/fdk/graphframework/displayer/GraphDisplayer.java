@@ -75,9 +75,9 @@ public class GraphDisplayer {
 
         // Add needed layers
         scalablePane.add(new BackgroundLayer(), BACKGROUND_LAYER);
-        scalablePane.addLayerAfter(new ConnectionLayer(), CONNECTION_LAYER, BACKGROUND_LAYER);
-        scalablePane.addLayerAfter(new FreeformLayer(), CONTENT_LAYER, CONNECTION_LAYER);
-        scalablePane.addLayerAfter(new FreeformLayer(), FEEDBACK_LAYER, CONTENT_LAYER);
+        scalablePane.addLayerAfter(new FreeformLayer(), CONTENT_LAYER, BACKGROUND_LAYER);
+        scalablePane.addLayerAfter(new ConnectionLayer(), CONNECTION_LAYER, CONTENT_LAYER);
+        scalablePane.addLayerAfter(new FreeformLayer(), FEEDBACK_LAYER, CONNECTION_LAYER);
         scalablePane.getLayer(CONTENT_LAYER).setLayoutManager(new FreeformLayout());
         ((ConnectionLayer) scalablePane.getLayer(CONNECTION_LAYER)).setConnectionRouter(
                 new ManhattanConnectionRouter());
