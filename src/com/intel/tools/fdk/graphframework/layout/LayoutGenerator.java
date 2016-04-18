@@ -26,10 +26,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import java.util.Set;
 
 import org.eclipse.draw2d.IFigure;
@@ -81,12 +78,9 @@ public class LayoutGenerator implements IGraphListener {
         removeOldPresenters(leafPresenters, leaves);
         removeOldPresenters(groupPresenters, groups);
 
-        // Display figures
-        getPresenters().forEach(presenter -> {
-            presenter.getDisplayableFigures().forEach(displayer.getContentLayer()::add);
-            presenter.getDisplayableDecoration().forEach(displayer.getDecorationLayer()::add);
-            presenter.getDisplayableTools().forEach(displayer.getToolsLayer()::add);
-        });
+        // Display figures, groups are displayed first to let leaf be at first plan
+        groupPresenters.values().forEach(this::displayPresenters);
+        leafPresenters.values().forEach(this::displayPresenters);
         graph.getAllLinks().forEach(link -> {
             displayer.getConnectionLayer().add(new LinkFigure(
                     this.leafPresenters.get(link.getInputNode()).getAnchor(link),
@@ -118,13 +112,10 @@ public class LayoutGenerator implements IGraphListener {
         });
     }
 
-    /**
-     * Retrieve generated presenters
-     *
-     * @return presenters which are or will be displayed
-     */
-    protected Collection<LeafPresenter> getLeafPresenters() {
-        return this.leafPresenters.values();
+    private void displayPresenters(final Presenter<?> presenter) {
+        presenter.getDisplayableFigures().forEach(displayer.getContentLayer()::add);
+        presenter.getDisplayableDecoration().forEach(displayer.getDecorationLayer()::add);
+        presenter.getDisplayableTools().forEach(displayer.getToolsLayer()::add);
     }
 
     /**
@@ -132,9 +123,8 @@ public class LayoutGenerator implements IGraphListener {
      *
      * @return presenters which are or will be displayed
      */
-    protected List<Presenter<? extends INode>> getPresenters() {
-        return Stream.concat(getLeafPresenters().stream(), this.groupPresenters.values().stream())
-                .collect(Collectors.toList());
+    protected Collection<LeafPresenter> getLeafPresenters() {
+        return this.leafPresenters.values();
     }
 
 }

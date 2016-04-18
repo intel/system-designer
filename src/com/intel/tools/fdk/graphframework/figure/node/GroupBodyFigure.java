@@ -23,17 +23,21 @@
 package com.intel.tools.fdk.graphframework.figure.node;
 
 import org.eclipse.draw2d.RoundedRectangle;
+import org.eclipse.swt.SWT;
 
 import com.intel.tools.fdk.graphframework.figure.IGraphFigure;
+import com.intel.tools.utils.IntelPalette;
 
 public class GroupBodyFigure extends RoundedRectangle implements IGraphFigure {
 
     private static final int LINE_WIDTH = 2;
 
     public GroupBodyFigure() {
-        setFill(false);
+        setFill(true);
         setAntialias(1);
         setLineWidth(LINE_WIDTH);
+        setLineStyle(SWT.LINE_DASHDOT);
+        setBackgroundColor(IntelPalette.GREY_1);
         setForegroundColor(IGraphFigure.DEFAULT_COLOR);
     }
 
