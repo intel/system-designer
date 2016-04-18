@@ -66,8 +66,12 @@ public class AutoLayoutGenerator extends LayoutGenerator {
         }
         for (final LeafPresenter presenter : getLeafPresenters()) {
             final Point coord = computer.getCoordinate(presenter.getNode());
+            /**
+             * Ordinates are negated because draw2d uses the upper left corner as origin but the algorithm uses a
+             * standard cartesian coordinates (ordinates grows towards the upper side of the view).
+             */
             presenter.getBoundsFigure()
-                    .setLocation(new PrecisionPoint(coord.x * widthMax * 3, coord.y * heightMax * 1.5));
+                    .setLocation(new PrecisionPoint(coord.x * widthMax * 3, -coord.y * heightMax * 1.5));
         }
     }
 
