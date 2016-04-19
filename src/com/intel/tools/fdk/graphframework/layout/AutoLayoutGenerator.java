@@ -34,9 +34,6 @@ import com.intel.tools.fdk.graphframework.graph.adapter.IAdapter;
  * Graph layout which choose a position for each graph node.
  *
  * The algorithm used is the one defined in {@link AutoLayoutComputer}.
- *
- * @param <T>
- *            type of node presenter used
  */
 public class AutoLayoutGenerator extends LayoutGenerator {
 
