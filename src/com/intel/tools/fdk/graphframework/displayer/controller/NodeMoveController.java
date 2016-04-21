@@ -22,11 +22,11 @@
  */
 package com.intel.tools.fdk.graphframework.displayer.controller;
 
+import org.eclipse.draw2d.GhostImageFigure;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.MouseEvent;
 import org.eclipse.draw2d.MouseListener;
 import org.eclipse.draw2d.MouseMotionListener;
-import org.eclipse.draw2d.RectangleFigure;
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Rectangle;
 
@@ -43,28 +43,36 @@ public class NodeMoveController {
     private static final TypeTreeSearch NODE_BODY_SEARCHER = new TypeTreeSearch(LeafBodyFigure.class);
     private static final TypeTreeSearch GROUP_BODY_SEARCHER = new TypeTreeSearch(GroupBodyFigure.class);
 
+    /** Ghost alpha value in range 0-255 */
+    private static final int GHOST_ALPHA = 128;
+
     /** The clicked figure which is moving */
     private IFigure movedFigure;
     /** The Ghost displayed on the feedback layer during the move */
-    private final RectangleFigure movingGhost = new RectangleFigure();
+    private GhostImageFigure ghost;
+    /** The figure really moved during drag (can be movingGhost or movedFigure) */
+    private IFigure movingFigure;
     /** Offset between the mouse click and the clicked Figure */
     private final Dimension offset = new Dimension(0, 0);
+    /** Indicate if the ghost is visible or not */
+    private boolean ghostVisible = false;
 
-    /** @param displayer the displayer which will allow component move */
+    /**
+     * @param displayer
+     *            the displayer which will allow component move
+     */
     public NodeMoveController(final GraphDisplayer displayer) {
-        // The ghost is not visible, it is here only to avoid scrollbars shrink during the move
-        movingGhost.setVisible(false);
-
         displayer.getContentLayer().addMouseListener(new MouseListener.Stub() {
             @Override
             public void mouseReleased(final MouseEvent event) {
                 if (movedFigure != null) {
+                    movedFigure.setBounds(movingFigure.getBounds().getCopy());
                     // Reset state
                     offset.setWidth(0);
                     offset.setHeight(0);
 
                     // Remove the ghost
-                    displayer.getFeedbackLayer().remove(movingGhost);
+                    displayer.getFeedbackLayer().remove(ghost);
                     displayer.getContentLayer().repaint();
                     movedFigure = null;
                 }
@@ -79,14 +87,18 @@ public class NodeMoveController {
                             GROUP_BODY_SEARCHER);
                 }
                 if (movedFigure != null) {
+                    ghost = new GhostImageFigure(movedFigure, GHOST_ALPHA, null);
+                    ghost.setVisible(ghostVisible);
+
                     // We have something to move, let's consume the event
                     event.consume();
-                    movingGhost.setBounds(movedFigure.getBounds().getCopy());
-                    displayer.getFeedbackLayer().add(movingGhost);
+                    ghost.setBounds(movedFigure.getBounds().getCopy());
+                    displayer.getFeedbackLayer().add(ghost);
 
                     // Get the click position
                     offset.setWidth(event.x - movedFigure.getBounds().x);
                     offset.setHeight(event.y - movedFigure.getBounds().y);
+                    movingFigure = ghostVisible ? ghost : movedFigure;
                 } else {
                     movedFigure = null;
                 }
@@ -96,12 +108,20 @@ public class NodeMoveController {
             @Override
             public void mouseDragged(final MouseEvent event) {
                 if (movedFigure != null) {
-                    final Rectangle bounds = movedFigure.getBounds().getCopy();
+                    final Rectangle bounds = movingFigure.getBounds().getCopy();
                     bounds.setLocation(event.x - offset.width(), event.y - offset.height());
-                    movedFigure.setBounds(bounds);
+                    movingFigure.setBounds(bounds);
                 }
             }
         });
+    }
+
+    /**
+     * @param visible
+     *            true if the ghost should be moved and visible, false if the ghost should be hidden and static
+     */
+    public void setGhostVisible(final boolean visible) {
+        this.ghostVisible = visible;
     }
 
 }
