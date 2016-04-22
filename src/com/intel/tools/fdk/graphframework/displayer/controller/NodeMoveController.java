@@ -74,10 +74,10 @@ public class NodeMoveController {
             public void mousePressed(final MouseEvent event) {
                 movedFigure = displayer.getContentLayer().findFigureAt(event.getLocation().x, event.getLocation().y,
                         NODE_BODY_SEARCHER);
-                        if (movedFigure == null) {
-                            movedFigure = displayer.getContentLayer().findFigureAt(event.getLocation().x, event.getLocation().y,
-                                    GROUP_BODY_SEARCHER);
-                        }
+                if (movedFigure == null) {
+                    movedFigure = displayer.getContentLayer().findFigureAt(event.getLocation().x, event.getLocation().y,
+                            GROUP_BODY_SEARCHER);
+                }
                 if (movedFigure != null) {
                     // We have something to move, let's consume the event
                     event.consume();
