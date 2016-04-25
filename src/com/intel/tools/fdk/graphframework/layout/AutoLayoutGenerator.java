@@ -73,7 +73,7 @@ public class AutoLayoutGenerator extends LayoutGenerator {
              * standard cartesian coordinates (ordinates grows towards the upper side of the view).
              */
             presenter.getBoundsFigure()
-                    .setLocation(new PrecisionPoint(coord.x * widthMax * 3, -coord.y * heightMax * 1.5));
+                    .setLocation(new PrecisionPoint(coord.x * widthMax * 1.5, -coord.y * heightMax * 1.5));
         }
     }
 

@@ -100,20 +100,7 @@ public class LeafPresenter extends Presenter<ILeaf> {
         getDisplayableFigures().add(body);
 
         // Track body movement to keep sub-elements together
-        body.addFigureListener(new FigureListener() {
-            @Override
-            public void figureMoved(final IFigure source) {
-                inputs.forEach(figure -> {
-                    figure.setLocation(new Point(body.getLocation().x - figure.getSize().width,
-                            body.getLocation().y + PIN_OFFSET + inputs.indexOf(figure) * PIN_DISTANCE));
-                });
-                outputs.forEach(figure -> {
-                    figure.setLocation(new Point(body.getLocation().x - 1 + body.getBounds().width,
-                            body.getLocation().y + PIN_OFFSET + outputs.indexOf(figure) * PIN_DISTANCE));
-                });
-                updateBoundsFigure();
-            }
-        });
+        body.addFigureListener(this::layoutFigures);
         boundsFigure.addFigureListener(new FigureListener() {
             @Override
             public void figureMoved(final IFigure source) {
@@ -121,6 +108,19 @@ public class LeafPresenter extends Presenter<ILeaf> {
                     body.translate(source.getBounds().x - boundsLocation.x, source.getBounds().y - boundsLocation.y);
                 }
             }
+        });
+        layoutFigures(body);
+    }
+
+    private void layoutFigures(final IFigure source) {
+        assert source == body : "The source figure is not the presenter body";
+        inputs.forEach(figure -> {
+            figure.setLocation(new Point(body.getLocation().x - figure.getSize().width,
+                    body.getLocation().y + PIN_OFFSET + inputs.indexOf(figure) * PIN_DISTANCE));
+        });
+        outputs.forEach(figure -> {
+            figure.setLocation(new Point(body.getLocation().x - 1 + body.getBounds().width,
+                    body.getLocation().y + PIN_OFFSET + outputs.indexOf(figure) * PIN_DISTANCE));
         });
         updateBoundsFigure();
     }
