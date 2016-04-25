@@ -27,6 +27,7 @@ import org.eclipse.draw2d.geometry.PrecisionPoint;
 import org.eclipse.draw2d.geometry.Rectangle;
 
 import com.intel.tools.fdk.graphframework.displayer.GraphDisplayer;
+import com.intel.tools.fdk.graphframework.figure.presenter.IPresenterManager;
 import com.intel.tools.fdk.graphframework.figure.presenter.LeafPresenter;
 import com.intel.tools.fdk.graphframework.graph.adapter.IAdapter;
 import com.intel.tools.fdk.graphframework.graph.impl.Graph;
@@ -47,11 +48,14 @@ public class AutoLayoutGenerator extends LayoutGenerator {
      *
      * @param adapter
      *            the model adapter which provide the graph
+     * @param presenterManager
+     *            The presenter manager responsible for creating presenters associated with graph nodes.
      * @param displayer
      *            the graph displayer to use
      */
-    public AutoLayoutGenerator(final IAdapter adapter, final GraphDisplayer displayer) {
-        super(adapter, displayer);
+    public AutoLayoutGenerator(final IAdapter adapter, final IPresenterManager presenterManager,
+            final GraphDisplayer displayer) {
+        super(adapter, presenterManager, displayer);
 
         // The first display has been done, let's compute initial positions.
         final AutoGroupLayoutComputer computer = new AutoGroupLayoutComputer((Graph) adapter.getGraph());

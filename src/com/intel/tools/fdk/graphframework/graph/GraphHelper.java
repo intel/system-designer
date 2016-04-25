@@ -20,52 +20,24 @@
  * express and approved by Intel in writing.
  * ============================================================================
  */
-package com.intel.tools.fdk.graphframework.graph.adapter;
+package com.intel.tools.fdk.graphframework.graph;
 
-import com.intel.tools.fdk.graphframework.graph.IGraph;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
-/**
- * Interface providing a way to generate a {@link IGraph} from a custom model.
- */
-public interface IAdapter {
+public final class GraphHelper {
 
-    public interface IGraphListener {
-        /**
-         * Method called after a graph modification
-         *
-         * @param graph
-         *            the new graph
-         */
-        void graphUpdated(final IGraph graph);
+    private GraphHelper() {
     }
 
     /**
-     * Retrieve the adapted graph.
-     *
-     * @return the adapted graph
+     * @return an unmodifiable set of leaf nodes which compose the node container.
      */
-    IGraph getGraph();
+    public static Set<ILeaf> getAllLeaves(final INodeContainer group) {
+        return Stream.concat(group.getLeaves().stream(),
+                group.getGroups().stream().flatMap(subGroup -> getAllLeaves(subGroup).stream()))
+                .collect(Collectors.toSet());
+    }
 
-    /**
-     * Register a new graph listener
-     *
-     * @param listener
-     *            the new listener
-     */
-    void addGraphListener(final IGraphListener listener);
-
-    /**
-     * Unregister a new graph listener
-     *
-     * @param listener
-     *            the listener to remove
-     */
-    void removeGraphListener(final IGraphListener listener);
-
-    /**
-     * This method allows to notify implementors that a graph has been updated.</br>
-     *
-     * Basically it should consist to call {@link IGraphListener#graphUpdated(IGraph)} method of each listeners.
-     */
-    void fireGraphUpdate();
 }

@@ -33,7 +33,9 @@ import org.eclipse.draw2d.IFigure;
 
 import com.intel.tools.fdk.graphframework.displayer.GraphDisplayer;
 import com.intel.tools.fdk.graphframework.figure.link.LinkFigure;
+import com.intel.tools.fdk.graphframework.figure.presenter.DefaultPresenterManager;
 import com.intel.tools.fdk.graphframework.figure.presenter.GroupPresenter;
+import com.intel.tools.fdk.graphframework.figure.presenter.IPresenterManager;
 import com.intel.tools.fdk.graphframework.figure.presenter.LeafPresenter;
 import com.intel.tools.fdk.graphframework.figure.presenter.Presenter;
 import com.intel.tools.fdk.graphframework.graph.IGraph;
@@ -53,15 +55,36 @@ public class LayoutGenerator implements IGraphListener {
     private final GraphDisplayer displayer;
     private final Map<Leaf, LeafPresenter> leafPresenters = new HashMap<>();
     private final Map<Group, GroupPresenter> groupPresenters = new HashMap<>();
+    private final IPresenterManager presenterManager;
 
     /**
+     * Constructor using default {@link IPresenterManager} implementation.
+     *
      * @param adapter
      *            the adapter to use to request the graph
+     * @param displayer
+     *            The displayer where to display the graph.
      */
     public LayoutGenerator(final IAdapter adapter, final GraphDisplayer displayer) {
+        this(adapter, new DefaultPresenterManager(), displayer);
+    }
+
+    /**
+     * Constructor containing all available configuration.
+     *
+     * @param adapter
+     *            the adapter to use to request the graph
+     * @param presenterManager
+     *            The presenter manager responsible for instantiating any presenter for a node
+     * @param displayer
+     *            The displayer where to display the graph.
+     */
+    public LayoutGenerator(final IAdapter adapter, final IPresenterManager presenterManager,
+            final GraphDisplayer displayer) {
         this.adapter = adapter;
         this.adapter.addGraphListener(this);
         this.displayer = displayer;
+        this.presenterManager = presenterManager;
 
         graphUpdated(this.adapter.getGraph());
     }
@@ -74,8 +97,8 @@ public class LayoutGenerator implements IGraphListener {
         final Set<Group> groups = graph.getGroups();
 
         // Create new presenters
-        leaves.forEach(leaf -> leafPresenters.putIfAbsent(leaf, adapter.createPresenter(leaf)));
-        groups.forEach(group -> groupPresenters.putIfAbsent(group, adapter.createPresenter(group)));
+        leaves.forEach(leaf -> leafPresenters.putIfAbsent(leaf, presenterManager.getPresenter(leaf)));
+        groups.forEach(group -> groupPresenters.putIfAbsent(group, presenterManager.getPresenter(group)));
         // Remove presenters of nodes which are not any more in the graph
         removeOldPresenters(leafPresenters, leaves);
         removeOldPresenters(groupPresenters, groups);

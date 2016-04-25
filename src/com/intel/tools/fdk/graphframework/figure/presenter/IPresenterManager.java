@@ -20,52 +20,38 @@
  * express and approved by Intel in writing.
  * ============================================================================
  */
-package com.intel.tools.fdk.graphframework.graph.adapter;
+package com.intel.tools.fdk.graphframework.figure.presenter;
 
-import com.intel.tools.fdk.graphframework.graph.IGraph;
+import com.intel.tools.fdk.graphframework.graph.IGroup;
+import com.intel.tools.fdk.graphframework.graph.ILeaf;
 
 /**
- * Interface providing a way to generate a {@link IGraph} from a custom model.
+ * A presenter manager is responsible for creating presenters based on node form the Graph Framework.
  */
-public interface IAdapter {
-
-    public interface IGraphListener {
-        /**
-         * Method called after a graph modification
-         *
-         * @param graph
-         *            the new graph
-         */
-        void graphUpdated(final IGraph graph);
-    }
+public interface IPresenterManager {
 
     /**
-     * Retrieve the adapted graph.
+     * Create a new leaf presenter.
      *
-     * @return the adapted graph
+     * This method provide a way to let the user introduce custom node presenters when using framework's layout to
+     * display their graph.</br>
+     *
+     * @param leaf
+     *            the node to represent
+     * @return a presenter representing the node
      */
-    IGraph getGraph();
+    LeafPresenter getPresenter(final ILeaf leaf);
 
     /**
-     * Register a new graph listener
+     * Create a new group presenter.
      *
-     * @param listener
-     *            the new listener
+     * This method provide a way to let the user introduce custom node presenters when using framework's layout to
+     * display their graph.</br>
+     *
+     * @param group
+     *            the node to represent
+     * @return a presenter representing the node
      */
-    void addGraphListener(final IGraphListener listener);
+    GroupPresenter getPresenter(final IGroup group);
 
-    /**
-     * Unregister a new graph listener
-     *
-     * @param listener
-     *            the listener to remove
-     */
-    void removeGraphListener(final IGraphListener listener);
-
-    /**
-     * This method allows to notify implementors that a graph has been updated.</br>
-     *
-     * Basically it should consist to call {@link IGraphListener#graphUpdated(IGraph)} method of each listeners.
-     */
-    void fireGraphUpdate();
 }
