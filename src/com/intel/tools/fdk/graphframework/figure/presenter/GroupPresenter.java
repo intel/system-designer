@@ -32,13 +32,13 @@ import org.eclipse.draw2d.geometry.Rectangle;
 
 import com.intel.tools.fdk.graphframework.figure.IGraphFigure;
 import com.intel.tools.fdk.graphframework.figure.node.GroupBodyFigure;
-import com.intel.tools.fdk.graphframework.graph.Group;
+import com.intel.tools.fdk.graphframework.graph.IGroup;
 import com.intel.tools.fdk.graphframework.graph.INode;
 
 /**
  * Wrap leaf of a group under a {@link GroupBodyFigure} to highlight the group
  */
-public class GroupPresenter extends Presenter<Group> {
+public class GroupPresenter extends Presenter<IGroup> {
 
     /** The offset used between the group figure bounds and its child */
     private static final int OFFSET = 60;
@@ -55,7 +55,7 @@ public class GroupPresenter extends Presenter<Group> {
      * @param childrenPresenters
      *            presenters of children nodes.
      */
-    public GroupPresenter(final Group node, final List<Presenter<? extends INode>> childrenPresenters) {
+    public GroupPresenter(final IGroup node, final List<Presenter<? extends INode>> childrenPresenters) {
         super(node);
         this.childrenPresenters.addAll(childrenPresenters);
         this.childrenPresenters.forEach(presenter -> {

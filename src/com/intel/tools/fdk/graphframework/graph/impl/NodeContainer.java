@@ -20,7 +20,7 @@
  * express and approved by Intel in writing.
  * ============================================================================
  */
-package com.intel.tools.fdk.graphframework.graph;
+package com.intel.tools.fdk.graphframework.graph.impl;
 
 import java.util.Collections;
 import java.util.HashSet;
@@ -28,10 +28,13 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import com.intel.tools.fdk.graphframework.graph.INode;
+import com.intel.tools.fdk.graphframework.graph.INodeContainer;
+
 /**
  * Container of {@link INode} objects
  */
-public abstract class NodeContainer {
+public abstract class NodeContainer implements INodeContainer {
 
     private final Set<Leaf> leaves = new HashSet<>();
     private final Set<Group> groups = new HashSet<>();
@@ -52,14 +55,15 @@ public abstract class NodeContainer {
     }
 
     /**
-     * @return an unmodifiable list of leaf nodes which compose this graph.
+     * @return an unmodifiable set of leaf nodes which compose this graph.
      */
+    @Override
     public Set<Leaf> getLeaves() {
         return Collections.unmodifiableSet(leaves);
     }
 
     /**
-     * @return an unmodifiable list of leaf nodes which compose this graph (including leaves of {@link Group} children.
+     * @return an unmodifiable set of leaf nodes which compose this graph (including leaves of {@link Group} children.
      */
     public Set<Leaf> getAllLeaves() {
         return Stream.concat(leaves.stream(), groups.stream().flatMap(group -> group.getAllLeaves().stream()))
@@ -67,8 +71,9 @@ public abstract class NodeContainer {
     }
 
     /**
-     * @return an unmodifiable list of group nodes which compose this graph.
+     * @return an unmodifiable set of group nodes which compose this graph.
      */
+    @Override
     public Set<Group> getGroups() {
         return Collections.unmodifiableSet(groups);
     }
@@ -76,6 +81,7 @@ public abstract class NodeContainer {
     /**
      * @return a set containing all {@link Link} which interconnect {@link Leaf} nodes of this graph.
      */
+    @Override
     public Set<Link> getLinks() {
         return leaves.stream()
                 .flatMap(node -> Stream.concat(

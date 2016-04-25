@@ -22,16 +22,17 @@
  */
 package com.intel.tools.fdk.graphframework.graph;
 
-import com.intel.tools.fdk.graphframework.graph.impl.Graph;
-
 /**
- * These interface describe the standard API of a node of a {@link Graph}
+ * Represent a basic graph.</br>
+ *
+ * A graph is composed of {@link INode}.</br>
+ * Those nodes can be {@link ILeaf} interconnected by {@link ILink} or {@link IGroup} which can contains other
+ * {@link INode}
+ *
+ * This is only a marker interface extending {@link INodeContainer}
  *
  * This interface is not intended to be implemented by clients.
  */
-public interface INode {
-
-    /** @return the parent container of this Node */
-    INodeContainer getParent();
+public interface IGraph extends INodeContainer {
 
 }

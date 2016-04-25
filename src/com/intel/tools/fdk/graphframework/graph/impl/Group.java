@@ -20,18 +20,30 @@
  * express and approved by Intel in writing.
  * ============================================================================
  */
-package com.intel.tools.fdk.graphframework.graph;
+package com.intel.tools.fdk.graphframework.graph.impl;
 
-import com.intel.tools.fdk.graphframework.graph.impl.Graph;
+import java.util.Set;
+
+import com.intel.tools.fdk.graphframework.graph.IGroup;
 
 /**
- * These interface describe the standard API of a node of a {@link Graph}
- *
- * This interface is not intended to be implemented by clients.
+ * Represent a group {@link INode} which are part of a {@link Graph}.</br>
  */
-public interface INode {
+public class Group extends NodeContainer implements IGroup {
 
-    /** @return the parent container of this Node */
-    INodeContainer getParent();
+    private NodeContainer parent;
+
+    public Group(final Set<Leaf> leaves, final Set<Group> groups) {
+        super(leaves, groups);
+    }
+
+    @Override
+    public NodeContainer getParent() {
+        return parent;
+    }
+
+    protected void setParent(final NodeContainer parent) {
+        this.parent = parent;
+    }
 
 }

@@ -23,27 +23,12 @@
 package com.intel.tools.fdk.graphframework.graph;
 
 /**
- * Represent a graph Link (i.e Edge).</br>
+ * Represents a group of {@link INode} which are part of a {@link IGraph}.</br>
  *
- * A link connects a node to another node (or itself).</br>
- * The link does not carry the information of which inputs/outputs are connected.
+ * This is only a marker interface extending {@link INode} and {@link INodeContainer}
+ *
+ * This interface is not intended to be implemented by clients.
  */
-public final class Link {
-
-    private final Leaf inputNode;
-    private final Leaf outputNode;
-
-    public Link(final Leaf input, final Leaf output) {
-        this.inputNode = input;
-        this.outputNode = output;
-    }
-
-    public Leaf getInputNode() {
-        return inputNode;
-    }
-
-    public Leaf getOutputNode() {
-        return outputNode;
-    }
+public interface IGroup extends INodeContainer, INode {
 
 }

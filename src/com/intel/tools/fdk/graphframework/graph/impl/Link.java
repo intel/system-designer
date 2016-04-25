@@ -20,18 +20,34 @@
  * express and approved by Intel in writing.
  * ============================================================================
  */
-package com.intel.tools.fdk.graphframework.graph;
+package com.intel.tools.fdk.graphframework.graph.impl;
 
-import com.intel.tools.fdk.graphframework.graph.impl.Graph;
+import com.intel.tools.fdk.graphframework.graph.ILink;
 
 /**
- * These interface describe the standard API of a node of a {@link Graph}
+ * Represent a graph Link (i.e Edge).</br>
  *
- * This interface is not intended to be implemented by clients.
+ * A link connects a node to another node (or itself).</br>
+ * The link does not carry the information of which inputs/outputs are connected.
  */
-public interface INode {
+public final class Link implements ILink {
 
-    /** @return the parent container of this Node */
-    INodeContainer getParent();
+    private final Leaf inputNode;
+    private final Leaf outputNode;
+
+    public Link(final Leaf input, final Leaf output) {
+        this.inputNode = input;
+        this.outputNode = output;
+    }
+
+    @Override
+    public Leaf getInputNode() {
+        return inputNode;
+    }
+
+    @Override
+    public Leaf getOutputNode() {
+        return outputNode;
+    }
 
 }

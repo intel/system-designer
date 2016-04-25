@@ -35,9 +35,9 @@ import java.util.stream.Collectors;
 
 import org.eclipse.draw2d.geometry.Point;
 
-import com.intel.tools.fdk.graphframework.graph.Leaf;
-import com.intel.tools.fdk.graphframework.graph.Link;
-import com.intel.tools.fdk.graphframework.graph.NodeContainer;
+import com.intel.tools.fdk.graphframework.graph.impl.Leaf;
+import com.intel.tools.fdk.graphframework.graph.impl.Link;
+import com.intel.tools.fdk.graphframework.graph.impl.NodeContainer;
 
 /**
  * Basic graph drawing algorithm implementation for graph

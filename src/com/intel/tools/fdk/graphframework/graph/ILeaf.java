@@ -22,16 +22,31 @@
  */
 package com.intel.tools.fdk.graphframework.graph;
 
-import com.intel.tools.fdk.graphframework.graph.impl.Graph;
+import java.util.List;
+import java.util.Optional;
 
 /**
- * These interface describe the standard API of a node of a {@link Graph}
+ * Represent the graph base element. </br>
+ *
+ * A leaf node can be connected to many other leaves of the same graph.</br>
+ * A leaf is defined with a defined input/output numbers.</br>
  *
  * This interface is not intended to be implemented by clients.
  */
-public interface INode {
+public interface ILeaf extends INode {
 
-    /** @return the parent container of this Node */
-    INodeContainer getParent();
+    /**
+     * Retrieves potentially empty {@link Optional} of input {@link ILink}
+     *
+     * @return an unmodifiable list of potentially empty {@link ILink} place connected on inputs.
+     */
+    List<? extends Optional<? extends ILink>> getInputLinks();
+
+    /**
+     * Retrieves potentially empty {@link Optional} of output {@link ILink}
+     *
+     * @return an unmodifiable list of potentially empty {@link ILink} place connected on outputs.
+     */
+    List<? extends Optional<? extends ILink>> getOutputLinks();
 
 }

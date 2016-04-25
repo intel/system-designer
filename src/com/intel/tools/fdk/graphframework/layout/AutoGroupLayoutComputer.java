@@ -29,9 +29,10 @@ import java.util.stream.Collectors;
 
 import org.eclipse.draw2d.geometry.Point;
 
-import com.intel.tools.fdk.graphframework.graph.Group;
-import com.intel.tools.fdk.graphframework.graph.Leaf;
-import com.intel.tools.fdk.graphframework.graph.NodeContainer;
+import com.intel.tools.fdk.graphframework.graph.ILeaf;
+import com.intel.tools.fdk.graphframework.graph.impl.Group;
+import com.intel.tools.fdk.graphframework.graph.impl.Leaf;
+import com.intel.tools.fdk.graphframework.graph.impl.NodeContainer;
 
 /**
  * Layout algorithm which layout Group of a Graph before the entire graph. </br>
@@ -120,7 +121,7 @@ public class AutoGroupLayoutComputer {
      *            the instance we want the coordinates
      * @return a point containing instance coordinate or (0, 0) if the node is unknow
      */
-    public Point getCoordinate(final Leaf node) {
+    public Point getCoordinate(final ILeaf node) {
         if (coordinates.containsKey(node)) {
             return coordinates.get(node);
         } else {

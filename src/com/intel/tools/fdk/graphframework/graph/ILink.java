@@ -22,19 +22,24 @@
  */
 package com.intel.tools.fdk.graphframework.graph;
 
-import java.util.Set;
-
 /**
- * Represent a basic graph.</br>
+ * Represent a graph Link (i.e Edge).</br>
  *
- * A graph is composed of {@link INode}.</br>
- * Those nodes can be {@link Leaf} interconnected by {@link Link} or {@link Group} which can contains other
- * {@link INode}
+ * A link connects a node to another node (or itself).</br>
+ * The link does not carry the information of which inputs/outputs are connected.
+ *
+ * This interface is not intended to be implemented by clients.
  */
-public final class Graph extends NodeContainer {
+public interface ILink {
 
-    public Graph(final Set<Leaf> leaves, final Set<Group> groups) {
-        super(leaves, groups);
-    }
+    /**
+     * @return the input node
+     */
+    ILeaf getInputNode();
+
+    /**
+     * @return the output node
+     */
+    ILeaf getOutputNode();
 
 }

@@ -29,6 +29,7 @@ import org.eclipse.draw2d.geometry.Rectangle;
 import com.intel.tools.fdk.graphframework.displayer.GraphDisplayer;
 import com.intel.tools.fdk.graphframework.figure.presenter.LeafPresenter;
 import com.intel.tools.fdk.graphframework.graph.adapter.IAdapter;
+import com.intel.tools.fdk.graphframework.graph.impl.Graph;
 
 /**
  * Graph layout which choose a position for each graph node.
@@ -53,7 +54,7 @@ public class AutoLayoutGenerator extends LayoutGenerator {
         super(adapter, displayer);
 
         // The first display has been done, let's compute initial positions.
-        final AutoGroupLayoutComputer computer = new AutoGroupLayoutComputer(adapter.getGraph());
+        final AutoGroupLayoutComputer computer = new AutoGroupLayoutComputer((Graph) adapter.getGraph());
         int widthMax = 0;
         int heightMax = 0;
         for (final LeafPresenter presenters : getLeafPresenters()) {

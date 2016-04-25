@@ -22,16 +22,28 @@
  */
 package com.intel.tools.fdk.graphframework.graph;
 
-import com.intel.tools.fdk.graphframework.graph.impl.Graph;
+import java.util.Set;
 
 /**
- * These interface describe the standard API of a node of a {@link Graph}
+ * Container of {@link INode} objects
  *
  * This interface is not intended to be implemented by clients.
  */
-public interface INode {
+public interface INodeContainer {
 
-    /** @return the parent container of this Node */
-    INodeContainer getParent();
+    /**
+     * @return an unmodifiable set of leaf nodes which compose this graph.
+     */
+    Set<? extends ILeaf> getLeaves();
+
+    /**
+     * @return an unmodifiable set of group nodes which compose this graph.
+     */
+    Set<? extends IGroup> getGroups();
+
+    /**
+     * @return a set containing all {@link ILink} which interconnect {@link ILeaf} nodes of this graph.
+     */
+    Set<? extends ILink> getLinks();
 
 }

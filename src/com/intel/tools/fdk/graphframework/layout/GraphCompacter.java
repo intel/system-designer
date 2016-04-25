@@ -34,12 +34,12 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import com.intel.tools.fdk.graphframework.graph.Graph;
 import com.intel.tools.fdk.graphframework.graph.GraphException;
-import com.intel.tools.fdk.graphframework.graph.Group;
-import com.intel.tools.fdk.graphframework.graph.Leaf;
-import com.intel.tools.fdk.graphframework.graph.Link;
-import com.intel.tools.fdk.graphframework.graph.NodeContainer;
+import com.intel.tools.fdk.graphframework.graph.impl.Graph;
+import com.intel.tools.fdk.graphframework.graph.impl.Group;
+import com.intel.tools.fdk.graphframework.graph.impl.Leaf;
+import com.intel.tools.fdk.graphframework.graph.impl.Link;
+import com.intel.tools.fdk.graphframework.graph.impl.NodeContainer;
 
 /** Copy the graph and give the impression that groups are simple nodes */
 public class GraphCompacter {

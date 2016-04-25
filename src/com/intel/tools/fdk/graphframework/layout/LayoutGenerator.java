@@ -36,12 +36,13 @@ import com.intel.tools.fdk.graphframework.figure.link.LinkFigure;
 import com.intel.tools.fdk.graphframework.figure.presenter.GroupPresenter;
 import com.intel.tools.fdk.graphframework.figure.presenter.LeafPresenter;
 import com.intel.tools.fdk.graphframework.figure.presenter.Presenter;
-import com.intel.tools.fdk.graphframework.graph.Graph;
-import com.intel.tools.fdk.graphframework.graph.Group;
+import com.intel.tools.fdk.graphframework.graph.IGraph;
 import com.intel.tools.fdk.graphframework.graph.INode;
-import com.intel.tools.fdk.graphframework.graph.Leaf;
 import com.intel.tools.fdk.graphframework.graph.adapter.IAdapter;
 import com.intel.tools.fdk.graphframework.graph.adapter.IAdapter.IGraphListener;
+import com.intel.tools.fdk.graphframework.graph.impl.Graph;
+import com.intel.tools.fdk.graphframework.graph.impl.Group;
+import com.intel.tools.fdk.graphframework.graph.impl.Leaf;
 
 /**
  * Class allowing to display a complete graph on a displayer
@@ -66,8 +67,9 @@ public class LayoutGenerator implements IGraphListener {
     }
 
     @Override
-    public void graphUpdated(final Graph graph) {
+    public void graphUpdated(final IGraph newGraph) {
         displayer.reset();
+        final Graph graph = (Graph) newGraph;
         final Set<Leaf> leaves = graph.getAllLeaves();
         final Set<Group> groups = graph.getGroups();
 
@@ -103,8 +105,8 @@ public class LayoutGenerator implements IGraphListener {
         });
     }
 
-    private static <N extends INode, P extends Presenter<N>> void removeOldPresenters(
-            final Map<N, P> presenters, final Set<N> nodes) {
+    private static <N extends INode> void removeOldPresenters(
+            final Map<N, ? extends Presenter<? extends INode>> presenters, final Set<N> nodes) {
         presenters.keySet().forEach(node -> {
             if (!nodes.contains(node)) {
                 presenters.remove(node);

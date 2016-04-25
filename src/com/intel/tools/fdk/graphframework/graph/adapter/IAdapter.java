@@ -24,14 +24,12 @@ package com.intel.tools.fdk.graphframework.graph.adapter;
 
 import com.intel.tools.fdk.graphframework.figure.presenter.GroupPresenter;
 import com.intel.tools.fdk.graphframework.figure.presenter.LeafPresenter;
-import com.intel.tools.fdk.graphframework.graph.Graph;
-import com.intel.tools.fdk.graphframework.graph.Group;
-import com.intel.tools.fdk.graphframework.graph.Leaf;
+import com.intel.tools.fdk.graphframework.graph.IGraph;
+import com.intel.tools.fdk.graphframework.graph.IGroup;
+import com.intel.tools.fdk.graphframework.graph.ILeaf;
 
 /**
- * Interface providing a way to generate a {@link Graph} from a custom model.
- *
- * TODO: Adds graph action API
+ * Interface providing a way to generate a {@link IGraph} from a custom model.
  */
 public interface IAdapter {
 
@@ -42,7 +40,7 @@ public interface IAdapter {
          * @param graph
          *            the new graph
          */
-        void graphUpdated(final Graph graph);
+        void graphUpdated(final IGraph graph);
     }
 
     /**
@@ -50,7 +48,7 @@ public interface IAdapter {
      *
      * @return the adapted graph
      */
-    Graph getGraph();
+    IGraph getGraph();
 
     /**
      * Register a new graph listener
@@ -71,7 +69,7 @@ public interface IAdapter {
     /**
      * This method allows to notify implementors that a graph has been updated.</br>
      *
-     * Basically it should consist to call {@link IGraphListener#graphUpdated(Graph)} method of each listeners.
+     * Basically it should consist to call {@link IGraphListener#graphUpdated(IGraph)} method of each listeners.
      */
     void fireGraphUpdate();
 
@@ -85,7 +83,7 @@ public interface IAdapter {
      *            the node to represent
      * @return a presenter representing the node
      */
-    LeafPresenter createPresenter(final Leaf leaf);
+    LeafPresenter createPresenter(final ILeaf leaf);
 
     /**
      * Create a new group presenter.
@@ -97,6 +95,6 @@ public interface IAdapter {
      *            the node to represent
      * @return a presenter representing the node
      */
-    GroupPresenter createPresenter(final Group group);
+    GroupPresenter createPresenter(final IGroup group);
 
 }

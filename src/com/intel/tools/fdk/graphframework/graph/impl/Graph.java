@@ -20,28 +20,24 @@
  * express and approved by Intel in writing.
  * ============================================================================
  */
-package com.intel.tools.fdk.graphframework.graph;
+package com.intel.tools.fdk.graphframework.graph.impl;
 
 import java.util.Set;
 
+import com.intel.tools.fdk.graphframework.graph.IGraph;
+import com.intel.tools.fdk.graphframework.graph.INode;
+
 /**
- * Represent a group {@link INode} which are part of a {@link Graph}.</br>
+ * Represent a basic graph.</br>
+ *
+ * A graph is composed of {@link INode}.</br>
+ * Those nodes can be {@link Leaf} interconnected by {@link Link} or {@link Group} which can contains other
+ * {@link INode}
  */
-public class Group extends NodeContainer implements INode {
+public final class Graph extends NodeContainer implements IGraph {
 
-    private NodeContainer parent;
-
-    public Group(final Set<Leaf> leaves, final Set<Group> groups) {
+    public Graph(final Set<Leaf> leaves, final Set<Group> groups) {
         super(leaves, groups);
-    }
-
-    @Override
-    public NodeContainer getParent() {
-        return parent;
-    }
-
-    protected void setParent(final NodeContainer parent) {
-        this.parent = parent;
     }
 
 }

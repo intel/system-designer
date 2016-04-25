@@ -20,12 +20,14 @@
  * express and approved by Intel in writing.
  * ============================================================================
  */
-package com.intel.tools.fdk.graphframework.graph;
+package com.intel.tools.fdk.graphframework.graph.impl;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import com.intel.tools.fdk.graphframework.graph.GraphException;
+import com.intel.tools.fdk.graphframework.graph.ILeaf;
 import com.intel.tools.fdk.graphframework.utils.ListUtils;
 
 /**
@@ -34,7 +36,7 @@ import com.intel.tools.fdk.graphframework.utils.ListUtils;
  * A leaf node can be connected to many other leaves of the same graph.</br>
  * A leaf is defined with a defined input/output numbers.</br>
  */
-public final class Leaf implements INode, Comparable<Leaf> {
+public final class Leaf implements ILeaf, Comparable<Leaf> {
 
     /** Instance counter used to generate instanceId, this is required to handle Leaf ordered Set */
     private static int instanceCounter = 0;
@@ -93,6 +95,7 @@ public final class Leaf implements INode, Comparable<Leaf> {
      *
      * @return an unmodifiable list of potentially empty {@link Link} place connected on inputs.
      */
+    @Override
     public List<Optional<Link>> getInputLinks() {
         return inputLinks;
     }
@@ -102,6 +105,7 @@ public final class Leaf implements INode, Comparable<Leaf> {
      *
      * @return an unmodifiable list of potentially empty {@link Link} place connected on outputs.
      */
+    @Override
     public List<Optional<Link>> getOutputLinks() {
         return outputLinks;
     }
@@ -136,7 +140,7 @@ public final class Leaf implements INode, Comparable<Leaf> {
      * @throws GraphException
      *             if the output of this node or the input of the destination node is already linked to a link
      */
-    public void connect(final int outputId, final Leaf destinationNode, final int destinationInputId)
+    public Link connect(final int outputId, final Leaf destinationNode, final int destinationInputId)
             throws GraphException {
         if (outputLinks.get(outputId).isPresent() || destinationNode.inputLinks.get(destinationInputId).isPresent()) {
             throw new GraphException("While connecting nodes: I/O are already used");
@@ -145,6 +149,7 @@ public final class Leaf implements INode, Comparable<Leaf> {
         final Optional<Link> link = Optional.of(new Link(destinationNode, this));
         outputLinks.set(outputId, link);
         destinationNode.inputLinks.set(destinationInputId, link);
+        return link.get();
     }
 
     /**

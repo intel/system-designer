@@ -40,14 +40,14 @@ import com.intel.tools.fdk.graphframework.figure.node.LeafBodyFigure;
 import com.intel.tools.fdk.graphframework.figure.pin.InputFigure;
 import com.intel.tools.fdk.graphframework.figure.pin.OutputFigure;
 import com.intel.tools.fdk.graphframework.figure.pin.PinFigure;
-import com.intel.tools.fdk.graphframework.graph.Leaf;
-import com.intel.tools.fdk.graphframework.graph.Link;
+import com.intel.tools.fdk.graphframework.graph.ILeaf;
+import com.intel.tools.fdk.graphframework.graph.ILink;
 
 /**
  * Basic Presenter which link some figures to create a complete and functional graph node.</br>
  * This class can be extended by the user to enable some customization.
  */
-public class LeafPresenter extends Presenter<Leaf> {
+public class LeafPresenter extends Presenter<ILeaf> {
 
     /** Body Width in {@link IGraphFigure#SIZE_UNIT} */
     private static final int BODY_WIDTH = 4 * IGraphFigure.SIZE_UNIT;
@@ -69,7 +69,7 @@ public class LeafPresenter extends Presenter<Leaf> {
     private final LeafBodyFigure body;
     private final List<InputFigure> inputs = new ArrayList<>();
     private final List<OutputFigure> outputs = new ArrayList<>();
-    private final Map<Link, LinkAnchor> anchors = new HashMap<>();
+    private final Map<ILink, LinkAnchor> anchors = new HashMap<>();
 
     private boolean blockEvents = false;
     private Point boundsLocation = new Point(0, 0);
@@ -78,7 +78,7 @@ public class LeafPresenter extends Presenter<Leaf> {
      * @param node
      *            the graph node to represent
      */
-    public LeafPresenter(final Leaf node) {
+    public LeafPresenter(final ILeaf node) {
         super(node);
         // hides the global bounds figure which is used only for technical purpose
         this.boundsFigure.setVisible(false);
@@ -139,13 +139,13 @@ public class LeafPresenter extends Presenter<Leaf> {
     }
 
     /**
-     * Retrieve an anchor associated to a {@link Link}
+     * Retrieve an anchor associated to a {@link ILink}
      *
      * @param link
      *            the connected link
      * @return the anchor connected to the given link or null if link link is not linked to the input
      */
-    public LinkAnchor getAnchor(final Link link) {
+    public LinkAnchor getAnchor(final ILink link) {
         return anchors.get(link);
     }
 
@@ -180,7 +180,7 @@ public class LeafPresenter extends Presenter<Leaf> {
      * @param pinList
      *            the list to store the created pin
      */
-    private <T extends PinFigure> void setupPinFigure(final Optional<Link> link, final Class<T> clazz,
+    private <T extends PinFigure> void setupPinFigure(final Optional<? extends ILink> link, final Class<T> clazz,
             final List<T> pinList) {
         try {
             final T pin = clazz.newInstance();
