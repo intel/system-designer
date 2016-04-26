@@ -25,6 +25,7 @@ package com.intel.tools.fdk.graphframework.displayer.controller;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.jface.util.LocalSelectionTransfer;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -35,6 +36,7 @@ import org.eclipse.swt.dnd.DropTargetEvent;
 import org.eclipse.swt.dnd.Transfer;
 
 import com.intel.tools.fdk.graphframework.displayer.GraphDisplayer;
+import com.intel.tools.fdk.graphframework.figure.node.GroupBodyFigure;
 import com.intel.tools.fdk.graphframework.graph.INodeContainer;
 import com.intel.tools.fdk.graphframework.graph.adapter.IAdapter;
 
@@ -84,12 +86,21 @@ public class DragNDropController<T> {
                 if (selection instanceof IStructuredSelection) {
                     for (final Object object : ((IStructuredSelection) selection).toList()) {
                         if (droppedType.isInstance(object)) {
-                            /*
-                             * TODO: Retrieve the exact node where the element is dropped, for now the parent is always
-                             * the root graph
-                             */
+                            // Retrieve the drop location
+                            final Point drop = getDropRelativeLocation(event);
+                            displayer.getContentLayer().translateToRelative(drop);
+
+                            // Find the figure on which the drop occurs
+                            final GroupBodyFigure parentFigure = (GroupBodyFigure) displayer.getContentLayer()
+                                    .findFigureAt(drop.x, drop.y, new TypeTreeSearch(GroupBodyFigure.class));
+                            final INodeContainer parent;
+                            if (parentFigure != null) {
+                                parent = parentFigure.getGroup();
+                            } else {
+                                parent = adapter.getGraph();
+                            }
                             listeners.forEach(
-                                    listener -> listener.elementDropped(droppedType.cast(object), adapter.getGraph()));
+                                    listener -> listener.elementDropped(droppedType.cast(object), parent));
                         }
                     }
                 }
@@ -103,6 +114,19 @@ public class DragNDropController<T> {
 
     public void removeListener(final IDropListener<T> listener) {
         this.listeners.add(listener);
+    }
+
+    /**
+     * Convert location of a drop event to a location relative to the displayer canvas
+     *
+     * @param event
+     *            the received drop event
+     * @return the drop location relative to the canvas
+     */
+    private Point getDropRelativeLocation(final DropTargetEvent event) {
+        final DropTarget target = (DropTarget) event.widget;
+        final org.eclipse.swt.graphics.Point location = target.getControl().toControl(event.x, event.y);
+        return new Point(location.x, location.y);
     }
 
 }
