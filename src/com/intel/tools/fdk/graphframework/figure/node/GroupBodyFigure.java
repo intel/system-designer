@@ -33,12 +33,12 @@ public class GroupBodyFigure extends RoundedRectangle implements IGraphFigure {
 
     private static final int LINE_WIDTH = 2;
 
-    // The graph group this figure represents
+    /** The graph group this figure represents */
     private final IGroup group;
 
     /**
      * Creates a new {@link GroupBodyFigure}
-     * 
+     *
      * @param group
      *            the group this figure represents
      */
@@ -62,6 +62,9 @@ public class GroupBodyFigure extends RoundedRectangle implements IGraphFigure {
         setLineWidth(getLineWidth() - 1);
     }
 
+    /**
+     * @return the graph element associated to this figure
+     */
     public IGroup getGroup() {
         return group;
     }

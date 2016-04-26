@@ -91,8 +91,8 @@ public class LeafPresenter extends Presenter<ILeaf> {
             height = height * PIN_DISTANCE + PIN_OFFSET;
         }
         this.body = new LeafBodyFigure(leaf, BODY_WIDTH, height);
-        leaf.getInputs().forEach(pin -> setupPinFigure(pin, InputFigure.class, this.inputs));
-        leaf.getOutputs().forEach(pin -> setupPinFigure(pin, OutputFigure.class, this.outputs));
+        leaf.getInputs().forEach(pin -> setupPinFigure(pin, new InputFigure(pin), this.inputs));
+        leaf.getOutputs().forEach(pin -> setupPinFigure(pin, new OutputFigure(pin), this.outputs));
 
         getDisplayableFigures().add(boundsFigure);
         getDisplayableFigures().addAll(inputs);
@@ -130,11 +130,11 @@ public class LeafPresenter extends Presenter<ILeaf> {
         return body;
     }
 
-    protected PinFigure getInput(final int id) {
+    protected InputFigure getInput(final int id) {
         return this.inputs.get(id);
     }
 
-    protected PinFigure getOutput(final int id) {
+    protected OutputFigure getOutput(final int id) {
         return this.outputs.get(id);
     }
 
@@ -175,20 +175,16 @@ public class LeafPresenter extends Presenter<ILeaf> {
      *
      * @param pin
      *            the pin to represent
-     * @param clazz
-     *            the type of pin figure to create
+     * @param pinFigure
+     *            the figure which represent the pin
      * @param pinList
      *            the list to store the created pin figure
      */
-    private <T extends PinFigure> void setupPinFigure(final IPin pin, final Class<T> clazz, final List<T> pinList) {
-        try {
-            final T pinFigure = clazz.newInstance();
-            pinList.add(pinFigure);
-            if (pin.getLink().isPresent()) {
-                this.anchors.put(pin.getLink().get(), new LinkAnchor(boundsFigure, pinFigure));
-            }
-        } catch (InstantiationException | IllegalAccessException e) {
-            throw new IllegalArgumentException("When configuring node pin: The class used does not match expectation;");
+    private <P extends IPin, F extends PinFigure<P>> void setupPinFigure(final P pin, final F pinFigure,
+            final List<F> pinList) {
+        pinList.add(pinFigure);
+        if (pin.getLink().isPresent()) {
+            this.anchors.put(pin.getLink().get(), new LinkAnchor(boundsFigure, pinFigure));
         }
     }
 

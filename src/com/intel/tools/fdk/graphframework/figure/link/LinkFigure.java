@@ -26,11 +26,23 @@ import org.eclipse.draw2d.PolylineConnection;
 import org.eclipse.swt.SWT;
 
 import com.intel.tools.fdk.graphframework.figure.IGraphFigure;
+import com.intel.tools.fdk.graphframework.graph.ILink;
 
 /** Represent a graph link */
 public class LinkFigure extends PolylineConnection implements IGraphFigure {
 
-    public LinkFigure(final LinkAnchor source, final LinkAnchor target) {
+    private final ILink link;
+
+    /**
+     * @param link
+     *            the represented link
+     * @param source
+     *            the source anchor
+     * @param target
+     *            the target anchor
+     */
+    public LinkFigure(final ILink link, final LinkAnchor source, final LinkAnchor target) {
+        this.link = link;
         setSourceAnchor(source);
         setTargetAnchor(target);
 
@@ -47,6 +59,13 @@ public class LinkFigure extends PolylineConnection implements IGraphFigure {
     @Override
     public void unselect() {
         setLineWidth(getLineWidth() - 1);
+    }
+
+    /**
+     * @return the link graph element associated to the figure
+     */
+    public ILink getLink() {
+        return link;
     }
 
 }

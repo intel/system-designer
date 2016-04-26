@@ -28,9 +28,10 @@ import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.swt.graphics.Color;
 
 import com.intel.tools.fdk.graphframework.figure.IGraphFigure;
+import com.intel.tools.fdk.graphframework.graph.IPin;
 
 /** Abstract class representing a node I/O */
-public abstract class PinFigure extends PolylineShape implements IGraphFigure {
+public abstract class PinFigure<IOType extends IPin> extends PolylineShape implements IGraphFigure {
 
     private static final int LINE_WIDTH = 1;
 
@@ -41,11 +42,18 @@ public abstract class PinFigure extends PolylineShape implements IGraphFigure {
     /** Pin line length in {@link IGraphFigure#SIZE_UNIT} */
     private static final int LINE_LENGTH = SIZE_UNIT;
 
+    private final IOType pin;
+
     private final ArrowFigure arrow = new ArrowFigure(ARROW_HEIGHT);
     private final Ellipse connector = new Ellipse();
     private final PolylineShape line = new PolylineShape();
 
-    public PinFigure() {
+    /**
+     * @param pin
+     *            the pin graph element represented by this figure
+     */
+    public PinFigure(final IOType pin) {
+        this.pin = pin;
         add(arrow);
         add(connector);
         add(line);
@@ -119,6 +127,13 @@ public abstract class PinFigure extends PolylineShape implements IGraphFigure {
     @Override
     public void unselect() {
         setLineWidth(getLineWidth() - 1);
+    }
+
+    /**
+     * @return the pin graph element represented by this figure
+     */
+    public IOType getPin() {
+        return pin;
     }
 
 }

@@ -24,15 +24,17 @@ package com.intel.tools.fdk.graphframework.figure.pin;
 
 import org.eclipse.draw2d.geometry.Point;
 
+import com.intel.tools.fdk.graphframework.graph.IInput;
+
 /**
  * Represent an input of a graph node
  *
  * This figure looks like: o-->
  */
-public class InputFigure extends PinFigure {
+public class InputFigure extends PinFigure<IInput> {
 
-    public InputFigure() {
-        super();
+    public InputFigure(final IInput input) {
+        super(input);
 
         // Center the arrow on pin height and put it on the right
         getArrow().setLocation(new Point(getWidth() - getArrow().getBounds().width,

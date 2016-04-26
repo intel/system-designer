@@ -38,7 +38,7 @@ public class LeafBodyFigure extends RoundedRectangle implements IGraphFigure {
 
     private static final int LINE_WIDTH = 2;
 
-    // The graph leaf this figure represents
+    /** The graph leaf this figure represents */
     private final ILeaf leaf;
 
     /**
@@ -71,6 +71,9 @@ public class LeafBodyFigure extends RoundedRectangle implements IGraphFigure {
         setLineWidth(getLineWidth() - 1);
     }
 
+    /**
+     * @return the graph element associated to this figure
+     */
     public ILeaf getLeaf() {
         return leaf;
     }
