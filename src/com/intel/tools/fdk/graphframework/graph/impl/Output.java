@@ -20,33 +20,14 @@
  * express and approved by Intel in writing.
  * ============================================================================
  */
-package com.intel.tools.fdk.graphframework.utils;
+package com.intel.tools.fdk.graphframework.graph.impl;
 
-import java.lang.reflect.Array;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import com.intel.tools.fdk.graphframework.graph.IOutput;
 
-/**
- * Utility class which aims helping with basics list operations.
- */
-public final class ListUtils {
+public class Output extends Pin implements IOutput {
 
-    private ListUtils() {
-    }
-
-    /**
-     * Initialize a fixed size list with empty {@link Optional} objects.
-     *
-     * @param size
-     *            the list size
-     * @return an unmodifiable list filled with empty {@link Optional} objects
-     */
-    @SuppressWarnings("unchecked")
-    public static <T> List<Optional<T>> initializeFixedSizeList(final int size) {
-        final Optional<T>[] list = (Optional<T>[]) Array.newInstance(Optional.class, size);
-        Arrays.fill(list, Optional.empty());
-        return Arrays.asList(list);
+    public Output(final int id, final Leaf leaf) {
+        super(id, leaf);
     }
 
 }

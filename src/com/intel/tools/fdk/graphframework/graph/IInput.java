@@ -22,31 +22,11 @@
  */
 package com.intel.tools.fdk.graphframework.graph;
 
-import java.util.List;
-import java.util.Optional;
-
 /**
- * Represent the graph base element. </br>
+ * Represent an entry connection point of a {@link ILeaf} of an {@link IGraph}
  *
- * A leaf node can be connected to many other leaves of the same graph.</br>
- * A leaf is defined with a defined input/output numbers.</br>
- *
- * This interface is not intended to be implemented by clients.
+ * This connection point can be empty or filled with a {@link ILink} which leads to an {@link IOutput}
  */
-public interface ILeaf extends INode {
-
-    /**
-     * Retrieves potentially empty {@link Optional} of input {@link ILink}
-     *
-     * @return an unmodifiable list of potentially empty {@link ILink} place connected on inputs.
-     */
-    List<? extends IInput> getInputs();
-
-    /**
-     * Retrieves potentially empty {@link Optional} of output {@link ILink}
-     *
-     * @return an unmodifiable list of potentially empty {@link ILink} place connected on outputs.
-     */
-    List<? extends IOutput> getOutputs();
+public interface IInput extends IPin {
 
 }

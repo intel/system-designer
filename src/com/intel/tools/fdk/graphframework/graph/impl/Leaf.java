@@ -22,13 +22,12 @@
  */
 package com.intel.tools.fdk.graphframework.graph.impl;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import com.intel.tools.fdk.graphframework.graph.GraphException;
 import com.intel.tools.fdk.graphframework.graph.ILeaf;
-import com.intel.tools.fdk.graphframework.utils.ListUtils;
 
 /**
  * Represent the graph base element. </br>
@@ -44,18 +43,10 @@ public final class Leaf implements ILeaf, Comparable<Leaf> {
     private final int id;
 
     private NodeContainer parent;
-    /**
-     * Unmodifiable list (by construction) of {@link Link} representing inputs.</br>
-     * If the value of an element is {@link Optional#empty()} the input is not linked. The wrapped {@link Link} is
-     * connected to the input otherwise.
-     */
-    private final List<Optional<Link>> inputLinks;
-    /**
-     * Unmodifiable list (by construction) of {@link Link} representing outputs.</br>
-     * If the value of an element is {@link Optional#empty()} the output is not linked. The wrapped {@link Link} is
-     * connected to the output otherwise.
-     */
-    private final List<Optional<Link>> outputLinks;
+    /** Unmodifiable list (by construction) of {@link Pin} representing inputs. */
+    private final List<Input> inputLinks;
+    /** Unmodifiable list (by construction) of {@link Pin} representing outputs. */
+    private final List<Output> outputLinks;
 
     /**
      * Create a leaf with desired inputs and outputs numbers
@@ -85,28 +76,36 @@ public final class Leaf implements ILeaf, Comparable<Leaf> {
         assert inputNumber >= 0 : "Node input number should be positive or zero";
         assert outputNumber >= 0 : "Node output number should be positive or zero";
 
-        this.inputLinks = ListUtils.<Link> initializeFixedSizeList(inputNumber);
-        this.outputLinks = ListUtils.<Link> initializeFixedSizeList(outputNumber);
+        this.inputLinks = Arrays.asList(new Input[inputNumber]);
+        for (int i = 0; i < inputNumber; i++) {
+            this.inputLinks.set(i, new Input(i, this));
+        }
+        this.outputLinks = Arrays.asList(new Output[outputNumber]);
+        for (int i = 0; i < outputNumber; i++) {
+            this.outputLinks.set(i, new Output(i, this));
+        }
         this.id = id;
     }
 
     /**
-     * Retrieves potentially empty {@link Optional} of input {@link Link}
+     * Retrieve node inputs.</br>
+     * The index of those pins match their id.
      *
-     * @return an unmodifiable list of potentially empty {@link Link} place connected on inputs.
+     * @return an unmodifiable list of potentially not linked {@link Input}
      */
     @Override
-    public List<Optional<Link>> getInputLinks() {
+    public List<Input> getInputs() {
         return inputLinks;
     }
 
     /**
-     * Retrieves potentially empty {@link Optional} of output {@link Link}
+     * Retrieve node outputs.</br>
+     * The index of those pins match their id.
      *
-     * @return an unmodifiable list of potentially empty {@link Link} place connected on outputs.
+     * @return an unmodifiable list of potentially not linked {@link Output}
      */
     @Override
-    public List<Optional<Link>> getOutputLinks() {
+    public List<Output> getOutputs() {
         return outputLinks;
     }
 
@@ -129,36 +128,13 @@ public final class Leaf implements ILeaf, Comparable<Leaf> {
     }
 
     /**
-     * Connect an output of this node to an input of another one (or itself).
-     *
-     * @param outputId
-     *            the id of the output to connect
-     * @param destinationNode
-     *            the node to connect to
-     * @param destinationInputId
-     *            the id of the input to connect to
-     * @throws GraphException
-     *             if the output of this node or the input of the destination node is already linked to a link
-     */
-    public Link connect(final int outputId, final Leaf destinationNode, final int destinationInputId)
-            throws GraphException {
-        if (outputLinks.get(outputId).isPresent() || destinationNode.inputLinks.get(destinationInputId).isPresent()) {
-            throw new GraphException("While connecting nodes: I/O are already used");
-        }
-
-        final Optional<Link> link = Optional.of(new Link(destinationNode, this));
-        outputLinks.set(outputId, link);
-        destinationNode.inputLinks.set(destinationInputId, link);
-        return link.get();
-    }
-
-    /**
-     * Filter a list of {@link Optional} of {@link Link} and retrieves all connected links.
+     * Filter a list of {@link Pin} and retrieves all connected links.
      *
      * @return an unmodifiable list of connected {@link Link}.
      */
-    private List<Link> getLinkedLinks(final List<Optional<Link>> links) {
-        return links.stream().filter(Optional::isPresent).map(link -> link.get()).collect(Collectors.toList());
+    private List<Link> getLinkedLinks(final List<? extends Pin> pins) {
+        return pins.stream().map(Pin::getLink).filter(Optional::isPresent).map(Optional::get)
+                .collect(Collectors.toList());
     }
 
     @Override

@@ -20,33 +20,14 @@
  * express and approved by Intel in writing.
  * ============================================================================
  */
-package com.intel.tools.fdk.graphframework.graph;
+package com.intel.tools.fdk.graphframework.graph.impl;
 
-import java.util.List;
-import java.util.Optional;
+import com.intel.tools.fdk.graphframework.graph.IInput;
 
-/**
- * Represent the graph base element. </br>
- *
- * A leaf node can be connected to many other leaves of the same graph.</br>
- * A leaf is defined with a defined input/output numbers.</br>
- *
- * This interface is not intended to be implemented by clients.
- */
-public interface ILeaf extends INode {
+public class Input extends Pin implements IInput {
 
-    /**
-     * Retrieves potentially empty {@link Optional} of input {@link ILink}
-     *
-     * @return an unmodifiable list of potentially empty {@link ILink} place connected on inputs.
-     */
-    List<? extends IInput> getInputs();
-
-    /**
-     * Retrieves potentially empty {@link Optional} of output {@link ILink}
-     *
-     * @return an unmodifiable list of potentially empty {@link ILink} place connected on outputs.
-     */
-    List<? extends IOutput> getOutputs();
+    public Input(final int id, final Leaf leaf) {
+        super(id, leaf);
+    }
 
 }

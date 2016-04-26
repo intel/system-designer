@@ -108,8 +108,8 @@ public class LayoutGenerator implements IGraphListener {
         leafPresenters.values().forEach(this::displayPresenters);
         graph.getAllLinks().forEach(link -> {
             displayer.getConnectionLayer().add(new LinkFigure(
-                    this.leafPresenters.get(link.getInputNode()).getAnchor(link),
-                    this.leafPresenters.get(link.getOutputNode()).getAnchor(link)));
+                    this.leafPresenters.get(link.getInput().getLeaf()).getAnchor(link),
+                    this.leafPresenters.get(link.getOutput().getLeaf()).getAnchor(link)));
         });
 
         /**

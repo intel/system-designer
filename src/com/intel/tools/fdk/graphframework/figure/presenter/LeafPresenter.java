@@ -26,7 +26,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 import org.eclipse.draw2d.FigureListener;
 import org.eclipse.draw2d.IFigure;
@@ -42,6 +41,7 @@ import com.intel.tools.fdk.graphframework.figure.pin.OutputFigure;
 import com.intel.tools.fdk.graphframework.figure.pin.PinFigure;
 import com.intel.tools.fdk.graphframework.graph.ILeaf;
 import com.intel.tools.fdk.graphframework.graph.ILink;
+import com.intel.tools.fdk.graphframework.graph.IPin;
 
 /**
  * Basic Presenter which link some figures to create a complete and functional graph node.</br>
@@ -84,15 +84,15 @@ public class LeafPresenter extends Presenter<ILeaf> {
         this.boundsFigure.setVisible(false);
 
         // body configuration
-        int height = Integer.max(leaf.getInputLinks().size(), leaf.getOutputLinks().size());
+        int height = Integer.max(leaf.getInputs().size(), leaf.getOutputs().size());
         if (height <= 1) {
             height = BODY_BASE_HEIGHT;
         } else {
             height = height * PIN_DISTANCE + PIN_OFFSET;
         }
         this.body = new LeafBodyFigure(leaf, BODY_WIDTH, height);
-        leaf.getInputLinks().forEach(link -> setupPinFigure(link, InputFigure.class, this.inputs));
-        leaf.getOutputLinks().forEach(link -> setupPinFigure(link, OutputFigure.class, this.outputs));
+        leaf.getInputs().forEach(pin -> setupPinFigure(pin, InputFigure.class, this.inputs));
+        leaf.getOutputs().forEach(pin -> setupPinFigure(pin, OutputFigure.class, this.outputs));
 
         getDisplayableFigures().add(boundsFigure);
         getDisplayableFigures().addAll(inputs);
@@ -173,20 +173,19 @@ public class LeafPresenter extends Presenter<ILeaf> {
     /**
      * Setup a PinFigure
      *
-     * @param link
-     *            the link linked to the pin to create
+     * @param pin
+     *            the pin to represent
      * @param clazz
-     *            the type of pin to create
+     *            the type of pin figure to create
      * @param pinList
-     *            the list to store the created pin
+     *            the list to store the created pin figure
      */
-    private <T extends PinFigure> void setupPinFigure(final Optional<? extends ILink> link, final Class<T> clazz,
-            final List<T> pinList) {
+    private <T extends PinFigure> void setupPinFigure(final IPin pin, final Class<T> clazz, final List<T> pinList) {
         try {
-            final T pin = clazz.newInstance();
-            pinList.add(pin);
-            if (link.isPresent()) {
-                this.anchors.put(link.get(), new LinkAnchor(boundsFigure, pin));
+            final T pinFigure = clazz.newInstance();
+            pinList.add(pinFigure);
+            if (pin.getLink().isPresent()) {
+                this.anchors.put(pin.getLink().get(), new LinkAnchor(boundsFigure, pinFigure));
             }
         } catch (InstantiationException | IllegalAccessException e) {
             throw new IllegalArgumentException("When configuring node pin: The class used does not match expectation;");

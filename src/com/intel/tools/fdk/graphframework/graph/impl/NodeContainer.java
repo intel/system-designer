@@ -104,8 +104,8 @@ public abstract class NodeContainer implements INodeContainer {
      */
     public Set<Link> getExternalLinks() {
         return getAllLinks().stream()
-                .filter(link -> !(getAllLeaves().contains(link.getInputNode())
-                        && getAllLeaves().contains(link.getOutputNode())))
+                .filter(link -> !(getAllLeaves().contains(link.getInput().getLeaf())
+                        && getAllLeaves().contains(link.getOutput().getLeaf())))
                 .collect(Collectors.toSet());
     }
 

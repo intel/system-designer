@@ -35,11 +35,15 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import com.intel.tools.fdk.graphframework.graph.GraphException;
+import com.intel.tools.fdk.graphframework.graph.factory.GraphFactory;
 import com.intel.tools.fdk.graphframework.graph.impl.Graph;
 import com.intel.tools.fdk.graphframework.graph.impl.Group;
+import com.intel.tools.fdk.graphframework.graph.impl.Input;
 import com.intel.tools.fdk.graphframework.graph.impl.Leaf;
 import com.intel.tools.fdk.graphframework.graph.impl.Link;
 import com.intel.tools.fdk.graphframework.graph.impl.NodeContainer;
+import com.intel.tools.fdk.graphframework.graph.impl.Output;
+import com.intel.tools.fdk.graphframework.graph.impl.Pin;
 
 /** Copy the graph and give the impression that groups are simple nodes */
 public class GraphCompacter {
@@ -82,29 +86,12 @@ public class GraphCompacter {
     }
 
     private void copyLink(final Link link) {
-        final Leaf input = link.getInputNode();
-        final Leaf output = link.getOutputNode();
-        int inputPinIndex = -1;
-        Leaf inputCopy = leavesCopy.get(input);
-        int outputPinIndex = -1;
-        Leaf outputCopy = leavesCopy.get(output);
-
-        if (inputCopy == null) {
-            inputCopy = compactedGroups.get(input.getParent());
-            inputPinIndex = inputCopy != null ? inputCopy.getInputLinks().indexOf(Optional.empty()) : -1;
-        } else {
-            inputPinIndex = input.getInputLinks().indexOf(Optional.of(link));
-        }
-        if (outputCopy == null) {
-            outputCopy = compactedGroups.get(output.getParent());
-            outputPinIndex = outputCopy != null ? outputCopy.getOutputLinks().indexOf(Optional.empty()) : -1;
-        } else {
-            outputPinIndex = output.getOutputLinks().indexOf(Optional.of(link));
-        }
+        final Optional<Input> input = retrieveCopiedPin(link.getInput(), Leaf::getInputs);
+        final Optional<Output> output = retrieveCopiedPin(link.getOutput(), Leaf::getOutputs);
 
         try {
-            if (inputPinIndex != -1 && outputPinIndex != -1) {
-                outputCopy.connect(outputPinIndex, inputCopy, inputPinIndex);
+            if (input.isPresent() && output.isPresent()) {
+                GraphFactory.createLink(input.get(), output.get());
             }
         } catch (final GraphException e) {
             assert false : "During graph copy, no connection errors can happen";
@@ -112,20 +99,70 @@ public class GraphCompacter {
     }
 
     private Leaf compactGroup(final Group group) {
-        return new Leaf(getCompositeIOCounts(group, Leaf::getInputLinks, Link::getInputNode),
-                getCompositeIOCounts(group, Leaf::getOutputLinks, Link::getOutputNode));
+        return new Leaf(getCompositeIOCounts(group, Leaf::getInputs, Link::getInput),
+                getCompositeIOCounts(group, Leaf::getOutputs, Link::getOutput));
     }
 
-    private static int getCompositeIOCounts(final Group subGraph, final Function<Leaf, List<Optional<Link>>> getter,
-            final Function<Link, Leaf> nodeGetter) {
+    /**
+     * Count input or outputs of a compacted Node
+     *
+     * The calculated count correspond to all Group leaves free input/output and all connected input/output which are
+     * going outside the group.
+     *
+     ********
+     * FIXME: The right prototype of the method sould be:</br>
+     * private static <IOType extends Pin> int getCompositeIOCounts(final Group subGraph, </br>
+     * final Function<Leaf, List<IOType>> getter, final Function<Link, IOType> pinGetter) { </br>
+     *
+     * Due to a compiler issue, this prototype compile in eclipse but not with Maven. In a wait for a fix we can keep
+     * this method as it. Nevertheless, we have to be careful as we can use this method with a pin list getter which
+     * give Inputs and a pinGetter which give Outputs. This behavior is always wrong and should be avoided.
+     ********
+     *
+     * @param subGraph
+     *            the group to compact
+     * @param getter
+     *            the getter allowing to retrieve inputs or outputs of leaves
+     * @param pinGetter
+     *            the getter allowing to retrieve an input or an output of a leaves
+     * @return the count of inputs or outputs (depending on arguments) of the compacted group
+     */
+    private static int getCompositeIOCounts(final Group subGraph,
+            final Function<Leaf, List<? extends Pin>> getter, final Function<Link, Pin> pinGetter) {
         final long freeIO = subGraph.getLeaves().stream()
                 .map(getter)
                 .flatMap(List::stream)
-                .filter(edge -> !edge.isPresent())
+                .map(Pin::getLink)
+                .filter(link -> !link.isPresent())
                 .count();
         final long externalLinkedIo = subGraph.getExternalLinks().stream()
-                .filter(edge -> subGraph.getAllLeaves().contains(nodeGetter.apply(edge))).count();
+                .filter(link -> subGraph.getAllLeaves().contains(pinGetter.apply(link).getLeaf())).count();
         return (int) (freeIO + externalLinkedIo);
+    }
+
+    /**
+     * Retrieve a pin copy which match the one given as arguments
+     *
+     * @param pin
+     *            the pin to found the copy of
+     * @param pinGetter
+     *            leaf getter method to retrieve pins
+     * @return the pin copy or Optional.empty() if none is found
+     */
+    private <IOType extends Pin> Optional<IOType> retrieveCopiedPin(final IOType pin,
+            final Function<Leaf, List<IOType>> pinGetter) {
+        Leaf nodeCopy = leavesCopy.get(pin.getLeaf());
+        if (nodeCopy == null) {
+            nodeCopy = compactedGroups.get(pin.getLeaf().getParent());
+            if (nodeCopy != null) {
+                // find the fist free pin
+                return pinGetter.apply(nodeCopy).stream().filter(copiedPin -> !copiedPin.getLink().isPresent())
+                        .findFirst();
+            }
+        } else {
+            return Optional.of(pinGetter.apply(nodeCopy).get(pin.getId()));
+        }
+        return Optional.empty();
     }
 
 }

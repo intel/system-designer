@@ -22,31 +22,31 @@
  */
 package com.intel.tools.fdk.graphframework.graph;
 
-import java.util.List;
 import java.util.Optional;
 
 /**
- * Represent the graph base element. </br>
+ * Represent a connection point of a {@link ILeaf} of an {@link IGraph}
  *
- * A leaf node can be connected to many other leaves of the same graph.</br>
- * A leaf is defined with a defined input/output numbers.</br>
- *
- * This interface is not intended to be implemented by clients.
+ * This connection point can be empty or filled with a {@link ILink} which leads to another {@link IPin}
  */
-public interface ILeaf extends INode {
+public interface IPin {
 
     /**
-     * Retrieves potentially empty {@link Optional} of input {@link ILink}
-     *
-     * @return an unmodifiable list of potentially empty {@link ILink} place connected on inputs.
+     * @return the id of the pin
      */
-    List<? extends IInput> getInputs();
+    int getId();
 
     /**
-     * Retrieves potentially empty {@link Optional} of output {@link ILink}
-     *
-     * @return an unmodifiable list of potentially empty {@link ILink} place connected on outputs.
+     * @return the leaf which owns this pin
      */
-    List<? extends IOutput> getOutputs();
+    ILeaf getLeaf();
+
+    /**
+     * If the value of the {@link ILink} is {@link Optional#empty()} the pin is not linked. The wrapped {@link Link} is
+     * connected to the pin otherwise.
+     *
+     * @return an optional {@link ILink} object which leads to another {@link IPin}
+     */
+    Optional<? extends ILink> getLink();
 
 }

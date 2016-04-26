@@ -35,11 +35,11 @@ public interface ILink {
     /**
      * @return the input node
      */
-    ILeaf getInputNode();
+    IInput getInput();
 
     /**
      * @return the output node
      */
-    ILeaf getOutputNode();
+    IOutput getOutput();
 
 }

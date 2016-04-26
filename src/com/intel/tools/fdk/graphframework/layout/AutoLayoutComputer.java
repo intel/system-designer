@@ -142,7 +142,7 @@ public class AutoLayoutComputer {
     private void leftNumbering(final Leaf origin) {
         origin.getLinkedOutputLinks().forEach(link -> {
             visitedLinks.add(link);
-            final Leaf linked = link.getInputNode();
+            final Leaf linked = link.getInput().getLeaf();
             if (!hasUnvisitedLinkedInput(linked)) {
                 // Last link to the node let's check it
                 abscisses.put(linked, ++currentCoordinate);
@@ -157,7 +157,7 @@ public class AutoLayoutComputer {
                 .descendingIterator()
                 .forEachRemaining(link -> {
                     visitedLinks.add(link);
-                    final Leaf linked = link.getInputNode();
+                    final Leaf linked = link.getInput().getLeaf();
                     // Check that linked instance has no unvisited linked link
                     if (!hasUnvisitedLinkedInput(linked)) {
                         // Last link to the node let's check it

@@ -32,22 +32,24 @@ import com.intel.tools.fdk.graphframework.graph.ILink;
  */
 public final class Link implements ILink {
 
-    private final Leaf inputNode;
-    private final Leaf outputNode;
+    private final Input input;
+    private final Output output;
 
-    public Link(final Leaf input, final Leaf output) {
-        this.inputNode = input;
-        this.outputNode = output;
+    public Link(final Input input, final Output output) {
+        this.input = input;
+        this.output = output;
+        this.input.connect(this);
+        this.output.connect(this);
     }
 
     @Override
-    public Leaf getInputNode() {
-        return inputNode;
+    public Input getInput() {
+        return input;
     }
 
     @Override
-    public Leaf getOutputNode() {
-        return outputNode;
+    public Output getOutput() {
+        return output;
     }
 
 }

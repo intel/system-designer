@@ -29,13 +29,18 @@ import java.util.stream.Collectors;
 import com.intel.tools.fdk.graphframework.graph.GraphException;
 import com.intel.tools.fdk.graphframework.graph.IGraph;
 import com.intel.tools.fdk.graphframework.graph.IGroup;
+import com.intel.tools.fdk.graphframework.graph.IInput;
 import com.intel.tools.fdk.graphframework.graph.ILeaf;
 import com.intel.tools.fdk.graphframework.graph.ILink;
 import com.intel.tools.fdk.graphframework.graph.INode;
 import com.intel.tools.fdk.graphframework.graph.INodeContainer;
+import com.intel.tools.fdk.graphframework.graph.IOutput;
 import com.intel.tools.fdk.graphframework.graph.impl.Graph;
 import com.intel.tools.fdk.graphframework.graph.impl.Group;
+import com.intel.tools.fdk.graphframework.graph.impl.Input;
 import com.intel.tools.fdk.graphframework.graph.impl.Leaf;
+import com.intel.tools.fdk.graphframework.graph.impl.Link;
+import com.intel.tools.fdk.graphframework.graph.impl.Output;
 
 /**
  * Allows to instantiate Graph elements.
@@ -71,9 +76,22 @@ public final class GraphFactory {
         return createGroup(leaves, Collections.emptySet());
     }
 
-    public static ILink createLink(final ILeaf sourceNode, final int sourceOutputId,
-            final ILeaf destinationNode, final int destinationInputId) throws GraphException {
-        return ((Leaf) sourceNode).connect(sourceOutputId, (Leaf) destinationNode, destinationInputId);
+    /**
+     * Connect an output of a node to an input of another one (or itself).
+     *
+     * @param input
+     *            the input pin to connect
+     * @param output
+     *            the output pin to connect
+     * @return the {@link ILink} object which bounds the two pins together
+     * @throws GraphException
+     *             if the output or the input is already linked to a link
+     */
+    public static ILink createLink(final IInput input, final IOutput output) throws GraphException {
+        if (input.getLink().isPresent() || output.getLink().isPresent()) {
+            throw new GraphException("While connecting nodes: I/O are already used");
+        }
+        return new Link((Input) input, (Output) output);
     }
 
 }

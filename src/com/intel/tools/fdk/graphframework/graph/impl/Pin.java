@@ -20,33 +20,50 @@
  * express and approved by Intel in writing.
  * ============================================================================
  */
-package com.intel.tools.fdk.graphframework.graph;
+package com.intel.tools.fdk.graphframework.graph.impl;
 
-import java.util.List;
 import java.util.Optional;
 
+import com.intel.tools.fdk.graphframework.graph.IPin;
+
 /**
- * Represent the graph base element. </br>
- *
- * A leaf node can be connected to many other leaves of the same graph.</br>
- * A leaf is defined with a defined input/output numbers.</br>
- *
- * This interface is not intended to be implemented by clients.
+ * Represent a connection point of a {@link Leaf}
  */
-public interface ILeaf extends INode {
+public abstract class Pin implements IPin {
+
+    private final int id;
+    private final Leaf leaf;
+    private Optional<Link> link = Optional.empty();
+
+    public Pin(final int id, final Leaf leaf) {
+        this.id = id;
+        this.leaf = leaf;
+    }
+
+    @Override
+    public int getId() {
+        return id;
+    }
+
+    @Override
+    public Leaf getLeaf() {
+        return leaf;
+    }
+
+    @Override
+    public Optional<Link> getLink() {
+        return link;
+    }
 
     /**
-     * Retrieves potentially empty {@link Optional} of input {@link ILink}
+     * Connect this pin to a link.</br>
+     * This method is used at {@link Link} creation and thus is not exposed everywhere
      *
-     * @return an unmodifiable list of potentially empty {@link ILink} place connected on inputs.
+     * @param link
+     *            to connect
      */
-    List<? extends IInput> getInputs();
-
-    /**
-     * Retrieves potentially empty {@link Optional} of output {@link ILink}
-     *
-     * @return an unmodifiable list of potentially empty {@link ILink} place connected on outputs.
-     */
-    List<? extends IOutput> getOutputs();
+    void connect(final Link link) {
+        this.link = Optional.of(link);
+    }
 
 }
