@@ -23,11 +23,11 @@
 package com.intel.tools.fdk.graphframework.figure.presenter;
 
 import java.util.HashMap;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
-import com.intel.tools.fdk.graphframework.graph.GraphHelper;
 import com.intel.tools.fdk.graphframework.graph.IGroup;
 import com.intel.tools.fdk.graphframework.graph.ILeaf;
 import com.intel.tools.fdk.graphframework.graph.INode;
@@ -51,8 +51,9 @@ public class DefaultPresenterManager implements IPresenterManager {
         if (groupToPresenterMap.containsKey(group)) {
             return groupToPresenterMap.get(group);
         } else {
-            final List<Presenter<? extends INode>> presenterList = GraphHelper.getAllLeaves(group).stream()
-                    .map(this::getPresenter).collect(Collectors.toList());
+            final Set<Presenter<? extends INode>> presenterList = new HashSet<>();
+            presenterList.addAll(group.getLeaves().stream().map(this::getPresenter).collect(Collectors.toSet()));
+            presenterList.addAll(group.getGroups().stream().map(this::getPresenter).collect(Collectors.toSet()));
 
             groupToPresenterMap.put(group, new GroupPresenter(group, presenterList));
             return groupToPresenterMap.get(group);

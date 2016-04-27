@@ -22,8 +22,8 @@
  */
 package com.intel.tools.fdk.graphframework.figure.presenter;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.eclipse.draw2d.FigureListener;
 import org.eclipse.draw2d.IFigure;
@@ -44,7 +44,7 @@ public class GroupPresenter extends Presenter<IGroup> {
     private static final int OFFSET = 60;
 
     private final GroupBodyFigure boundsFigure;
-    private final List<Presenter<? extends INode>> childrenPresenters = new ArrayList<>();
+    private final Set<Presenter<? extends INode>> childrenPresenters = new HashSet<>();
 
     private boolean blockEvents = false;
     private Point boundsLocation = new Point(0, 0);
@@ -55,7 +55,7 @@ public class GroupPresenter extends Presenter<IGroup> {
      * @param childrenPresenters
      *            presenters of children nodes.
      */
-    public GroupPresenter(final IGroup group, final List<Presenter<? extends INode>> childrenPresenters) {
+    public GroupPresenter(final IGroup group, final Set<Presenter<? extends INode>> childrenPresenters) {
         super(group);
         boundsFigure = new GroupBodyFigure(group);
         this.childrenPresenters.addAll(childrenPresenters);
@@ -111,10 +111,6 @@ public class GroupPresenter extends Presenter<IGroup> {
         boundsFigure.setBounds(rectangle);
         boundsLocation = boundsFigure.getLocation().getCopy();
         this.blockEvents = false;
-    }
-
-    public List<Presenter<? extends INode>> getChildrenPresenters() {
-        return childrenPresenters;
     }
 
     @Override
