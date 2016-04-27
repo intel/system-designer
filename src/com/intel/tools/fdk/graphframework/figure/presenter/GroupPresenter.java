@@ -43,6 +43,16 @@ public class GroupPresenter extends Presenter<IGroup> {
     /** The offset used between the group figure bounds and its child */
     private static final int OFFSET = 60;
 
+    /** Track body movement to keep sub-elements together */
+    private final FigureListener childListener = new FigureListener() {
+        @Override
+        public void figureMoved(final IFigure source) {
+            if (!blockEvents) {
+                updateBoundsFigure();
+            }
+        }
+    };
+
     private final GroupBodyFigure boundsFigure;
     private final Set<Presenter<? extends INode>> childrenPresenters = new HashSet<>();
 
@@ -59,18 +69,7 @@ public class GroupPresenter extends Presenter<IGroup> {
         super(group);
         boundsFigure = new GroupBodyFigure(group);
         this.childrenPresenters.addAll(childrenPresenters);
-        this.childrenPresenters.forEach(presenter -> {
-            // Track body movement to keep sub-elements together
-            presenter.getNodeBody().addFigureListener(new FigureListener() {
-                @Override
-                public void figureMoved(final IFigure source) {
-                    if (!blockEvents) {
-                        updateBoundsFigure();
-                    }
-                }
-            });
-
-        });
+        this.childrenPresenters.forEach(this::add);
         boundsFigure.addFigureListener(new FigureListener() {
             @Override
             public void figureMoved(final IFigure source) {
@@ -121,6 +120,31 @@ public class GroupPresenter extends Presenter<IGroup> {
     @Override
     public IFigure getBoundsFigure() {
         return boundsFigure;
+    }
+
+    /**
+     * @param presenter
+     *            the child presenter to track
+     */
+    public void add(final Presenter<? extends INode> presenter) {
+        assert getNode().getGroups().contains(presenter.getNode())
+                            || getNode().getLeaves().contains(presenter.getNode())
+               : "The added presenter is not related to a node of the represented group";
+
+        this.childrenPresenters.add(presenter);
+        // Track body movement to keep sub-elements together
+        presenter.getNodeBody().addFigureListener(childListener);
+        updateBoundsFigure();
+    }
+
+    /**
+     * @param presenter
+     *            the child presenter to forget
+     */
+    public void remove(final Presenter<? extends INode> presenter) {
+        this.childrenPresenters.remove(presenter);
+        presenter.getNodeBody().removeFigureListener(childListener);
+        updateBoundsFigure();
     }
 
 }

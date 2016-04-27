@@ -31,6 +31,7 @@ import java.util.stream.Collectors;
 import com.intel.tools.fdk.graphframework.graph.IGroup;
 import com.intel.tools.fdk.graphframework.graph.ILeaf;
 import com.intel.tools.fdk.graphframework.graph.INode;
+import com.intel.tools.fdk.graphframework.graph.INodeContainer.INodeContainerListener;
 
 /**
  * This is the default implementation for a presenter manager. It is used by the LayoutGenerator if none is passed for
@@ -48,16 +49,39 @@ public class DefaultPresenterManager implements IPresenterManager {
 
     @Override
     public GroupPresenter getPresenter(final IGroup group) {
-        if (groupToPresenterMap.containsKey(group)) {
-            return groupToPresenterMap.get(group);
-        } else {
-            final Set<Presenter<? extends INode>> presenterList = new HashSet<>();
-            presenterList.addAll(group.getLeaves().stream().map(this::getPresenter).collect(Collectors.toSet()));
-            presenterList.addAll(group.getGroups().stream().map(this::getPresenter).collect(Collectors.toSet()));
+        return groupToPresenterMap.computeIfAbsent(group, this::setupGroupPresenter);
+    }
 
-            groupToPresenterMap.put(group, new GroupPresenter(group, presenterList));
-            return groupToPresenterMap.get(group);
-        }
+    private GroupPresenter setupGroupPresenter(final IGroup group) {
+        final Set<Presenter<? extends INode>> presenterList = new HashSet<>();
+        presenterList.addAll(group.getLeaves().stream().map(this::getPresenter).collect(Collectors.toSet()));
+        presenterList.addAll(group.getGroups().stream().map(this::getPresenter).collect(Collectors.toSet()));
+
+        final GroupPresenter presenter = new GroupPresenter(group, presenterList);
+        group.addListener(new INodeContainerListener() {
+
+            @Override
+            public void leafAdded(final ILeaf addedLeaf) {
+                presenter.add(getPresenter(addedLeaf));
+            }
+
+            @Override
+            public void groupAdded(final IGroup addedGroup) {
+                presenter.add(getPresenter(addedGroup));
+            }
+
+            @Override
+            public void leafRemoved(final ILeaf removedLeaf) {
+                presenter.remove(getPresenter(removedLeaf));
+            }
+
+            @Override
+            public void groupRemoved(final IGroup removedGroup) {
+                presenter.remove(getPresenter(removedGroup));
+            }
+
+        });
+        return presenter;
     }
 
 }
