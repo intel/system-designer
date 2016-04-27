@@ -31,7 +31,8 @@ import org.eclipse.draw2d.geometry.Point;
 import com.intel.tools.fdk.graphframework.displayer.GraphDisplayer;
 import com.intel.tools.fdk.graphframework.figure.node.GroupBodyFigure;
 import com.intel.tools.fdk.graphframework.figure.node.LeafBodyFigure;
-import com.intel.tools.fdk.graphframework.graph.INode;
+import com.intel.tools.fdk.graphframework.graph.IGroup;
+import com.intel.tools.fdk.graphframework.graph.ILeaf;
 import com.intel.tools.fdk.graphframework.graph.INodeContainer;
 import com.intel.tools.fdk.graphframework.graph.adapter.IAdapter;
 
@@ -46,14 +47,33 @@ import com.intel.tools.fdk.graphframework.graph.adapter.IAdapter;
  */
 public class ReparentingController implements NodeMoveController.FigureMoveListener {
 
-    public interface Listener {
+    public interface ReparentingListener {
         /**
-         * This method is called when the controller detects a reparenting
+         * This method is called when the controller detects a reparenting of a leaf
+         *
+         * @param leaf
+         *            the moved leaf
+         * @param oldParent
+         *            the old parent
+         * @param newParent
+         *            the new parent proposal
          */
-        void moveNode(final INode node, final INodeContainer oldParent, final INodeContainer newParent);
+        void move(final ILeaf leaf, final INodeContainer oldParent, final INodeContainer newParent);
+
+        /**
+         * This method is called when the controller detects a reparenting of a group
+         *
+         * @param group
+         *            the moved group
+         * @param oldParent
+         *            the old parent
+         * @param newParent
+         *            the new parent proposal
+         */
+        void move(final IGroup group, final INodeContainer oldParent, final INodeContainer newParent);
     }
 
-    private final List<Listener> listeners = new ArrayList<>();
+    private final List<ReparentingListener> listeners = new ArrayList<>();
     private final GraphDisplayer displayer;
 
     /** The provider for the graph. The graph is used as last parent if no parent figure is found */
@@ -71,29 +91,28 @@ public class ReparentingController implements NodeMoveController.FigureMoveListe
 
     @Override
     public void figureMoved(final IFigure figure, final Point destination) {
-        INode node = null;
-        if (figure instanceof LeafBodyFigure) {
-            node = ((LeafBodyFigure) figure).getLeaf();
-        } else if (figure instanceof GroupBodyFigure) {
-            node = ((GroupBodyFigure) figure).getGroup();
-        }
-
-        final INodeContainer oldParent = node.getParent();
         final INodeContainer newParent = getTargetParent(destination);
-        if (oldParent != newParent && newParent != node) {
-            fireMoveNode(node, oldParent, newParent);
+        if (figure instanceof LeafBodyFigure) {
+            final ILeaf node = ((LeafBodyFigure) figure).getLeaf();
+            final INodeContainer oldParent = node.getParent();
+            if (oldParent != newParent && newParent != node) {
+                listeners.forEach(listener -> listener.move(node, oldParent, newParent));
+            }
+        } else if (figure instanceof GroupBodyFigure) {
+            final IGroup node = ((GroupBodyFigure) figure).getGroup();
+            final INodeContainer oldParent = node.getParent();
+            if (oldParent != newParent && newParent != node) {
+                listeners.forEach(listener -> listener.move(node, node.getParent(), newParent));
+            }
         }
+
     }
 
-    public void fireMoveNode(final INode node, final INodeContainer oldParent, final INodeContainer newParent) {
-        listeners.forEach(listener -> listener.moveNode(node, oldParent, newParent));
-    }
-
-    public void addListener(final Listener listener) {
+    public void addListener(final ReparentingListener listener) {
         listeners.add(listener);
     }
 
-    public void removeListener(final Listener listener) {
+    public void removeListener(final ReparentingListener listener) {
         listeners.remove(listener);
     }
 

@@ -22,6 +22,7 @@
  */
 package com.intel.tools.fdk.graphframework.graph.action;
 
+import com.intel.tools.fdk.graphframework.graph.IGroup;
 import com.intel.tools.fdk.graphframework.graph.ILeaf;
 import com.intel.tools.fdk.graphframework.graph.ILink;
 import com.intel.tools.fdk.graphframework.graph.INode;
@@ -51,14 +52,24 @@ public interface IGraphAction<T> {
     void removeNode(final INode node);
 
     /**
-     * Move a Node into another parent Node
+     * Move a leaf into another parent container
      *
-     * @param node
-     *            the node to move
+     * @param leaf
+     *            the leaf to move
      * @param container
      *            the new parent destination
      */
-    void moveNode(final INode node, final INodeContainer container);
+    void moveLeaf(final ILeaf leaf, final INodeContainer container);
+
+    /**
+     * Move a group into another parent container
+     *
+     * @param group
+     *            the group to move
+     * @param container
+     *            the new parent destination
+     */
+    void moveGroup(final IGroup group, final INodeContainer container);
 
     /**
      * Add a new Link between two node Leaves of the Graph
