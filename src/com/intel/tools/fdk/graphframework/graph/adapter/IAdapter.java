@@ -62,10 +62,4 @@ public interface IAdapter {
      */
     void removeGraphListener(final IGraphListener listener);
 
-    /**
-     * This method allows to notify implementors that a graph has been updated.</br>
-     *
-     * Basically it should consist to call {@link IGraphListener#graphUpdated(IGraph)} method of each listeners.
-     */
-    void fireGraphUpdate();
 }
