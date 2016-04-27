@@ -22,12 +22,16 @@
  */
 package com.intel.tools.fdk.graphframework.graph.impl;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import com.intel.tools.fdk.graphframework.graph.IGroup;
+import com.intel.tools.fdk.graphframework.graph.ILeaf;
 import com.intel.tools.fdk.graphframework.graph.INode;
 import com.intel.tools.fdk.graphframework.graph.INodeContainer;
 
@@ -35,6 +39,8 @@ import com.intel.tools.fdk.graphframework.graph.INodeContainer;
  * Container of {@link INode} objects
  */
 public abstract class NodeContainer implements INodeContainer {
+
+    private final List<INodeContainerListener> listeners = new ArrayList<>();
 
     private final Set<Leaf> leaves = new HashSet<>();
     private final Set<Group> groups = new HashSet<>();
@@ -48,10 +54,8 @@ public abstract class NodeContainer implements INodeContainer {
      *            group nodes of the graph. All nodes of the list are added in the internal one.
      */
     public NodeContainer(final Set<Leaf> leaves, final Set<Group> groups) {
-        this.leaves.addAll(leaves);
-        this.leaves.forEach(leaf -> leaf.setParent(this));
-        this.groups.addAll(groups);
-        this.groups.forEach(group -> group.setParent(this));
+        leaves.forEach(this::add);
+        groups.forEach(this::add);
     }
 
     /**
@@ -107,6 +111,50 @@ public abstract class NodeContainer implements INodeContainer {
                 .filter(link -> !(getAllLeaves().contains(link.getInput().getLeaf())
                         && getAllLeaves().contains(link.getOutput().getLeaf())))
                 .collect(Collectors.toSet());
+    }
+
+    @Override
+    public void add(final ILeaf leaf) {
+        final Leaf leafToAdd = (Leaf) leaf;
+        leafToAdd.setParent(this);
+        this.leaves.add(leafToAdd);
+        listeners.forEach(l -> l.leafAdded(leaf));
+    }
+
+    @Override
+    public void add(final IGroup group) {
+        final Group groupToAdd = (Group) group;
+        groupToAdd.setParent(this);
+        this.groups.add(groupToAdd);
+        listeners.forEach(l -> l.groupAdded(group));
+    }
+
+    @Override
+    public void remove(final ILeaf leaf) {
+        final Leaf leafToRemove = (Leaf) leaf;
+        if (this.leaves.remove(leafToRemove)) {
+            leafToRemove.setParent(null);
+            listeners.forEach(l -> l.leafRemoved(leaf));
+        }
+    }
+
+    @Override
+    public void remove(final IGroup group) {
+        final Group groupToRemove = (Group) group;
+        if (this.groups.remove(groupToRemove)) {
+            groupToRemove.setParent(null);
+            listeners.forEach(l -> l.groupRemoved(group));
+        }
+    }
+
+    @Override
+    public void addListener(final INodeContainerListener listener) {
+        listeners.add(listener);
+    }
+
+    @Override
+    public void removeListener(final INodeContainerListener listener) {
+        listeners.remove(listener);
     }
 
 }

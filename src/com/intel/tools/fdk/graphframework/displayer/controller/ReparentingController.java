@@ -80,7 +80,7 @@ public class ReparentingController implements NodeMoveController.FigureMoveListe
 
         final INodeContainer oldParent = node.getParent();
         final INodeContainer newParent = getTargetParent(destination);
-        if (oldParent != newParent) {
+        if (oldParent != newParent && newParent != node) {
             fireMoveNode(node, oldParent, newParent);
         }
     }

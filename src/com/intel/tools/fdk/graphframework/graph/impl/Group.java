@@ -25,6 +25,7 @@ package com.intel.tools.fdk.graphframework.graph.impl;
 import java.util.Set;
 
 import com.intel.tools.fdk.graphframework.graph.IGroup;
+import com.intel.tools.fdk.graphframework.graph.INode;
 
 /**
  * Represent a group {@link INode} which are part of a {@link Graph}.</br>
@@ -43,6 +44,10 @@ public class Group extends NodeContainer implements IGroup {
     }
 
     protected void setParent(final NodeContainer parent) {
+        assert parent != this : "A node cannot be its own parent";
+        if (this.parent != null) {
+            this.parent.remove(this);
+        }
         this.parent = parent;
     }
 

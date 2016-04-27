@@ -143,6 +143,9 @@ public final class Leaf implements ILeaf, Comparable<Leaf> {
     }
 
     protected void setParent(final NodeContainer parent) {
+        if (this.parent != null) {
+            this.parent.remove(this);
+        }
         this.parent = parent;
     }
 
