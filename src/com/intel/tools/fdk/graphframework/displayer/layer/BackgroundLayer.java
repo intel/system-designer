@@ -22,17 +22,34 @@
  */
 package com.intel.tools.fdk.graphframework.displayer.layer;
 
-import org.eclipse.draw2d.Layer;
+import org.eclipse.draw2d.FigureUtilities;
+import org.eclipse.draw2d.FreeformLayer;
+import org.eclipse.draw2d.Graphics;
+import org.eclipse.draw2d.geometry.Point;
+
+import com.intel.tools.fdk.graphframework.figure.IGraphFigure;
+import com.intel.tools.utils.IntelPalette;
 
 /** A layer intended to be in the background.
  *  This layer will always capture click events (even if no child figure is at the clicked point).
  */
-public class BackgroundLayer extends Layer {
+public class BackgroundLayer extends FreeformLayer {
+
+    public BackgroundLayer() {
+        super();
+        setForegroundColor(IntelPalette.LIGHT_GREY);
+    }
 
     @Override
     /** All click event made on a background layer is captured */
     public boolean containsPoint(final int x, final int y) {
         return true;
+    }
+
+    @Override
+    protected void paintFigure(final Graphics graphics) {
+        super.paintFigure(graphics);
+        FigureUtilities.paintGrid(graphics, this, new Point(0, 0), IGraphFigure.SIZE_UNIT, IGraphFigure.SIZE_UNIT);
     }
 
 }

@@ -92,10 +92,15 @@ public class GraphDisplayer {
         viewport = new FDKViewPort();
         viewport.setContents(layers);
         canvas.setViewport(viewport);
+        setGridVisibility(false);
     }
 
     public FigureCanvas getControl() {
         return canvas;
+    }
+
+    public void setGridVisibility(final boolean visibility) {
+        getBackgroundLayer().setVisible(visibility);
     }
 
     /** Retrieves Layer holder of this displayer */
