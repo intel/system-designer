@@ -75,9 +75,11 @@ public class GroupPresenter extends Presenter<IGroup> {
             public void figureMoved(final IFigure source) {
                 if (!blockEvents) {
                     blockEvents = true;
-                    childrenPresenters.forEach(
+                    GroupPresenter.this.childrenPresenters.forEach(
                             p -> p.getBoundsFigure().translate(source.getBounds().x - boundsLocation.x,
                                     source.getBounds().y - boundsLocation.y));
+                    boundsLocation.translate(source.getBounds().x - boundsLocation.x,
+                            source.getBounds().y - boundsLocation.y);
                     blockEvents = false;
                     updateBoundsFigure();
                 }
@@ -92,7 +94,7 @@ public class GroupPresenter extends Presenter<IGroup> {
      */
     private void updateBoundsFigure() {
         this.blockEvents = true;
-        final Rectangle rectangle = new Rectangle();
+        final Rectangle rectangle = new Rectangle(boundsLocation.x, boundsLocation.y, 0, 0);
         // Make bounds figure empty
         boundsFigure.setBounds(rectangle);
         // Determine new bounds
@@ -103,8 +105,11 @@ public class GroupPresenter extends Presenter<IGroup> {
                 rectangle.union(presenter.getBoundsFigure().getBounds());
             }
         });
-        rectangle.x -= OFFSET / 2;
-        rectangle.y -= OFFSET / 2;
+        if (!childrenPresenters.isEmpty()) {
+            // If there is some presenters, we put an offset to wrap them correctly
+            rectangle.x -= OFFSET / 2;
+            rectangle.y -= OFFSET / 2;
+        }
         rectangle.width += OFFSET;
         rectangle.height += OFFSET;
         boundsFigure.setBounds(rectangle);
