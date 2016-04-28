@@ -21,4 +21,5 @@ Export-Package: com.intel.tools.fdk.graphframework.displayer,
 Require-Bundle: org.eclipse.draw2d,
  com.intel.tools.utils,
  org.eclipse.jface,
- org.apache.log4j;bundle-version="1.2.15"
+ org.apache.log4j;bundle-version="1.2.15",
+ org.eclipse.e4.ui.workbench
