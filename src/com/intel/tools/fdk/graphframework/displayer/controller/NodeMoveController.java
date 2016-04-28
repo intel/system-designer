@@ -74,6 +74,7 @@ public class NodeMoveController {
             @Override
             public void mouseReleased(final MouseEvent event) {
                 if (movedFigure != null) {
+                    displayer.getFeedbackLayer().remove(ghost);
                     final Point destination = new Point(event.x, event.y);
                     fireFigureMoved(movedFigure, destination);
                     movedFigure.setBounds(movingFigure.getBounds().getCopy());
@@ -82,7 +83,6 @@ public class NodeMoveController {
                     offset.setHeight(0);
 
                     // Remove the ghost
-                    displayer.getFeedbackLayer().remove(ghost);
                     displayer.getContentLayer().repaint();
                     movedFigure = null;
                 }
