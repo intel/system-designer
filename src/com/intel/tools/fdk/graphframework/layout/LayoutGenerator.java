@@ -26,8 +26,10 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.eclipse.draw2d.IFigure;
 
@@ -130,11 +132,9 @@ public class LayoutGenerator implements IGraphListener {
 
     private static <N extends INode> void removeOldPresenters(
             final Map<N, ? extends Presenter<? extends INode>> presenters, final Set<N> nodes) {
-        presenters.keySet().forEach(node -> {
-            if (!nodes.contains(node)) {
-                presenters.remove(node);
-            }
-        });
+        final List<N> keysToRemove = presenters.keySet().stream().filter(node -> !nodes.contains(node))
+                .collect(Collectors.toList());
+        keysToRemove.forEach(node -> presenters.remove(node));
     }
 
     private void displayPresenters(final Presenter<?> presenter) {
