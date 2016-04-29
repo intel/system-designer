@@ -25,6 +25,7 @@ package com.intel.tools.fdk.graphframework.displayer.controller;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.log4j.Logger;
 import org.eclipse.draw2d.GhostImageFigure;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.MouseEvent;
@@ -35,6 +36,7 @@ import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.Rectangle;
 
 import com.intel.tools.fdk.graphframework.displayer.GraphDisplayer;
+import com.intel.tools.fdk.graphframework.figure.IGraphFigure;
 import com.intel.tools.fdk.graphframework.figure.node.GroupBodyFigure;
 import com.intel.tools.fdk.graphframework.figure.node.LeafBodyFigure;
 
@@ -43,6 +45,8 @@ import com.intel.tools.fdk.graphframework.figure.node.LeafBodyFigure;
  * Only Node Figure of the {@link GraphDisplayer} will be moved.
  */
 public class NodeMoveController {
+
+    private static final Logger LOG = Logger.getLogger(NodeMoveController.class);
 
     private static final TypeTreeSearch NODE_BODY_SEARCHER = new TypeTreeSearch(LeafBodyFigure.class);
     private static final TypeTreeSearch GROUP_BODY_SEARCHER = new TypeTreeSearch(GroupBodyFigure.class);
@@ -65,10 +69,15 @@ public class NodeMoveController {
     private final Dimension offset = new Dimension(0, 0);
     /** Indicate if the ghost is visible or not */
     private boolean ghostVisible = false;
+    /** Snap figure to grid */
+    private boolean snapToGrid;
 
     private final List<FigureMoveListener> listeners = new ArrayList<>();
 
-    /** @param displayer the displayer which will allow component move */
+    /**
+     * @param displayer
+     *            the displayer which will allow component move
+     */
     public NodeMoveController(final GraphDisplayer displayer) {
         displayer.getContentLayer().addMouseListener(new MouseListener.Stub() {
             @Override
@@ -76,8 +85,17 @@ public class NodeMoveController {
                 if (movedFigure != null) {
                     displayer.getFeedbackLayer().remove(ghost);
                     final Point destination = new Point(event.x, event.y);
+                    final Rectangle figureBounds = movingFigure.getBounds().getCopy();
+
+                    if (snapToGrid) {
+                        final Point adjustedTopLeft = adjustToGrid();
+                        destination.setLocation(adjustedTopLeft);
+                        figureBounds.setLocation(adjustedTopLeft);
+                    }
+
                     fireFigureMoved(movedFigure, destination);
-                    movedFigure.setBounds(movingFigure.getBounds().getCopy());
+                    movedFigure.setBounds(figureBounds);
+
                     // Reset state
                     offset.setWidth(0);
                     offset.setHeight(0);
@@ -132,6 +150,14 @@ public class NodeMoveController {
         this.ghostVisible = visible;
     }
 
+    /**
+     * @param snapToGrid
+     *            if true, figured moved position is adjusted to snap to grid.
+     */
+    public void setSnapToGrid(final boolean snapToGrid) {
+        this.snapToGrid = snapToGrid;
+    }
+
     private void fireFigureMoved(final IFigure figure, final Point destination) {
         listeners.forEach(listener -> listener.figureMoved(figure, destination));
     }
@@ -142,6 +168,21 @@ public class NodeMoveController {
 
     public void removeFigureMoveListener(final FigureMoveListener listener) {
         listeners.remove(listener);
+    }
+
+    /**
+     * Calculate adjusted point based on @SIZE_UNIT@ as grid unit to snap to grid.
+     *
+     * @return snapped point object.
+     */
+    private Point adjustToGrid() {
+        return new Point(
+                (int) ((Math.round(
+                        movingFigure.getBounds().getTopLeft().x / (double) IGraphFigure.SIZE_UNIT))
+                        * IGraphFigure.SIZE_UNIT),
+                (int) ((Math.round(
+                        movingFigure.getBounds().getTopLeft().y / (double) IGraphFigure.SIZE_UNIT))
+                        * IGraphFigure.SIZE_UNIT));
     }
 
 }
