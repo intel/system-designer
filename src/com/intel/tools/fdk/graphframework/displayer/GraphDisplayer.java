@@ -21,6 +21,7 @@
  * ============================================================================
  */
 package com.intel.tools.fdk.graphframework.displayer;
+
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 
@@ -29,12 +30,10 @@ import org.eclipse.draw2d.FigureCanvas;
 import org.eclipse.draw2d.FreeformLayer;
 import org.eclipse.draw2d.FreeformLayeredPane;
 import org.eclipse.draw2d.FreeformLayout;
-import org.eclipse.draw2d.FreeformViewport;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.Layer;
 import org.eclipse.draw2d.ManhattanConnectionRouter;
 import org.eclipse.draw2d.ScalableFreeformLayeredPane;
-import org.eclipse.draw2d.Viewport;
 import org.eclipse.swt.widgets.Composite;
 
 import com.intel.tools.fdk.graphframework.displayer.layer.BackgroundLayer;
@@ -67,6 +66,8 @@ public class GraphDisplayer {
     private final FreeformLayeredPane layers = new FreeformLayeredPane();
     private final ScalableFreeformLayeredPane scalablePane = new ScalableFreeformLayeredPane();
 
+    private final FDKViewPort viewport;
+
     public GraphDisplayer(final Composite parent, final int style) {
         this.changeSupport = new PropertyChangeSupport(this);
         // Create a new canvas with scrollbars
@@ -89,8 +90,7 @@ public class GraphDisplayer {
         // Add the tools pane which is not scalable
         layers.addLayerAfter(new FreeformLayer(), TOOLS_LAYER, DECORATION_LAYER);
 
-        // Associate the viewport to the canvas
-        final Viewport viewport = new FreeformViewport();
+        viewport = new FDKViewPort();
         viewport.setContents(layers);
         canvas.setViewport(viewport);
     }
@@ -104,8 +104,8 @@ public class GraphDisplayer {
         return scalablePane;
     }
 
-    /** Main content layer
-     *  This layer will hold components which are really manipulated
+    /**
+     * Main content layer This layer will hold components which are really manipulated
      *
      * @return the content layer
      */
@@ -113,9 +113,9 @@ public class GraphDisplayer {
         return (FreeformLayer) scalablePane.getLayer(CONTENT_LAYER);
     }
 
-    /** Retrieves the feedback layer
-     *  This layer hold decoration which gives information to the user.
-     *  This layer is not intended to be clickable.
+    /**
+     * Retrieves the feedback layer This layer hold decoration which gives information to the user. This layer is not
+     * intended to be clickable.
      *
      * @return the feedback layer
      */
@@ -123,10 +123,9 @@ public class GraphDisplayer {
         return scalablePane.getLayer(FEEDBACK_LAYER);
     }
 
-    /** Retrieves the background layer.
-     *  This layer is under all other layer and all click events which are not captured by upper layers
-     *  are forwarded to this one.
-     *  This layer will detect any click event which come to it.
+    /**
+     * Retrieves the background layer. This layer is under all other layer and all click events which are not captured
+     * by upper layers are forwarded to this one. This layer will detect any click event which come to it.
      *
      * @return the background layer
      */
@@ -134,8 +133,9 @@ public class GraphDisplayer {
         return scalablePane.getLayer(BACKGROUND_LAYER);
     }
 
-    /** Retrieves the connection layer
-     *  This layer is right under the content layer. It aims to hold all connections between components.
+    /**
+     * Retrieves the connection layer This layer is right under the content layer. It aims to hold all connections
+     * between components.
      *
      * @return the connection layer
      */
@@ -191,6 +191,26 @@ public class GraphDisplayer {
 
     public synchronized void removePropertyChangeListener(final PropertyChangeListener listener) {
         changeSupport.removePropertyChangeListener(listener);
+    }
+
+    /**
+     * Set to force the scroll bar visibility for the displayer.
+     */
+    public void forceScrollBarVisible(final boolean visibility) {
+        if (visibility) {
+            canvas.setHorizontalScrollBarVisibility(FigureCanvas.ALWAYS);
+            canvas.setVerticalScrollBarVisibility(FigureCanvas.ALWAYS);
+        } else {
+            canvas.setHorizontalScrollBarVisibility(FigureCanvas.AUTOMATIC);
+            canvas.setVerticalScrollBarVisibility(FigureCanvas.AUTOMATIC);
+        }
+    }
+
+    /**
+     * Specify a margin around the displayed figures to force over scrolling
+     */
+    public void setViewportMargin(final int margin) {
+        viewport.setMargin(margin);
     }
 
 }
