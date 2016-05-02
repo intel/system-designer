@@ -69,6 +69,7 @@ public class SelectionController {
         final SelectionListener toolsListener = new SelectionListener(displayer.getToolsLayer());
         displayer.getContentLayer().addMouseListener(contentListener);
         displayer.getToolsLayer().addMouseListener(toolsListener);
+        displayer.getConnectionLayer().addMouseListener(new SelectionListener(displayer.getConnectionLayer()));
         displayer.getBackgroundLayer().addMouseListener(new MouseListener.Stub() {
             @Override
             public void mousePressed(final MouseEvent event) {

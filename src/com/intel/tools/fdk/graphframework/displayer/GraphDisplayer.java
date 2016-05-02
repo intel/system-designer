@@ -80,8 +80,7 @@ public class GraphDisplayer {
         scalablePane.addLayerAfter(new ConnectionLayer(), CONNECTION_LAYER, CONTENT_LAYER);
         scalablePane.addLayerAfter(new FreeformLayer(), FEEDBACK_LAYER, CONNECTION_LAYER);
         scalablePane.getLayer(CONTENT_LAYER).setLayoutManager(new FreeformLayout());
-        ((ConnectionLayer) scalablePane.getLayer(CONNECTION_LAYER)).setConnectionRouter(
-                new ManhattanConnectionRouter());
+        getConnectionLayer().setConnectionRouter(new ManhattanConnectionRouter());
 
         // Add the scalable pane to the main layer
         layers.add(scalablePane, SCALABLE_PANE);
@@ -139,8 +138,8 @@ public class GraphDisplayer {
      *
      * @return the connection layer
      */
-    public IFigure getConnectionLayer() {
-        return scalablePane.getLayer(CONNECTION_LAYER);
+    public ConnectionLayer getConnectionLayer() {
+        return (ConnectionLayer) scalablePane.getLayer(CONNECTION_LAYER);
     }
 
     /**
