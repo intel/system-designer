@@ -31,7 +31,7 @@ import com.intel.tools.fdk.graphframework.figure.pin.PinFigure;
 /** Represent the anchor of a pin where a link is connected */
 public class LinkAnchor extends AbstractConnectionAnchor {
 
-    private final PinFigure pin;
+    private final PinFigure<?> pin;
 
     /**
      * @param node
@@ -39,14 +39,15 @@ public class LinkAnchor extends AbstractConnectionAnchor {
      * @param pin
      *            the pin to link on
      */
-    public LinkAnchor(final IFigure node, final PinFigure pin) {
+    public LinkAnchor(final IFigure node, final PinFigure<?> pin) {
         super(node);
         this.pin = pin;
     }
 
     @Override
     public Point getLocation(final Point reference) {
-        return pin.getConnectorCenterLocation();
+        // The translation is there to take into account the way a line is rendered in draw2d
+        return pin.getConnectorCenterLocation().getTranslated(new Point(1, 1));
     }
 
 }

@@ -31,6 +31,8 @@ import com.intel.tools.fdk.graphframework.graph.ILink;
 /** Represent a graph link */
 public class LinkFigure extends PolylineConnection implements IGraphFigure {
 
+    private static final int LINE_WIDTH = 4;
+
     private final ILink link;
 
     /**
@@ -48,7 +50,10 @@ public class LinkFigure extends PolylineConnection implements IGraphFigure {
 
         setLineCap(SWT.CAP_ROUND);
         setLineJoin(SWT.JOIN_ROUND);
+        setAntialias(1);
         setForegroundColor(IGraphFigure.DEFAULT_COLOR);
+
+        setLineWidth(LINE_WIDTH);
     }
 
     @Override

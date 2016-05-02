@@ -23,12 +23,16 @@
 package com.intel.tools.fdk.graphframework.figure.pin;
 
 import org.eclipse.draw2d.Ellipse;
+import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.PolylineShape;
+import org.eclipse.draw2d.RectangleFigure;
 import org.eclipse.draw2d.geometry.Point;
+import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.swt.graphics.Color;
 
 import com.intel.tools.fdk.graphframework.figure.IGraphFigure;
 import com.intel.tools.fdk.graphframework.graph.IPin;
+import com.intel.tools.utils.IntelPalette;
 
 /** Abstract class representing a node I/O */
 public abstract class PinFigure<IOType extends IPin> extends PolylineShape implements IGraphFigure {
@@ -48,25 +52,48 @@ public abstract class PinFigure<IOType extends IPin> extends PolylineShape imple
     private final Ellipse connector = new Ellipse();
     private final PolylineShape line = new PolylineShape();
 
+    private final boolean debug = false;
+
     /**
      * @param pin
      *            the pin graph element represented by this figure
      */
     public PinFigure(final IOType pin) {
         this.pin = pin;
+
         add(arrow);
-        add(connector);
         add(line);
 
+        connector.setLineWidth(4);
+        connector.setOutline(true);
+        connector.setAntialias(1);
         connector.setSize(CONNECTOR_HEIGHT, CONNECTOR_HEIGHT);
+        add(connector);
+
         setSize(getWidth(), getHeight());
         line.setBounds(getBounds());
 
-        connector.setOutline(false);
-        connector.setAntialias(1);
-
         setColor(DEFAULT_COLOR);
         setLineWidth(LINE_WIDTH);
+
+        if (debug) {
+            showPixelGrid(connector);
+        }
+    }
+
+    private void showPixelGrid(final IFigure figure) {
+        final int u = figure.getBounds().width / 8;
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
+                final RectangleFigure r = new RectangleFigure();
+                r.setBounds(new Rectangle(i * u, j * u, u + 1, u + 1));
+                r.setFill(false);
+                r.setOutline(true);
+                r.setLineWidth(0);
+                r.setForegroundColor(IntelPalette.RED);
+                add(r);
+            }
+        }
     }
 
     /**
