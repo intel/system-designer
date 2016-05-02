@@ -109,8 +109,6 @@ public class NodeMoveController {
                     offset.setWidth(event.x - movedFigure.getBounds().x);
                     offset.setHeight(event.y - movedFigure.getBounds().y);
                     movingFigure = ghostVisible ? ghost : movedFigure;
-                } else {
-                    movedFigure = null;
                 }
             }
         });
