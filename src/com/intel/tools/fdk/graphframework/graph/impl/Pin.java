@@ -66,4 +66,12 @@ public abstract class Pin implements IPin {
         this.link = Optional.of(link);
     }
 
+    /**
+     * Disonnect this pin from a link.</br>
+     * This method is used at {@link Link} deletion and thus is not exposed everywhere
+     */
+    void disconnect() {
+        this.link = Optional.empty();
+    }
+
 }

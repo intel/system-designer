@@ -154,4 +154,13 @@ public final class Leaf implements ILeaf, Comparable<Leaf> {
         return this.id - leaf.id;
     }
 
+    @Override
+    public void delete() {
+        getLinkedInputLinks().forEach(Link::delete);
+        getLinkedOutputLinks().forEach(Link::delete);
+        if (this.parent != null) {
+            this.parent.remove(this);
+        }
+    }
+
 }

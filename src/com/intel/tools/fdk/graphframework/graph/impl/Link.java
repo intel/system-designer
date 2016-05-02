@@ -52,4 +52,10 @@ public final class Link implements ILink {
         return output;
     }
 
+    @Override
+    public void delete() {
+        this.input.disconnect();
+        this.output.disconnect();
+    }
+
 }

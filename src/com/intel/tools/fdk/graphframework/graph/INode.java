@@ -34,4 +34,11 @@ public interface INode {
     /** @return the parent container of this Node */
     INodeContainer getParent();
 
+    /**
+     * Remove this {@link INode} from the graph
+     *
+     * Associated nodes are updated. Associated links are removed.
+     */
+    void delete();
+
 }

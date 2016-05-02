@@ -51,4 +51,12 @@ public class Group extends NodeContainer implements IGroup {
         this.parent = parent;
     }
 
+    @Override
+    public void delete() {
+        getExternalLinks().forEach(Link::delete);
+        if (this.parent != null) {
+            this.parent.remove(this);
+        }
+    }
+
 }

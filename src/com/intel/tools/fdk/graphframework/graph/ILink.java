@@ -42,4 +42,11 @@ public interface ILink {
      */
     IOutput getOutput();
 
+    /**
+     * Remove this {@link ILink} from the graph
+     *
+     * Associated pins are disconnected from the link
+     */
+    void delete();
+
 }
