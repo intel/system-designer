@@ -150,11 +150,16 @@ public class SelectionController {
                     currentSelection.select();
                     // we found a matching selection, let's stop the search
                     fireSelect(currentSelection);
-                    if (event.button == 3) { // Handle right-click
-                        fireShowContextMenu(currentSelection);
-                    }
                     return;
                 }
+            }
+        }
+
+        @Override
+        public void mouseReleased(final MouseEvent event) {
+            // Handle right-click
+            if (currentSelection != null && event.button == 3) {
+                fireShowContextMenu(currentSelection);
             }
         }
     }
