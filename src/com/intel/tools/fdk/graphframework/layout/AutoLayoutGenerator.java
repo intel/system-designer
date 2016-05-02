@@ -27,6 +27,7 @@ import org.eclipse.draw2d.geometry.PrecisionPoint;
 import org.eclipse.draw2d.geometry.Rectangle;
 
 import com.intel.tools.fdk.graphframework.displayer.GraphDisplayer;
+import com.intel.tools.fdk.graphframework.figure.presenter.DefaultPresenterManager;
 import com.intel.tools.fdk.graphframework.figure.presenter.IPresenterManager;
 import com.intel.tools.fdk.graphframework.figure.presenter.LeafPresenter;
 import com.intel.tools.fdk.graphframework.graph.adapter.IAdapter;
@@ -38,6 +39,22 @@ import com.intel.tools.fdk.graphframework.graph.impl.Graph;
  * The algorithm used is the one defined in {@link AutoLayoutComputer}.
  */
 public class AutoLayoutGenerator extends LayoutGenerator {
+
+    /**
+     * Create a layout generator which initialize the displayed graph with position computed through a dedicated
+     * algorithm. </br>
+     *
+     * After a graph update notification, the layout algorithm will not be computed again. Only the original graph is
+     * computed.
+     *
+     * @param adapter
+     *            the model adapter which provide the graph
+     * @param displayer
+     *            the graph displayer to use
+     */
+    public AutoLayoutGenerator(final IAdapter adapter, final GraphDisplayer displayer) {
+        this(adapter, new DefaultPresenterManager(), displayer);
+    }
 
     /**
      * Create a layout generator which initialize the displayed graph with position computed through a dedicated
