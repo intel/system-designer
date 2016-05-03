@@ -16,7 +16,8 @@ Export-Package: com.intel.tools.fdk.graphframework.displayer,
  com.intel.tools.fdk.graphframework.graph.action,
  com.intel.tools.fdk.graphframework.graph.adapter,
  com.intel.tools.fdk.graphframework.graph.factory,
- com.intel.tools.fdk.graphframework.layout
+ com.intel.tools.fdk.graphframework.layout,
+ com.intel.tools.fdk.graphframework.ui
 Require-Bundle: org.eclipse.draw2d,
  com.intel.tools.utils,
  org.eclipse.jface,
