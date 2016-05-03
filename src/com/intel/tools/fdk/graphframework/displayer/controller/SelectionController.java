@@ -44,6 +44,7 @@ public class SelectionController {
     public interface IListener {
         default void select(final IGraphFigure figure) {
         }
+
         default void showContextMenu(final IGraphFigure figure) {
         }
     }
@@ -112,11 +113,12 @@ public class SelectionController {
         listeners.remove(listener);
     }
 
-    private void fireSelect(final IGraphFigure figure) {
+    protected void fireSelect(final IGraphFigure figure) {
         for (final IListener listener : listeners) {
             listener.select(figure);
         }
     }
+
 
     private void fireShowContextMenu(final IGraphFigure figure) {
         for (final IListener listener : listeners) {

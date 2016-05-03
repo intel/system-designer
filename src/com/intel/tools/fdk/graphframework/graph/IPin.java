@@ -29,7 +29,7 @@ import java.util.Optional;
  *
  * This connection point can be empty or filled with a {@link ILink} which leads to another {@link IPin}
  */
-public interface IPin {
+public interface IPin extends IGraphElement {
 
     /**
      * @return the id of the pin

@@ -29,7 +29,7 @@ import java.util.Set;
  *
  * This interface is not intended to be implemented by clients.
  */
-public interface INodeContainer {
+public interface INodeContainer extends IGraphElement {
 
     /**
      * Allows to listen events (add/remove nodes) on a node container

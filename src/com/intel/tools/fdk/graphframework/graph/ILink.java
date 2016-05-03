@@ -30,7 +30,7 @@ package com.intel.tools.fdk.graphframework.graph;
  *
  * This interface is not intended to be implemented by clients.
  */
-public interface ILink {
+public interface ILink extends IGraphElement {
 
     /**
      * @return the input node
