@@ -63,6 +63,10 @@ public final class GraphFactory {
         return createGraph(leaves, Collections.emptySet());
     }
 
+    public static IGraph createGraph() {
+        return createGraph(Collections.emptySet(), Collections.emptySet());
+    }
+
     public static ILeaf createLeaf(final int inputNumber, final int outputNumber) {
         return new Leaf(inputNumber, outputNumber);
     }
@@ -74,6 +78,10 @@ public final class GraphFactory {
 
     public static IGroup createGroup(final Set<? extends ILeaf> leaves) {
         return createGroup(leaves, Collections.emptySet());
+    }
+
+    public static IGroup createGroup() {
+        return createGroup(Collections.emptySet(), Collections.emptySet());
     }
 
     /**
