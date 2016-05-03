@@ -119,7 +119,6 @@ public class SelectionController {
         }
     }
 
-
     private void fireShowContextMenu(final IGraphFigure figure) {
         for (final IListener listener : listeners) {
             listener.showContextMenu(figure);

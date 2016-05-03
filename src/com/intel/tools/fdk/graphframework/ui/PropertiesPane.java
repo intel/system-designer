@@ -40,8 +40,11 @@ import com.intel.tools.utils.widgets.Header;
 
 public class PropertiesPane extends Composite {
 
-    public PropertiesPane(final Composite parent, final int style) {
+    public PropertiesPane(final Composite parent, final int style, final IGraphUIProvider uiProvider,
+            final ModelSelectionController selectionController) {
         super(parent, style);
+        setModelSelectionController(selectionController);
+        setGraphUIProvider(uiProvider);
 
         final GridLayout gridLayout = new GridLayout(1, false);
         gridLayout.marginWidth = 0;
