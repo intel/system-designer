@@ -22,7 +22,7 @@
  */
 package com.intel.tools.fdk.graphframework.figure.node;
 
-import org.eclipse.draw2d.RoundedRectangle;
+import org.eclipse.draw2d.RectangleFigure;
 import org.eclipse.draw2d.geometry.Dimension;
 
 import com.intel.tools.fdk.graphframework.figure.IGraphFigure;
@@ -34,7 +34,7 @@ import com.intel.tools.utils.IntelPalette;
  *
  * The body has fixed width. The height has a minimum value and grows depending of the node input count.
  */
-public class LeafBodyFigure extends RoundedRectangle implements IGraphFigure {
+public class LeafBodyFigure extends RectangleFigure implements IGraphFigure {
 
     private static final int LINE_WIDTH = 2;
 
@@ -57,18 +57,19 @@ public class LeafBodyFigure extends RoundedRectangle implements IGraphFigure {
         setFill(true);
         setAntialias(1);
         setLineWidth(LINE_WIDTH);
-        setBackgroundColor(IntelPalette.WHITE);
-        setForegroundColor(IGraphFigure.DEFAULT_COLOR);
+        setOutline(false);
+        setBackgroundColor(IntelPalette.GREY);
+        setForegroundColor(IntelPalette.WHITE);
     }
 
     @Override
     public void select() {
-        setLineWidth(getLineWidth() + 1);
+        setBackgroundColor(IntelPalette.INTEL_BLUE);
     }
 
     @Override
     public void unselect() {
-        setLineWidth(getLineWidth() - 1);
+        setBackgroundColor(IntelPalette.GREY);
     }
 
     /**

@@ -28,6 +28,7 @@ import org.eclipse.draw2d.PolylineShape;
 import org.eclipse.draw2d.RectangleFigure;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.Rectangle;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 
 import com.intel.tools.fdk.graphframework.figure.IGraphFigure;
@@ -37,10 +38,10 @@ import com.intel.tools.utils.IntelPalette;
 /** Abstract class representing a node I/O */
 public abstract class PinFigure<IOType extends IPin> extends PolylineShape implements IGraphFigure {
 
-    private static final int LINE_WIDTH = 1;
+    private static final int LINE_WIDTH = 4;
 
     /** Pin arrow height in {@link IGraphFigure#SIZE_UNIT} */
-    private static final int ARROW_HEIGHT = SIZE_UNIT / 2;
+    private static final int ARROW_HEIGHT = SIZE_UNIT;
     /** Pin connector height in {@link IGraphFigure#SIZE_UNIT} */
     private static final int CONNECTOR_HEIGHT = SIZE_UNIT / 2;
     /** Pin line length in {@link IGraphFigure#SIZE_UNIT} */
@@ -51,6 +52,7 @@ public abstract class PinFigure<IOType extends IPin> extends PolylineShape imple
     private final ArrowFigure arrow = new ArrowFigure(ARROW_HEIGHT);
     private final Ellipse connector = new Ellipse();
     private final PolylineShape line = new PolylineShape();
+    private final RectangleFigure selection = new RectangleFigure();
 
     private final boolean debug = false;
 
@@ -63,17 +65,29 @@ public abstract class PinFigure<IOType extends IPin> extends PolylineShape imple
 
         add(arrow);
         add(line);
+        add(selection);
+        add(connector);
 
         connector.setLineWidth(4);
         connector.setOutline(true);
         connector.setAntialias(1);
         connector.setSize(CONNECTOR_HEIGHT, CONNECTOR_HEIGHT);
-        add(connector);
 
         setSize(getWidth(), getHeight());
         line.setBounds(getBounds());
+        line.setAntialias(1);
+        line.setLineCap(SWT.CAP_ROUND);
 
-        setColor(DEFAULT_COLOR);
+        selection.setAlpha(128);
+        selection.setFill(true);
+        selection.setOutline(true);
+        selection.setLineWidth(0);
+        selection.setForegroundColor(IntelPalette.INTEL_BLUE);
+        selection.setBackgroundColor(IntelPalette.LIGHT_BLUE);
+        selection.setVisible(false);
+        selection.setBounds(getBounds());
+
+        setColor(IntelPalette.LIGHT_BLUE);
         setLineWidth(LINE_WIDTH);
 
         if (debug) {
@@ -148,12 +162,12 @@ public abstract class PinFigure<IOType extends IPin> extends PolylineShape imple
 
     @Override
     public void select() {
-        setLineWidth(getLineWidth() + 1);
+        selection.setVisible(true);
     }
 
     @Override
     public void unselect() {
-        setLineWidth(getLineWidth() - 1);
+        selection.setVisible(false);
     }
 
     /**

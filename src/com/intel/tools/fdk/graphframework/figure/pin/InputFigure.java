@@ -29,7 +29,7 @@ import com.intel.tools.fdk.graphframework.graph.IInput;
 /**
  * Represent an input of a graph node
  *
- * This figure looks like: o-->
+ * This figure looks like: o->
  */
 public class InputFigure extends PinFigure<IInput> {
 
@@ -37,14 +37,15 @@ public class InputFigure extends PinFigure<IInput> {
         super(input);
 
         // Center the arrow on pin height and put it on the right
-        getArrow().setLocation(new Point(getWidth() - getArrow().getBounds().width,
+        getArrow().setLocation(new Point(
+                getWidth() - getArrow().getBounds().width,
                 (getHeight() - getArrow().getBounds().height) / 2));
         // Center the connector on pin height and put it on the left
         getConnector().setLocation(new Point(0, (getHeight() - getConnector().getBounds().height) / 2));
 
-        // Line begins in the middle of the connector and ends in the middle of the arrow
+        // Line begins in the middle of the connector and ends on the tip of the arrow
         getLine().addPoint(new Point(getConnector().getBounds().width / 2, getHeight() / 2));
-        getLine().addPoint(new Point(getArrow().getBounds().x + getArrow().getBounds().width / 2, getHeight() / 2));
+        getLine().addPoint(new Point(getWidth() - 1 - getLineWidth() / 2, getHeight() / 2));
     }
 
 }

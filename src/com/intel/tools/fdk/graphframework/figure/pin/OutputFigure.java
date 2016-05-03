@@ -29,7 +29,7 @@ import com.intel.tools.fdk.graphframework.graph.IOutput;
 /**
  * Represent an input of a graph node
  *
- * This figure looks like: <--o
+ * This figure looks like: ->o
  */
 public class OutputFigure extends PinFigure<IOutput> {
 
@@ -37,15 +37,18 @@ public class OutputFigure extends PinFigure<IOutput> {
         super(output);
 
         // Center the arrow on pin height and put it on the left
-        getArrow().setLocation(new Point(0, (getHeight() - getArrow().getBounds().height) / 2));
+        getArrow().setLocation(new Point(
+                getWidth() - getArrow().getBounds().width - getConnector().getBounds().width - 1,
+                (getHeight() - getArrow().getBounds().height) / 2));
         // Center the connector on pin height and put it on the right
-        getConnector().setLocation(new Point(getWidth() - getConnector().getBounds().width,
+        getConnector().setLocation(new Point(
+                getWidth() - getConnector().getBounds().width - 1,
                 (getHeight() - getConnector().getBounds().height) / 2));
 
         // Line begins in the middle of the connector and ends in the middle of the arrow
-        getLine().addPoint(new Point(getArrow().getBounds().width / 2, getHeight() / 2));
-        getLine().addPoint(
-                new Point(getConnector().getBounds().x + getConnector().getBounds().width / 2, getHeight() / 2));
+        getLine().addPoint(new Point(0, getHeight() / 2));
+        getLine().addPoint(new Point(
+                getWidth() - getLineWidth() / 2 - 1, getHeight() / 2));
     }
 
 }

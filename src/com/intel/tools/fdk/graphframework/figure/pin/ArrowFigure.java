@@ -22,11 +22,13 @@
  */
 package com.intel.tools.fdk.graphframework.figure.pin;
 
-import org.eclipse.draw2d.PolygonShape;
+import org.eclipse.draw2d.PolylineShape;
 import org.eclipse.swt.SWT;
 
 /** Defines a an equilateral triangle which point to the right. */
-public final class ArrowFigure extends PolygonShape {
+public final class ArrowFigure extends PolylineShape {
+
+    private static final int LINE_WIDTH = 4;
 
     /**
      * @param size
@@ -34,14 +36,15 @@ public final class ArrowFigure extends PolygonShape {
      */
     public ArrowFigure(final int size) {
         setLineJoin(SWT.JOIN_ROUND);
+        setLineCap(SWT.CAP_ROUND);
+
         setAntialias(1);
-        // if the line width is changed, you must adapt triangle point accordingly
-        setLineWidth(2);
+        setLineWidth(LINE_WIDTH);
 
         setSize(size, size);
-        getPoints().addPoint(1, 1);
-        getPoints().addPoint(1, size - 1);
-        getPoints().addPoint(size - 1, size / 2);
+        getPoints().addPoint(LINE_WIDTH / 2, LINE_WIDTH / 2);
+        getPoints().addPoint(size - LINE_WIDTH / 2 - 1, size / 2);
+        getPoints().addPoint(LINE_WIDTH / 2, size - LINE_WIDTH / 2 - 1);
     }
 
 }

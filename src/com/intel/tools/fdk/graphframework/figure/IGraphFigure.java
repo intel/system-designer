@@ -34,6 +34,8 @@ public interface IGraphFigure extends IFigure {
     int SIZE_UNIT = 16;
     /** Graph Figure default color */
     Color DEFAULT_COLOR = IntelPalette.INTEL_BLUE;
+    Color LINKS_COLOR = IntelPalette.LIGHT_BLUE;
+    Color ICON_COLOR = IntelPalette.WHITE;
 
     /** Highlight the figure */
     void select();
