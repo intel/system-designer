@@ -29,6 +29,7 @@ import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseWheelListener;
+import org.eclipse.swt.widgets.Display;
 
 import com.intel.tools.fdk.graphframework.displayer.GraphDisplayer;
 
@@ -55,14 +56,28 @@ public class ZoomController {
         displayer.getControl().addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(final KeyEvent e) {
-                if ((e.stateMask & SWT.CTRL) == SWT.CTRL) {
-                    if (e.keyCode == SWT.KEYPAD_ADD) {
-                        // Ctrl +
-                        zoom(zoomStep);
-                    } else if (e.keyCode == SWT.KEYPAD_SUBTRACT) {
-                        // Ctrl -
-                        zoom(1 / zoomStep);
+                if (e.keyCode == SWT.CTRL) {
+                    displayer.getControl().setCursor(Display.getCurrent().getSystemCursor(SWT.CURSOR_SIZEALL));
+                } else {
+                    if ((e.stateMask & SWT.CTRL) == SWT.CTRL) {
+
+                        if (e.keyCode == SWT.KEYPAD_ADD) {
+                            // Ctrl +
+                            zoom(zoomStep);
+                        } else if (e.keyCode == SWT.KEYPAD_SUBTRACT) {
+                            // Ctrl -
+                            zoom(1 / zoomStep);
+                        }
+                    } else {
+                        displayer.getControl().setCursor(null);
                     }
+                }
+            }
+
+            @Override
+            public void keyReleased(final KeyEvent e) {
+                if (e.keyCode == SWT.CTRL) {
+                    displayer.getControl().setCursor(null);
                 }
             }
         });
