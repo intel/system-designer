@@ -28,7 +28,6 @@ import org.eclipse.draw2d.PolylineShape;
 import org.eclipse.draw2d.RectangleFigure;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.Rectangle;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 
 import com.intel.tools.fdk.graphframework.figure.IGraphFigure;
@@ -41,17 +40,15 @@ public abstract class PinFigure<IOType extends IPin> extends PolylineShape imple
     private static final int LINE_WIDTH = 4;
 
     /** Pin arrow height in {@link IGraphFigure#SIZE_UNIT} */
-    private static final int ARROW_HEIGHT = SIZE_UNIT;
+    private static final int ARROW_SIZE = SIZE_UNIT;
     /** Pin connector height in {@link IGraphFigure#SIZE_UNIT} */
-    private static final int CONNECTOR_HEIGHT = SIZE_UNIT / 2;
-    /** Pin line length in {@link IGraphFigure#SIZE_UNIT} */
-    private static final int LINE_LENGTH = SIZE_UNIT;
+    private static final int CONNECTOR_SIZE = SIZE_UNIT / 2 + 4;
+    private static final int SELECTION_PADDING = 1;
 
     private final IOType pin;
 
-    private final ArrowFigure arrow = new ArrowFigure(ARROW_HEIGHT);
+    private final ArrowFigure arrow = new ArrowFigure(ARROW_SIZE, LINE_WIDTH);
     private final Ellipse connector = new Ellipse();
-    private final PolylineShape line = new PolylineShape();
     private final RectangleFigure selection = new RectangleFigure();
 
     private final boolean debug = false;
@@ -63,20 +60,18 @@ public abstract class PinFigure<IOType extends IPin> extends PolylineShape imple
     public PinFigure(final IOType pin) {
         this.pin = pin;
 
+        setSize(getDesiredWidth(), getDesiredHeight());
+        setColor(CONNECTOR_COLOR);
+        setLineWidth(LINE_WIDTH);
+
         add(arrow);
-        add(line);
-        add(selection);
         add(connector);
+        add(selection);
 
-        connector.setLineWidth(4);
-        connector.setOutline(true);
+        connector.setLineWidth(2);      // That's a workaround for
+        connector.setOutline(false);    // a draw2d bug when rendering ellipses
         connector.setAntialias(1);
-        connector.setSize(CONNECTOR_HEIGHT, CONNECTOR_HEIGHT);
-
-        setSize(getWidth(), getHeight());
-        line.setBounds(getBounds());
-        line.setAntialias(1);
-        line.setLineCap(SWT.CAP_ROUND);
+        connector.setSize(CONNECTOR_SIZE, CONNECTOR_SIZE);
 
         selection.setAlpha(128);
         selection.setFill(true);
@@ -87,20 +82,20 @@ public abstract class PinFigure<IOType extends IPin> extends PolylineShape imple
         selection.setVisible(false);
         selection.setBounds(getBounds());
 
-        setColor(IntelPalette.LIGHT_BLUE);
-        setLineWidth(LINE_WIDTH);
-
         if (debug) {
-            showPixelGrid(connector);
+            showPixelGrid(arrow);
         }
     }
 
+    protected int getPadding() {
+        return SELECTION_PADDING;
+    }
+
     private void showPixelGrid(final IFigure figure) {
-        final int u = figure.getBounds().width / 8;
-        for (int i = 0; i < 8; i++) {
-            for (int j = 0; j < 8; j++) {
+        for (int i = 0; i < figure.getBounds().width - 1; i++) {
+            for (int j = 0; j < figure.getBounds().height - 1; j++) {
                 final RectangleFigure r = new RectangleFigure();
-                r.setBounds(new Rectangle(i * u, j * u, u + 1, u + 1));
+                r.setBounds(new Rectangle(i, j, 2, 2));
                 r.setFill(false);
                 r.setOutline(true);
                 r.setLineWidth(0);
@@ -121,12 +116,12 @@ public abstract class PinFigure<IOType extends IPin> extends PolylineShape imple
         return center;
     }
 
-    protected int getWidth() {
-        return LINE_LENGTH + arrow.getBounds().width + connector.getBounds().width;
+    protected int getDesiredWidth() {
+        return ARROW_SIZE + CONNECTOR_SIZE + SELECTION_PADDING * 2;
     }
 
-    protected int getHeight() {
-        return Math.max(arrow.getBounds().height, connector.getBounds().height);
+    protected int getDesiredHeight() {
+        return Math.max(ARROW_SIZE, CONNECTOR_SIZE) + SELECTION_PADDING * 2;
     }
 
     protected ArrowFigure getArrow() {
@@ -137,25 +132,9 @@ public abstract class PinFigure<IOType extends IPin> extends PolylineShape imple
         return connector;
     }
 
-    protected PolylineShape getLine() {
-        return line;
-    }
-
-    @Override
-    public void setLineWidth(final int w) {
-        line.setLineWidth(w);
-    }
-
-    @Override
-    public int getLineWidth() {
-        return line.getLineWidth();
-    }
-
     public void setColor(final Color color) {
         arrow.setForegroundColor(color);
         arrow.setBackgroundColor(color);
-        line.setForegroundColor(color);
-        line.setBackgroundColor(color);
         connector.setBackgroundColor(color);
         connector.setForegroundColor(color);
     }

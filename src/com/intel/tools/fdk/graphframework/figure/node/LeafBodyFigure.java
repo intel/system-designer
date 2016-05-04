@@ -24,7 +24,6 @@ package com.intel.tools.fdk.graphframework.figure.node;
 
 import org.eclipse.draw2d.RectangleFigure;
 import org.eclipse.draw2d.geometry.Dimension;
-
 import com.intel.tools.fdk.graphframework.figure.IGraphFigure;
 import com.intel.tools.fdk.graphframework.graph.ILeaf;
 import com.intel.tools.utils.IntelPalette;
@@ -37,6 +36,8 @@ import com.intel.tools.utils.IntelPalette;
 public class LeafBodyFigure extends RectangleFigure implements IGraphFigure {
 
     private static final int LINE_WIDTH = 2;
+
+    private final RectangleFigure selection = new RectangleFigure();
 
     /** The graph leaf this figure represents */
     private final ILeaf leaf;
@@ -53,23 +54,35 @@ public class LeafBodyFigure extends RectangleFigure implements IGraphFigure {
      */
     public LeafBodyFigure(final ILeaf leaf, final int width, final int height) {
         this.leaf = leaf;
+
         setSize(new Dimension(width, height));
         setFill(true);
         setAntialias(1);
         setLineWidth(LINE_WIDTH);
         setOutline(false);
-        setBackgroundColor(IntelPalette.GREY);
+        setBackgroundColor(IntelPalette.INTEL_BLUE);
         setForegroundColor(IntelPalette.WHITE);
+
+        selection.setAlpha(128);
+        selection.setFill(true);
+        selection.setOutline(true);
+        selection.setLineWidth(0);
+        selection.setForegroundColor(IntelPalette.INTEL_BLUE);
+        selection.setBackgroundColor(IntelPalette.LIGHT_BLUE);
+        selection.setVisible(false);
+        selection.setBounds(getBounds());
+
+        add(selection);
     }
 
     @Override
     public void select() {
-        setBackgroundColor(IntelPalette.INTEL_BLUE);
+        selection.setVisible(true);
     }
 
     @Override
     public void unselect() {
-        setBackgroundColor(IntelPalette.GREY);
+        selection.setVisible(false);
     }
 
     /**

@@ -29,23 +29,19 @@ import com.intel.tools.fdk.graphframework.graph.IInput;
 /**
  * Represent an input of a graph node
  *
- * This figure looks like: o->
+ * This figure looks like: o>
  */
 public class InputFigure extends PinFigure<IInput> {
 
     public InputFigure(final IInput input) {
         super(input);
 
-        // Center the arrow on pin height and put it on the right
-        getArrow().setLocation(new Point(
-                getWidth() - getArrow().getBounds().width,
-                (getHeight() - getArrow().getBounds().height) / 2));
         // Center the connector on pin height and put it on the left
-        getConnector().setLocation(new Point(0, (getHeight() - getConnector().getBounds().height) / 2));
-
-        // Line begins in the middle of the connector and ends on the tip of the arrow
-        getLine().addPoint(new Point(getConnector().getBounds().width / 2, getHeight() / 2));
-        getLine().addPoint(new Point(getWidth() - 1 - getLineWidth() / 2, getHeight() / 2));
+        getConnector().setLocation(new Point(getPadding(),
+                (getDesiredHeight() - getConnector().getBounds().height) / 2));
+        // Center the arrow on pin height and put it on the right
+        getArrow().setLocation(new Point(getDesiredWidth() - getArrow().getBounds().width - getPadding(),
+                (getDesiredHeight() - getArrow().getBounds().height) / 2));
     }
 
 }

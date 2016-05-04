@@ -119,7 +119,7 @@ public class LeafPresenter extends Presenter<ILeaf> {
                     body.getLocation().y + PIN_OFFSET + inputs.indexOf(figure) * PIN_DISTANCE));
         });
         outputs.forEach(figure -> {
-            figure.setLocation(new Point(body.getLocation().x - 1 + body.getBounds().width,
+            figure.setLocation(new Point(body.getLocation().x + body.getBounds().width,
                     body.getLocation().y + PIN_OFFSET + outputs.indexOf(figure) * PIN_DISTANCE));
         });
         updateBoundsFigure();

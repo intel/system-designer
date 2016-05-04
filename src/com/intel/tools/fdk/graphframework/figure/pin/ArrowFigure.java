@@ -25,26 +25,25 @@ package com.intel.tools.fdk.graphframework.figure.pin;
 import org.eclipse.draw2d.PolylineShape;
 import org.eclipse.swt.SWT;
 
-/** Defines a an equilateral triangle which point to the right. */
+/** Draws an arrow which point to the right. */
 public final class ArrowFigure extends PolylineShape {
-
-    private static final int LINE_WIDTH = 4;
 
     /**
      * @param size
      *            the desired size of the generated figure
      */
-    public ArrowFigure(final int size) {
+    public ArrowFigure(final int size, final int lineWidth) {
+
+        setLineWidth(lineWidth);
+        setSize(size, size);
+
         setLineJoin(SWT.JOIN_ROUND);
         setLineCap(SWT.CAP_ROUND);
-
         setAntialias(1);
-        setLineWidth(LINE_WIDTH);
 
-        setSize(size, size);
-        getPoints().addPoint(LINE_WIDTH / 2, LINE_WIDTH / 2);
-        getPoints().addPoint(size - LINE_WIDTH / 2 - 1, size / 2);
-        getPoints().addPoint(LINE_WIDTH / 2, size - LINE_WIDTH / 2 - 1);
+        getPoints().addPoint(lineWidth / 2, lineWidth / 2);
+        getPoints().addPoint(size - lineWidth / 2 - 1, size / 2);
+        getPoints().addPoint(lineWidth / 2, size - lineWidth / 2 - 1);
     }
 
 }
