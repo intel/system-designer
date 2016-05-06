@@ -30,22 +30,22 @@ import org.eclipse.swt.SWT;
 
 import com.intel.tools.fdk.graphframework.displayer.GraphDisplayer;
 
-/** Controller allowing to navigate in a viewport by dragging the background */
-public class NavigateController {
+/** Controller allowing to pan in a viewport by dragging the background */
+public class PanController {
 
     /** Location of the last mouse click */
     private Point click = new Point(0, 0);
 
-    /** Indicate if we are currently navigating in the viewport */
-    private boolean isNavigating = false;
+    /** Indicate if we are currently panning in the viewport */
+    private boolean isPanning = false;
 
-    public NavigateController(final GraphDisplayer displayer) {
+    public PanController(final GraphDisplayer displayer) {
 
         displayer.getBackgroundLayer().addMouseListener(new MouseListener.Stub() {
             @Override
             public void mouseReleased(final MouseEvent event) {
                 // Reset state
-                isNavigating = false;
+                isPanning = false;
             }
 
             @Override
@@ -53,18 +53,18 @@ public class NavigateController {
                 event.consume();
                 // Get the click position
                 click = event.getLocation();
-                isNavigating = true;
+                isPanning = true;
             }
         });
         displayer.getBackgroundLayer().addMouseMotionListener(new MouseMotionListener.Stub() {
             @Override
             public void mouseDragged(final MouseEvent event) {
-                if (isNavigating && (event.getState() & SWT.CTRL) == SWT.CTRL) {
+                if (isPanning && (event.getState() & SWT.CTRL) == SWT.CTRL) {
                     final int hOffset = click.x - event.x;
                     final int vOffset = click.y - event.y;
                     final Point currentLocation = displayer.getControl().getViewport().getViewLocation();
                     displayer.getControl().getViewport().setViewLocation(currentLocation.x + hOffset,
-                                                                         currentLocation.y + vOffset);
+                            currentLocation.y + vOffset);
                 }
             }
         });
