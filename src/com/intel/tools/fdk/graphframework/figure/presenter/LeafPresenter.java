@@ -40,7 +40,6 @@ import com.intel.tools.fdk.graphframework.figure.pin.InputFigure;
 import com.intel.tools.fdk.graphframework.figure.pin.OutputFigure;
 import com.intel.tools.fdk.graphframework.figure.pin.PinFigure;
 import com.intel.tools.fdk.graphframework.graph.ILeaf;
-import com.intel.tools.fdk.graphframework.graph.ILink;
 import com.intel.tools.fdk.graphframework.graph.IPin;
 
 /**
@@ -69,7 +68,7 @@ public class LeafPresenter extends Presenter<ILeaf> {
     private final LeafBodyFigure body;
     private final List<InputFigure> inputs = new ArrayList<>();
     private final List<OutputFigure> outputs = new ArrayList<>();
-    private final Map<ILink, LinkAnchor> anchors = new HashMap<>();
+    private final Map<IPin, LinkAnchor> anchors = new HashMap<>();
 
     private boolean blockEvents = false;
     private Point boundsLocation = new Point(0, 0);
@@ -139,14 +138,14 @@ public class LeafPresenter extends Presenter<ILeaf> {
     }
 
     /**
-     * Retrieve an anchor associated to a {@link ILink}
+     * Retrieve an anchor associated to a {@link IPin}
      *
-     * @param link
-     *            the connected link
-     * @return the anchor connected to the given link or null if link link is not linked to the input
+     * @param pin
+     *            the connected pin
+     * @return the anchor connected to the given pin
      */
-    public LinkAnchor getAnchor(final ILink link) {
-        return anchors.get(link);
+    public LinkAnchor getAnchor(final IPin pin) {
+        return anchors.get(pin);
     }
 
     /**
@@ -183,9 +182,7 @@ public class LeafPresenter extends Presenter<ILeaf> {
     private <P extends IPin, F extends PinFigure<P>> void setupPinFigure(final P pin, final F pinFigure,
             final List<F> pinList) {
         pinList.add(pinFigure);
-        if (pin.getLink().isPresent()) {
-            this.anchors.put(pin.getLink().get(), new LinkAnchor(boundsFigure, pinFigure));
-        }
+        this.anchors.put(pin, new LinkAnchor(boundsFigure, pinFigure));
     }
 
     @Override
