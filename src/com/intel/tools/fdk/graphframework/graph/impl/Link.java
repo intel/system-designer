@@ -35,7 +35,7 @@ public final class Link implements ILink {
     private final Input input;
     private final Output output;
 
-    public Link(final Input input, final Output output) {
+    public Link(final Output output, final Input input) {
         this.input = input;
         this.output = output;
         this.input.connect(this);

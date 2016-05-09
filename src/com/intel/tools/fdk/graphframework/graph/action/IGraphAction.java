@@ -23,10 +23,12 @@
 package com.intel.tools.fdk.graphframework.graph.action;
 
 import com.intel.tools.fdk.graphframework.graph.IGroup;
+import com.intel.tools.fdk.graphframework.graph.IInput;
 import com.intel.tools.fdk.graphframework.graph.ILeaf;
 import com.intel.tools.fdk.graphframework.graph.ILink;
 import com.intel.tools.fdk.graphframework.graph.INode;
 import com.intel.tools.fdk.graphframework.graph.INodeContainer;
+import com.intel.tools.fdk.graphframework.graph.IOutput;
 
 /**
  * Interface of actions available on an editable Graph
@@ -75,15 +77,11 @@ public interface IGraphAction<T> {
      * Add a new Link between two node Leaves of the Graph
      *
      * @param output
-     *            the node owning the connected output
-     * @param outputId
-     *            the connected output id
+     *            the connected output pin
      * @param input
-     *            the node owning the connected output
-     * @param inputId
-     *            the connected input id
+     *            the connected input pin
      */
-    void addLink(final ILeaf output, final int outputId, final ILeaf input, final int inputId);
+    void addLink(final IOutput output, final IInput input);
 
     /**
      * Remove a Link of the Graph

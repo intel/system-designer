@@ -91,7 +91,7 @@ public class GraphCompacter {
 
         try {
             if (input.isPresent() && output.isPresent()) {
-                GraphFactory.createLink(input.get(), output.get());
+                GraphFactory.createLink(output.get(), input.get());
             }
         } catch (final GraphException e) {
             assert false : "During graph copy, no connection errors can happen";

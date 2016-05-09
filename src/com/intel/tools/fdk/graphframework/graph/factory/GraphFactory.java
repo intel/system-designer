@@ -87,19 +87,19 @@ public final class GraphFactory {
     /**
      * Connect an output of a node to an input of another one (or itself).
      *
-     * @param input
-     *            the input pin to connect
      * @param output
      *            the output pin to connect
+     * @param input
+     *            the input pin to connect
      * @return the {@link ILink} object which bounds the two pins together
      * @throws GraphException
      *             if the output or the input is already linked to a link
      */
-    public static ILink createLink(final IInput input, final IOutput output) throws GraphException {
+    public static ILink createLink(final IOutput output, final IInput input) throws GraphException {
         if (input.getLink().isPresent() || output.getLink().isPresent()) {
             throw new GraphException("While connecting nodes: I/O are already used");
         }
-        return new Link((Input) input, (Output) output);
+        return new Link((Output) output, (Input) input);
     }
 
 }
