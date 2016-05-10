@@ -140,6 +140,12 @@ public abstract class PinFigure<IOType extends IPin> extends PolylineShape imple
     }
 
     @Override
+    public void setAlpha(final int value) {
+        arrow.setAlpha(value);
+        connector.setAlpha(value);
+    }
+
+    @Override
     public void select() {
         selection.setVisible(true);
     }

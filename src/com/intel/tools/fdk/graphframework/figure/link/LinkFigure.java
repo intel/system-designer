@@ -47,6 +47,7 @@ public class LinkFigure extends BeveledPolyLineConnection implements IGraphFigur
         setSourceAnchor(source);
         setTargetAnchor(target);
 
+        // Reminder: this style is copy pasted in GhostLinkFigure, please update both
         setLineCap(SWT.CAP_ROUND);
         setLineJoin(SWT.JOIN_ROUND);
         setAntialias(1);
