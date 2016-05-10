@@ -121,8 +121,8 @@ public abstract class Presenter<T extends INode> {
         // Label width is expanded to avoid cutting some text, then it is centered under the component rectangle
         boundFigure.addFigureListener(source -> {
             final Rectangle bounds = source.getBounds().getCopy();
-            source.getParent().translateToAbsolute(bounds);
-            if (label.getParent() != null) {
+            if (label.getParent() != null && source.getParent() != null) {
+                source.getParent().translateToAbsolute(bounds);
                 label.getParent().translateToRelative(bounds);
                 label.setLocation(new Point(bounds.x + (bounds.width - labelWidth) / 2, bounds.y + bounds.height));
             }

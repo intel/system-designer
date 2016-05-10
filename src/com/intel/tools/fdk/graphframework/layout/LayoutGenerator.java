@@ -32,6 +32,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.eclipse.draw2d.IFigure;
+import org.eclipse.draw2d.geometry.Point;
 
 import com.intel.tools.fdk.graphframework.displayer.GraphDisplayer;
 import com.intel.tools.fdk.graphframework.figure.link.LinkFigure;
@@ -58,6 +59,9 @@ public class LayoutGenerator implements IGraphListener {
     private final Map<Leaf, LeafPresenter> leafPresenters = new HashMap<>();
     private final Map<Group, GroupPresenter> groupPresenters = new HashMap<>();
     private final IPresenterManager presenterManager;
+
+    /** The hotpoint is the next location which will be used for a new presenter */
+    private final Point hotPoint = new Point(0, 0);
 
     /**
      * Constructor using default {@link IPresenterManager} implementation.
@@ -99,8 +103,10 @@ public class LayoutGenerator implements IGraphListener {
         final Set<Group> groups = graph.getGroups();
 
         // Create new presenters
-        leaves.forEach(leaf -> leafPresenters.putIfAbsent(leaf, presenterManager.getPresenter(leaf)));
-        groups.forEach(group -> groupPresenters.putIfAbsent(group, presenterManager.getPresenter(group)));
+        leaves.forEach(leaf -> leafPresenters.computeIfAbsent(leaf,
+                key -> setupNewPresenter(presenterManager.getPresenter(key))));
+        groups.forEach(group -> groupPresenters.computeIfAbsent(group,
+                key -> setupNewPresenter(presenterManager.getPresenter(key))));
         // Remove presenters of nodes which are not any more in the graph
         removeOldPresenters(leafPresenters, leaves);
         removeOldPresenters(groupPresenters, groups);
@@ -150,6 +156,26 @@ public class LayoutGenerator implements IGraphListener {
      */
     protected Collection<LeafPresenter> getLeafPresenters() {
         return this.leafPresenters.values();
+    }
+
+    /**
+     * Setup a new presenter
+     *
+     * @param presenter
+     *            the newly added presenter
+     * @return presenter parameter for convenience
+     */
+    private <T extends Presenter<?>> T setupNewPresenter(final T presenter) {
+        presenter.getNodeBody().setLocation(hotPoint);
+        return presenter;
+    }
+
+    /**
+     * @param hotPoint
+     *            the point where the next presenter which will be registered will be located
+     */
+    public void setHotPoint(final Point hotPoint) {
+        this.hotPoint.setLocation(hotPoint);
     }
 
 }
