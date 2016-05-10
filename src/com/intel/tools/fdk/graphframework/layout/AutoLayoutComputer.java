@@ -187,7 +187,7 @@ public class AutoLayoutComputer {
             } else {
                 line++;
             }
-        } while (line <= this.coordinates.values().stream().mapToInt(point -> point.y).max().orElse(0));
+        } while (line <= this.coordinates.values().stream().mapToInt(point -> point.y).max().orElse(-1));
     }
 
 }
