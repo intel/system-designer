@@ -35,6 +35,8 @@ import com.intel.tools.utils.IntelPalette;
  */
 public class BackgroundLayer extends FreeformLayer {
 
+    private boolean isGridVisible = false;
+
     public BackgroundLayer() {
         super();
         setForegroundColor(IntelPalette.LIGHT_GREY);
@@ -46,10 +48,16 @@ public class BackgroundLayer extends FreeformLayer {
         return true;
     }
 
+    public void setGridVisible(final boolean visible) {
+        isGridVisible = visible;
+    }
+
     @Override
     protected void paintFigure(final Graphics graphics) {
         super.paintFigure(graphics);
-        FigureUtilities.paintGrid(graphics, this, new Point(0, 0), IGraphFigure.SIZE_UNIT, IGraphFigure.SIZE_UNIT);
+        if (isGridVisible) {
+            FigureUtilities.paintGrid(graphics, this, new Point(0, 0), IGraphFigure.SIZE_UNIT, IGraphFigure.SIZE_UNIT);
+        }
     }
 
 }
