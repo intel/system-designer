@@ -57,8 +57,11 @@ public class ReparentingController implements NodeMoveController.FigureMoveListe
          *            the old parent
          * @param newParent
          *            the new parent proposal
+         * @param newLocation
+         *            the new location of the node figure
          */
-        void move(final ILeaf leaf, final INodeContainer oldParent, final INodeContainer newParent);
+        void move(final ILeaf leaf, final INodeContainer oldParent, final INodeContainer newParent,
+                final Point newLocation);
 
         /**
          * This method is called when the controller detects a reparenting of a group
@@ -69,8 +72,11 @@ public class ReparentingController implements NodeMoveController.FigureMoveListe
          *            the old parent
          * @param newParent
          *            the new parent proposal
+         * @param newLocation
+         *            the new location of the node figure
          */
-        void move(final IGroup group, final INodeContainer oldParent, final INodeContainer newParent);
+        void move(final IGroup group, final INodeContainer oldParent, final INodeContainer newParent,
+                final Point newLocation);
     }
 
     private final List<ReparentingListener> listeners = new ArrayList<>();
@@ -96,13 +102,13 @@ public class ReparentingController implements NodeMoveController.FigureMoveListe
             final ILeaf node = ((LeafBodyFigure) figure).getLeaf();
             final INodeContainer oldParent = node.getParent();
             if (oldParent != newParent && newParent != node) {
-                listeners.forEach(listener -> listener.move(node, oldParent, newParent));
+                listeners.forEach(listener -> listener.move(node, oldParent, newParent, destination));
             }
         } else if (figure instanceof GroupBodyFigure) {
             final IGroup node = ((GroupBodyFigure) figure).getGroup();
             final INodeContainer oldParent = node.getParent();
             if (oldParent != newParent && newParent != node) {
-                listeners.forEach(listener -> listener.move(node, node.getParent(), newParent));
+                listeners.forEach(listener -> listener.move(node, node.getParent(), newParent, destination));
             }
         }
 

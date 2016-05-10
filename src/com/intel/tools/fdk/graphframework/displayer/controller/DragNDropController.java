@@ -62,8 +62,10 @@ public class DragNDropController<T> {
          *            the dropped element
          * @param node
          *            the node on which the element has been dropped
+         * @param dropLocation
+         *            the location where the the element has been dropped
          */
-        void elementDropped(final T element, final INodeContainer node);
+        void elementDropped(final T element, final INodeContainer node, final Point dropLocation);
     }
 
     private final List<IDropListener<T>> listeners = new ArrayList<>();
@@ -100,7 +102,7 @@ public class DragNDropController<T> {
                                 parent = adapter.getGraph();
                             }
                             listeners.forEach(
-                                    listener -> listener.elementDropped(droppedType.cast(object), parent));
+                                    listener -> listener.elementDropped(droppedType.cast(object), parent, drop));
                         }
                     }
                 }
