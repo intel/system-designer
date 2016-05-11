@@ -23,10 +23,12 @@
 package com.intel.tools.fdk.graphframework.ui;
 
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
 
 import com.intel.tools.fdk.graphframework.displayer.controller.ModelSelectionController;
 import com.intel.tools.fdk.graphframework.displayer.controller.ModelSelectionController.IModelSelectionListener;
@@ -36,13 +38,15 @@ import com.intel.tools.fdk.graphframework.graph.ILeaf;
 import com.intel.tools.fdk.graphframework.graph.ILink;
 import com.intel.tools.fdk.graphframework.graph.IPin;
 import com.intel.tools.utils.IntelPalette;
-import com.intel.tools.utils.widgets.Header;
 
-public class PropertiesPane extends Composite {
+public class PropertiesPane extends ScrolledComposite {
+
+    private IGraphUIProvider uiProvider;
+    private final Composite containerComposite;
 
     public PropertiesPane(final Composite parent, final int style, final IGraphUIProvider uiProvider,
             final ModelSelectionController selectionController) {
-        super(parent, style);
+        super(parent, style | SWT.V_SCROLL);
         setModelSelectionController(selectionController);
         setGraphUIProvider(uiProvider);
 
@@ -54,21 +58,21 @@ public class PropertiesPane extends Composite {
         setBackground(IntelPalette.WHITE);
         setBackgroundMode(SWT.INHERIT_FORCE);
 
-        final Header h = new Header(this);
-        h.setText("Properties");
-        h.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false));
-
         containerComposite = new Composite(this, SWT.NONE);
+        setContent(containerComposite);
+        setExpandHorizontal(true);
+
         containerComposite.setBackground(IntelPalette.WHITE);
         containerComposite.setBackgroundMode(SWT.INHERIT_FORCE);
-        containerComposite
-        .setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 
+        addListener(SWT.Activate, new Listener() {
+            @Override
+            public void handleEvent(final Event e) {
+                setFocus();
+            }
+        });
+        forceFocus();
     }
-
-    private IGraphUIProvider uiProvider;
-
-    private final Composite containerComposite;
 
     /**
      * Sets the provider for graph items UI.
@@ -84,45 +88,55 @@ public class PropertiesPane extends Composite {
         selectionController.addModelSelectionListener(new IModelSelectionListener() {
             @Override
             public void graphSelected(final IGraph graph) {
+                setRedraw(false);
                 resetUI();
                 if (uiProvider != null) {
                     uiProvider.createUI(containerComposite, graph);
                 }
                 relayout();
+                setRedraw(true);
             }
 
             @Override
             public void groupSelected(final IGroup group) {
+                setRedraw(false);
                 resetUI();
                 if (uiProvider != null) {
                     uiProvider.createUI(containerComposite, group);
                 }
                 relayout();
+                setRedraw(true);
             }
 
             @Override
             public void leafSelected(final ILeaf leaf) {
+                setRedraw(false);
                 resetUI();
                 if (uiProvider != null) {
                     uiProvider.createUI(containerComposite, leaf);
                 }
                 relayout();
+                setRedraw(true);
             }
 
             @Override
             public void pinSelected(final IPin pin) {
+                setRedraw(false);
                 resetUI();
                 // We don't have any layout to create for a pin selection.
                 relayout();
+                setRedraw(true);
             }
 
             @Override
             public void linkSelected(final ILink link) {
+                setRedraw(false);
                 resetUI();
                 if (uiProvider != null) {
                     uiProvider.createUI(containerComposite, link);
                 }
                 relayout();
+                setRedraw(true);
             }
 
         });
@@ -135,7 +149,7 @@ public class PropertiesPane extends Composite {
     }
 
     protected void relayout() {
-        containerComposite.layout();
         containerComposite.pack();
+        layout();
     }
 }
