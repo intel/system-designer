@@ -34,6 +34,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.eclipse.draw2d.geometry.Point;
+import org.eclipse.draw2d.geometry.PrecisionPoint;
 
 import com.intel.tools.fdk.graphframework.graph.impl.Leaf;
 import com.intel.tools.fdk.graphframework.graph.impl.Link;
@@ -53,7 +54,7 @@ public class AutoLayoutComputer {
     private final Map<Leaf, Integer> ordinates = new HashMap<>();
 
     /** Usable coordinates */
-    private final Map<Leaf, Point> coordinates;
+    private final Map<Leaf, PrecisionPoint> coordinates;
 
     /** Current coordinate */
     private int currentCoordinate = 0;
@@ -99,7 +100,7 @@ public class AutoLayoutComputer {
      *
      * @return a map associating a leaf node to its coordinates
      */
-    public Map<Leaf, Point> getCoordinates() {
+    public Map<Leaf, PrecisionPoint> getCoordinates() {
         return Collections.unmodifiableMap(coordinates);
     }
 
@@ -110,10 +111,10 @@ public class AutoLayoutComputer {
      *            the node the get the coordinates from
      * @return rotated coordinates
      */
-    private Point getCoordinate(final Leaf node) {
-        final int x = ((abscisses.get(node) + ordinates.get(node)) / 2) - 1;
-        final int y = ((ordinates.get(node) - abscisses.get(node)) / 2) - 1;
-        return new Point(x, y);
+    private PrecisionPoint getCoordinate(final Leaf node) {
+        final double x = ((abscisses.get(node) + ordinates.get(node)) / 2.0) - 1;
+        final double y = ((ordinates.get(node) - abscisses.get(node)) / 2.0) - 1;
+        return new PrecisionPoint(x, y);
     }
 
     /**

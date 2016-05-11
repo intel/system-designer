@@ -22,7 +22,6 @@
  */
 package com.intel.tools.fdk.graphframework.layout;
 
-import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.PrecisionPoint;
 import org.eclipse.draw2d.geometry.Rectangle;
 
@@ -84,7 +83,7 @@ public class AutoLayoutGenerator extends LayoutGenerator {
             heightMax = bounds.height > heightMax ? bounds.height : heightMax;
         }
         for (final LeafPresenter presenter : getLeafPresenters()) {
-            final Point coord = computer.getCoordinate(presenter.getNode());
+            final PrecisionPoint coord = computer.getCoordinate(presenter.getNode());
             /**
              * Ordinates are negated because draw2d uses the upper left corner as origin but the algorithm uses a
              * standard cartesian coordinates (ordinates grows towards the upper side of the view).

@@ -27,7 +27,7 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import org.eclipse.draw2d.geometry.Point;
+import org.eclipse.draw2d.geometry.PrecisionPoint;
 
 import com.intel.tools.fdk.graphframework.graph.ILeaf;
 import com.intel.tools.fdk.graphframework.graph.impl.Group;
@@ -42,7 +42,7 @@ public class AutoGroupLayoutComputer {
 
     private final GraphCompacter compacter;
 
-    private final Map<Leaf, Point> coordinates = new HashMap<>();
+    private final Map<Leaf, PrecisionPoint> coordinates = new HashMap<>();
 
     public AutoGroupLayoutComputer(final NodeContainer graph) {
 
@@ -56,11 +56,11 @@ public class AutoGroupLayoutComputer {
             // Analyse sub group size
             computers.forEach((group, computer) -> {
                 final Leaf compactedNode = compacter.getCompactedGroup(group);
-                int xMax = 0;
-                int xMin = 0;
-                int yMax = 0;
-                int yMin = 0;
-                for (final Point location : computer.coordinates.values()) {
+                double xMax = 0;
+                double xMin = 0;
+                double yMax = 0;
+                double yMin = 0;
+                for (final PrecisionPoint location : computer.coordinates.values()) {
                     xMax = location.x > xMax ? location.x : xMax;
                     yMax = location.y > yMax ? location.y : yMax;
                     xMin = location.x < xMin ? location.x : xMin;
@@ -72,13 +72,13 @@ public class AutoGroupLayoutComputer {
             // Get coordinates of all nodes
             computers.forEach((group, computer) -> {
                 final Leaf compactedNode = compacter.getCompactedGroup(group);
-                final Point groupCoordinate = this.coordinates.get(compactedNode);
+                final PrecisionPoint groupCoordinate = this.coordinates.get(compactedNode);
                 this.coordinates.remove(compactedNode);
 
                 computer.coordinates.keySet().forEach(leaf -> {
-                    final Point leafCoordinate = computer.coordinates.get(leaf);
-                    this.coordinates.put(leaf,
-                            new Point(groupCoordinate.x + leafCoordinate.x, groupCoordinate.y + leafCoordinate.y));
+                    final PrecisionPoint leafCoordinate = computer.coordinates.get(leaf);
+                    this.coordinates.put(leaf, new PrecisionPoint(
+                            groupCoordinate.x + leafCoordinate.x, groupCoordinate.y + leafCoordinate.y));
                 });
 
             });
@@ -97,7 +97,7 @@ public class AutoGroupLayoutComputer {
         });
     }
 
-    private void pushLeft(final Leaf base, final int offset) {
+    private void pushLeft(final Leaf base, final double offset) {
         this.coordinates.keySet().forEach(leaf -> {
             if (this.coordinates.get(leaf).x >= this.coordinates.get(base).x && leaf != base) {
                 this.coordinates.get(leaf).translate(offset, 0);
@@ -105,7 +105,7 @@ public class AutoGroupLayoutComputer {
         });
     }
 
-    private void pushDown(final Leaf base, final int offset) {
+    private void pushDown(final Leaf base, final double offset) {
         this.coordinates.keySet().forEach(leaf -> {
             if (this.coordinates.get(leaf).y >= this.coordinates.get(base).y && leaf != base) {
                 this.coordinates.get(leaf).translate(0, offset);
@@ -119,13 +119,13 @@ public class AutoGroupLayoutComputer {
      *
      * @param node
      *            the instance we want the coordinates
-     * @return a point containing instance coordinate or (0, 0) if the node is unknow
+     * @return a point containing instance coordinate or (0, 0) if the node is unknown
      */
-    public Point getCoordinate(final ILeaf node) {
+    public PrecisionPoint getCoordinate(final ILeaf node) {
         if (coordinates.containsKey(node)) {
             return coordinates.get(node);
         } else {
-            return new Point(0, 0);
+            return new PrecisionPoint(0, 0);
         }
     }
 
