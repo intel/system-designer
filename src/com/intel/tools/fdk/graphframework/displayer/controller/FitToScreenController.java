@@ -25,6 +25,7 @@ package com.intel.tools.fdk.graphframework.displayer.controller;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.Rectangle;
@@ -33,6 +34,7 @@ import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
 
 import com.intel.tools.fdk.graphframework.displayer.GraphDisplayer;
+import com.intel.tools.fdk.graphframework.figure.node.GroupBodyFigure;
 import com.intel.tools.fdk.graphframework.figure.node.LeafBodyFigure;
 
 public class FitToScreenController {
@@ -129,13 +131,22 @@ public class FitToScreenController {
         // Apply the delta to each children
         for (final Object child : displayer.getContentLayer().getChildren()) {
             if (child instanceof LeafBodyFigure) {
-                final LeafBodyFigure compView = (LeafBodyFigure) child;
-                final Point childBoundsCoordinates = compView.getBounds().getLocation();
-                childBoundsCoordinates.x += delta.width;
-                childBoundsCoordinates.y += delta.height;
-                compView.setLocation(childBoundsCoordinates);
+                applyOffsetToFigure((IFigure) child, delta);
+            } else if (child instanceof GroupBodyFigure) {
+                final GroupBodyFigure figure = (GroupBodyFigure) child;
+                // if a group is empty it should be moved manually as it as no children to follow
+                if (figure.getGroup().getLeaves().isEmpty()) {
+                    applyOffsetToFigure(figure, delta);
+                }
             }
         }
+    }
+
+    private void applyOffsetToFigure(final IFigure figure, final Dimension delta) {
+        final Point childBoundsCoordinates = figure.getBounds().getLocation();
+        childBoundsCoordinates.x += delta.width;
+        childBoundsCoordinates.y += delta.height;
+        figure.setLocation(childBoundsCoordinates);
     }
 
     public void addListener(final Listener listener) {
