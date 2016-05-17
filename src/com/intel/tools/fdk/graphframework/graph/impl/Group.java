@@ -30,12 +30,18 @@ import com.intel.tools.fdk.graphframework.graph.INode;
 /**
  * Represent a group {@link INode} which are part of a {@link Graph}.</br>
  */
-public class Group extends NodeContainer implements IGroup {
+public class Group extends NodeContainer implements IGroup, Comparable<Group> {
+
+    /** Instance counter used to generate instanceId, this is required to handle Group ordered Set */
+    private static int instanceCounter = 0;
+
+    private final int id;
 
     private NodeContainer parent;
 
     public Group(final Set<Leaf> leaves, final Set<Group> groups) {
         super(leaves, groups);
+        this.id = instanceCounter++;
     }
 
     @Override
@@ -57,6 +63,11 @@ public class Group extends NodeContainer implements IGroup {
         if (this.parent != null) {
             this.parent.remove(this);
         }
+    }
+
+    @Override
+    public int compareTo(final Group group) {
+        return this.id - group.id;
     }
 
 }

@@ -24,6 +24,7 @@ package com.intel.tools.fdk.graphframework.layout;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.TreeSet;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -53,14 +54,14 @@ public class AutoGroupLayoutComputer {
             final Map<Group, AutoGroupLayoutComputer> computers = graph.getGroups().stream()
                     .collect(Collectors.toMap(Function.identity(), AutoGroupLayoutComputer::new));
 
-            // Analyse sub group size
-            computers.forEach((group, computer) -> {
+            // Analyse sub group size, here order is essential to always get the same layout
+            computers.keySet().stream().collect(Collectors.toCollection(TreeSet::new)).forEach(group -> {
                 final Leaf compactedNode = compacter.getCompactedGroup(group);
                 double xMax = 0;
                 double xMin = 0;
                 double yMax = 0;
                 double yMin = 0;
-                for (final PrecisionPoint location : computer.coordinates.values()) {
+                for (final PrecisionPoint location : computers.get(group).coordinates.values()) {
                     xMax = location.x > xMax ? location.x : xMax;
                     yMax = location.y > yMax ? location.y : yMax;
                     xMin = location.x < xMin ? location.x : xMin;

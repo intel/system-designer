@@ -30,6 +30,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.TreeSet;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -50,13 +51,13 @@ public class GraphCompacter {
 
     private final Map<Leaf, Leaf> leavesOrig = new HashMap<>();
     private final Map<Leaf, Leaf> leavesCopy;
-    private final Map<Group, Leaf> compactedGroups;
+    private final Map<Group, Leaf> compactedGroups = new HashMap<>();
 
     private final Graph compactedGraph;
 
     public GraphCompacter(final NodeContainer container) {
-        this.compactedGroups = container.getGroups().stream().collect(
-                Collectors.toMap(Function.identity(), this::compactGroup));
+        final Set<Group> orderedGroupSet = new TreeSet<>(container.getGroups());
+        orderedGroupSet.forEach(group -> compactedGroups.put(group, compactGroup(group)));
         this.leavesCopy = container.getLeaves().stream().collect(Collectors.toMap(Function.identity(), Leaf::new));
         this.leavesCopy.forEach((key, value) -> leavesOrig.put(value, key));
 
