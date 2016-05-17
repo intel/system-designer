@@ -25,7 +25,6 @@ package com.intel.tools.fdk.graphframework.displayer.controller;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.log4j.Logger;
 import org.eclipse.draw2d.GhostImageFigure;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.MouseEvent;
@@ -45,8 +44,6 @@ import com.intel.tools.fdk.graphframework.figure.node.LeafBodyFigure;
  * Only Node Figure of the {@link GraphDisplayer} will be moved.
  */
 public class NodeMoveController {
-
-    private static final Logger LOG = Logger.getLogger(NodeMoveController.class);
 
     private static final TypeTreeSearch NODE_BODY_SEARCHER = new TypeTreeSearch(LeafBodyFigure.class);
     private static final TypeTreeSearch GROUP_BODY_SEARCHER = new TypeTreeSearch(GroupBodyFigure.class);
