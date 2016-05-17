@@ -29,7 +29,7 @@ import java.util.stream.Collectors;
 
 import org.eclipse.draw2d.geometry.PrecisionPoint;
 
-import com.intel.tools.fdk.graphframework.graph.ILeaf;
+import com.intel.tools.fdk.graphframework.graph.INode;
 import com.intel.tools.fdk.graphframework.graph.impl.Group;
 import com.intel.tools.fdk.graphframework.graph.impl.Leaf;
 import com.intel.tools.fdk.graphframework.graph.impl.NodeContainer;
@@ -42,7 +42,7 @@ public class AutoGroupLayoutComputer {
 
     private final GraphCompacter compacter;
 
-    private final Map<Leaf, PrecisionPoint> coordinates = new HashMap<>();
+    private final Map<INode, PrecisionPoint> coordinates = new HashMap<>();
 
     public AutoGroupLayoutComputer(final NodeContainer graph) {
 
@@ -74,13 +74,15 @@ public class AutoGroupLayoutComputer {
                 final Leaf compactedNode = compacter.getCompactedGroup(group);
                 final PrecisionPoint groupCoordinate = this.coordinates.get(compactedNode);
                 this.coordinates.remove(compactedNode);
-
-                computer.coordinates.keySet().forEach(leaf -> {
-                    final PrecisionPoint leafCoordinate = computer.coordinates.get(leaf);
-                    this.coordinates.put(leaf, new PrecisionPoint(
-                            groupCoordinate.x + leafCoordinate.x, groupCoordinate.y + leafCoordinate.y));
-                });
-
+                if (!group.getLeaves().isEmpty()) {
+                    computer.coordinates.keySet().forEach(leaf -> {
+                        final PrecisionPoint leafCoordinate = computer.coordinates.get(leaf);
+                        this.coordinates.put(leaf, new PrecisionPoint(
+                                groupCoordinate.x + leafCoordinate.x, groupCoordinate.y + leafCoordinate.y));
+                    });
+                } else {
+                    this.coordinates.put(group, groupCoordinate);
+                }
             });
         }
     }
@@ -121,7 +123,7 @@ public class AutoGroupLayoutComputer {
      *            the instance we want the coordinates
      * @return a point containing instance coordinate or (0, 0) if the node is unknown
      */
-    public PrecisionPoint getCoordinate(final ILeaf node) {
+    public PrecisionPoint getCoordinate(final INode node) {
         if (coordinates.containsKey(node)) {
             return coordinates.get(node);
         } else {

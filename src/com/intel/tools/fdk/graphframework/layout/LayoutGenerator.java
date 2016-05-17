@@ -159,6 +159,15 @@ public class LayoutGenerator implements IGraphListener {
     }
 
     /**
+     * Retrieve generated presenters
+     *
+     * @return presenters which are or will be displayed
+     */
+    protected Collection<GroupPresenter> getGroupPresenters() {
+        return this.groupPresenters.values();
+    }
+
+    /**
      * Setup a new presenter
      *
      * @param presenter
