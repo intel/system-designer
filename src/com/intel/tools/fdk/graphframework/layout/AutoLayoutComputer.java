@@ -31,6 +31,7 @@ import java.util.Map;
 import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import org.eclipse.draw2d.geometry.Point;
@@ -59,27 +60,19 @@ public class AutoLayoutComputer {
     /** Current coordinate */
     private int currentCoordinate = 0;
 
+    /** Predicate used to know if a link as been visited or not */
+    private final Predicate<Link> unvisitedLinkPredicate = link -> !visitedLinks.contains(link);
+
     public AutoLayoutComputer(final NodeContainer graph) {
         // Find all component which are sources
         final SortedSet<Leaf> sources = new TreeSet<>(graph.getAllLeaves().stream()
                 .filter(this::isSourceInstance).collect(Collectors.toSet()));
+        compute(sources);
 
-        sources.forEach(node -> {
-            // Simulate the fact that all sources come from the same point
-            abscisses.put(node, ++currentCoordinate);
-            leftNumbering(node);
-        });
-
-        // Reset algorithm
-        visitedLinks.clear();
-        currentCoordinate = 0;
-
-        sources.stream().collect(Collectors.toCollection(ArrayDeque::new))
-                .descendingIterator()
-                .forEachRemaining(node -> {
-                    ordinates.put(node, ++currentCoordinate);
-                    rightNumbering(node);
-                });
+        // Retrieve potential uncomputed nodes
+        final SortedSet<Leaf> remaining = new TreeSet<>(graph.getAllLeaves().stream()
+                .filter(leaf -> !abscisses.keySet().contains(leaf)).collect(Collectors.toList()));
+        compute(remaining);
 
         // Rotate coordinates to be usable
         this.coordinates = abscisses.keySet().stream()
@@ -90,8 +83,36 @@ public class AutoLayoutComputer {
         if (minY < 0) {
             this.coordinates.values().forEach(p -> p.y -= minY);
         }
-
         removeCoordinatesEmptyLines();
+    }
+
+    /**
+     * Run the algorithm on a given source set
+     *
+     * @param sources
+     *            the source set
+     */
+    private void compute(final SortedSet<Leaf> sources) {
+        // Reset algorithm
+        visitedLinks.clear();
+        currentCoordinate = abscisses.values().stream().mapToInt(Integer::valueOf).max().orElse(0);
+
+        sources.forEach(node -> {
+            // Simulate the fact that all sources come from the same point
+            abscisses.put(node, ++currentCoordinate);
+            leftNumbering(node);
+        });
+
+        // Reset algorithm
+        visitedLinks.clear();
+        currentCoordinate = ordinates.values().stream().mapToInt(Integer::valueOf).max().orElse(0);
+
+        sources.stream().collect(Collectors.toCollection(ArrayDeque::new))
+                .descendingIterator()
+                .forEachRemaining(node -> {
+                    ordinates.put(node, ++currentCoordinate);
+                    rightNumbering(node);
+                });
     }
 
     /**
@@ -137,11 +158,11 @@ public class AutoLayoutComputer {
      * @return true if some inputs have not been visited, false otherwise
      */
     private boolean hasUnvisitedLinkedInput(final Leaf linked) {
-        return linked.getLinkedInputLinks().stream().anyMatch(link -> !visitedLinks.contains(link));
+        return linked.getLinkedInputLinks().stream().anyMatch(unvisitedLinkPredicate);
     }
 
     private void leftNumbering(final Leaf origin) {
-        origin.getLinkedOutputLinks().forEach(link -> {
+        origin.getLinkedOutputLinks().stream().filter(unvisitedLinkPredicate).forEach(link -> {
             visitedLinks.add(link);
             final Leaf linked = link.getInput().getLeaf();
             if (!hasUnvisitedLinkedInput(linked)) {
@@ -153,7 +174,7 @@ public class AutoLayoutComputer {
     }
 
     private void rightNumbering(final Leaf origin) {
-        origin.getLinkedOutputLinks().stream()
+        origin.getLinkedOutputLinks().stream().filter(unvisitedLinkPredicate)
                 .collect(Collectors.toCollection(ArrayDeque::new))
                 .descendingIterator()
                 .forEachRemaining(link -> {
