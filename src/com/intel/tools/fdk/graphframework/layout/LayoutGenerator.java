@@ -96,7 +96,7 @@ public class LayoutGenerator implements IGraphListener {
     }
 
     @Override
-    public void graphUpdated(final IGraph newGraph) {
+    public final void graphUpdated(final IGraph newGraph) {
         displayer.reset();
         final Graph graph = (Graph) newGraph;
         final Set<Leaf> leaves = graph.getAllLeaves();
