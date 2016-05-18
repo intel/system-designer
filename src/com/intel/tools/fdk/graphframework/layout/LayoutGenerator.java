@@ -54,7 +54,6 @@ import com.intel.tools.fdk.graphframework.graph.impl.Leaf;
  */
 public class LayoutGenerator implements IGraphListener {
 
-    private final IAdapter adapter;
     private final GraphDisplayer displayer;
     private final Map<Leaf, LeafPresenter> leafPresenters = new HashMap<>();
     private final Map<Group, GroupPresenter> groupPresenters = new HashMap<>();
@@ -87,12 +86,11 @@ public class LayoutGenerator implements IGraphListener {
      */
     public LayoutGenerator(final IAdapter adapter, final IPresenterManager presenterManager,
             final GraphDisplayer displayer) {
-        this.adapter = adapter;
-        this.adapter.addGraphListener(this);
+        adapter.addGraphListener(this);
         this.displayer = displayer;
         this.presenterManager = presenterManager;
 
-        graphUpdated(this.adapter.getGraph());
+        graphUpdated(adapter.getGraph());
     }
 
     @Override
