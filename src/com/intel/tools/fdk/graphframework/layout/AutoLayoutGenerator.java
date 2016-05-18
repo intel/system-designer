@@ -22,6 +22,8 @@
  */
 package com.intel.tools.fdk.graphframework.layout;
 
+import java.util.stream.Stream;
+
 import org.eclipse.draw2d.geometry.PrecisionPoint;
 import org.eclipse.draw2d.geometry.Rectangle;
 
@@ -32,7 +34,6 @@ import com.intel.tools.fdk.graphframework.figure.presenter.LeafPresenter;
 import com.intel.tools.fdk.graphframework.figure.presenter.Presenter;
 import com.intel.tools.fdk.graphframework.graph.INode;
 import com.intel.tools.fdk.graphframework.graph.adapter.IAdapter;
-import com.intel.tools.fdk.graphframework.graph.impl.Graph;
 
 /**
  * Graph layout which choose a position for each graph node.
@@ -45,7 +46,6 @@ public class AutoLayoutGenerator extends LayoutGenerator {
     private int widthMax = 40;
     /** Max element height, initialized at 40 to potentially separate empty groups */
     private int heightMax = 40;
-    private final AutoGroupLayoutComputer computer;
 
     /**
      * Create a layout generator which initialize the displayed graph with position computed through a dedicated
@@ -80,27 +80,34 @@ public class AutoLayoutGenerator extends LayoutGenerator {
     public AutoLayoutGenerator(final IAdapter adapter, final IPresenterManager presenterManager,
             final GraphDisplayer displayer) {
         super(adapter, presenterManager, displayer);
+        // run the first layout
+        layout();
+    }
 
+    /**
+     * Compute the graph to calculate elements location
+     */
+    public void layout() {
         // The first display has been done, let's compute initial positions.
-        computer = new AutoGroupLayoutComputer((Graph) adapter.getGraph());
+        final AutoGroupLayoutComputer computer = new AutoGroupLayoutComputer(getGraph());
         for (final LeafPresenter presenters : getLeafPresenters()) {
             final Rectangle bounds = presenters.getBoundsFigure().getBounds();
             widthMax = bounds.width > widthMax ? bounds.width : widthMax;
             heightMax = bounds.height > heightMax ? bounds.height : heightMax;
         }
-        getLeafPresenters().forEach(this::setupPresenter);
-        getGroupPresenters().stream()
-                .filter(presenter -> presenter.getNode().getLeaves().isEmpty())
-                .forEach(this::setupPresenter);
+
+        Stream.concat(getLeafPresenters().stream(),
+                      getGroupPresenters().stream().filter(presenter -> presenter.getNode().getLeaves().isEmpty()))
+                .forEach(presenter -> setupPresenter(presenter, computer.getCoordinate(presenter.getNode())));
     }
 
-    private void setupPresenter(final Presenter<? extends INode> presenter) {
-        final PrecisionPoint coord = computer.getCoordinate(presenter.getNode());
+    private void setupPresenter(final Presenter<? extends INode> presenter, final PrecisionPoint coordinates) {
         /**
          * Ordinates are negated because draw2d uses the upper left corner as origin but the algorithm uses a standard
          * cartesian coordinates (ordinates grows towards the upper side of the view).
          */
-        presenter.getBoundsFigure().setLocation(new PrecisionPoint(coord.x * widthMax * 1.5, -coord.y * heightMax * 2));
+        presenter.getBoundsFigure().setLocation(
+                new PrecisionPoint(coordinates.x * widthMax * 1.5, -coordinates.y * heightMax * 2));
     }
 
 }
