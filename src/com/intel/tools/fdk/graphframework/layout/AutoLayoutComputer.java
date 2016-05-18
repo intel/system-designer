@@ -74,15 +74,7 @@ public class AutoLayoutComputer {
                 .filter(leaf -> !abscisses.keySet().contains(leaf)).collect(Collectors.toList()));
         compute(remaining);
 
-        // Rotate coordinates to be usable
-        this.coordinates = abscisses.keySet().stream()
-                .collect(Collectors.toMap(Function.identity(), this::getCoordinate));
-
-        // Make Y be always positive (translate)
-        final int minY = this.coordinates.values().stream().mapToInt(point -> point.y).min().orElse(0);
-        if (minY < 0) {
-            this.coordinates.values().forEach(p -> p.y -= minY);
-        }
+        this.coordinates = unifyCalculatedCoordinates();
         removeCoordinatesEmptyLines();
     }
 
@@ -113,6 +105,19 @@ public class AutoLayoutComputer {
                     ordinates.put(node, ++currentCoordinate);
                     rightNumbering(node);
                 });
+    }
+
+    private Map<Leaf, PrecisionPoint> unifyCalculatedCoordinates() {
+        // Rotate coordinates to be usable
+        final Map<Leaf, PrecisionPoint> unifiedCoordinates = abscisses.keySet().stream()
+                .collect(Collectors.toMap(Function.identity(), this::getCoordinate));
+
+        // Make Y be always positive (translate)
+        final int minY = unifiedCoordinates.values().stream().mapToInt(point -> point.y).min().orElse(0);
+        if (minY < 0) {
+            unifiedCoordinates.values().forEach(p -> p.y -= minY);
+        }
+        return unifiedCoordinates;
     }
 
     /**
