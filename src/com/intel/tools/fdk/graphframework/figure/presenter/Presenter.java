@@ -24,7 +24,9 @@ package com.intel.tools.fdk.graphframework.figure.presenter;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 
+import org.eclipse.draw2d.AncestorListener;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.Label;
 import org.eclipse.draw2d.geometry.Point;
@@ -119,14 +121,34 @@ public abstract class Presenter<T extends INode> {
         final int labelWidth = (int) Math.round(label.getTextBounds().width * 1.1);
         label.setSize(labelWidth, label.getTextBounds().height);
         // Label width is expanded to avoid cutting some text, then it is centered under the component rectangle
-        boundFigure.addFigureListener(source -> {
-            final Rectangle bounds = source.getBounds().getCopy();
-            if (label.getParent() != null && source.getParent() != null) {
-                source.getParent().translateToAbsolute(bounds);
+
+        final Consumer<Object> layoutLabel = source -> {
+            final Rectangle bounds = boundFigure.getBounds().getCopy();
+            if (label.getParent() != null && boundFigure.getParent() != null) {
+                boundFigure.getParent().translateToAbsolute(bounds);
                 label.getParent().translateToRelative(bounds);
                 label.setLocation(new Point(bounds.x + (bounds.width - labelWidth) / 2, bounds.y + bounds.height));
             }
-        });
+        };
+
+        final AncestorListener ancestorListener = new AncestorListener() {
+            @Override
+            public void ancestorAdded(final IFigure ancestor) {
+                layoutLabel.accept(boundFigure);
+            }
+
+            @Override
+            public void ancestorMoved(final IFigure ancestor) {
+            }
+
+            @Override
+            public void ancestorRemoved(final IFigure ancestor) {
+            }
+        };
+        boundFigure.addFigureListener(layoutLabel::accept);
+        boundFigure.addAncestorListener(ancestorListener);
+        label.addAncestorListener(ancestorListener);
+
         displayableDecorations.add(label);
     }
 

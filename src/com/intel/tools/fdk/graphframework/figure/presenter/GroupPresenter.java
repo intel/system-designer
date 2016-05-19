@@ -87,6 +87,11 @@ public class GroupPresenter extends Presenter<IGroup> {
         });
         updateBoundsFigure();
         getDisplayableFigures().add(boundsFigure);
+
+        // Apply Style
+        if (group.getStyle().getLabel().isPresent()) {
+            addLabel(group.getStyle().getLabel().get(), boundsFigure);
+        }
     }
 
     /**
