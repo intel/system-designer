@@ -34,11 +34,14 @@ import com.intel.tools.fdk.graphframework.graph.IGroup;
 import com.intel.tools.fdk.graphframework.graph.ILeaf;
 import com.intel.tools.fdk.graphframework.graph.INode;
 import com.intel.tools.fdk.graphframework.graph.INodeContainer;
+import com.intel.tools.fdk.graphframework.graph.Style;
 
 /**
  * Container of {@link INode} objects
  */
 public abstract class NodeContainer implements INodeContainer {
+
+    private final Style style = new Style();
 
     private final List<INodeContainerListener> listeners = new ArrayList<>();
 
@@ -155,6 +158,11 @@ public abstract class NodeContainer implements INodeContainer {
     @Override
     public void removeListener(final INodeContainerListener listener) {
         listeners.remove(listener);
+    }
+
+    @Override
+    public Style getStyle() {
+        return style;
     }
 
 }

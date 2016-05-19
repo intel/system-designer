@@ -22,9 +22,51 @@
  */
 package com.intel.tools.fdk.graphframework.graph;
 
-public interface IGraphElement {
+import java.util.Optional;
 
-    /** @return the style allowing to customize this graph element */
-    Style getStyle();
+import org.eclipse.swt.graphics.Image;
+
+/**
+ * Object representing a style of an object
+ *
+ * This object carry data provided by client which allows to customize the representation of a given
+ * {@link IGraphElement}
+ *
+ * @Todo add foreground and background colors and the alpha the representation
+ */
+public class Style {
+
+    private Optional<String> label = Optional.empty();
+    private Optional<Image> icon = Optional.empty();
+
+    /**
+     * @return an optional object potentially carrying a label which should be displayed
+     */
+    public Optional<String> getLabel() {
+        return label;
+    }
+
+    /**
+     * @param label
+     *            the label which should be displayed or null if none should be displayed
+     */
+    public void setLabel(final String label) {
+        this.label = label == null ? Optional.empty() : Optional.of(label);
+    }
+
+    /**
+     * @return an optional object potentially carrying an icon which should be displayed
+     */
+    public Optional<Image> getIcon() {
+        return icon;
+    }
+
+    /**
+     * @param icon
+     *            the icon which should be displayed or null if none should be displayed
+     */
+    public void setIcon(final Image icon) {
+        this.icon = icon == null ? Optional.empty() : Optional.of(icon);
+    }
 
 }

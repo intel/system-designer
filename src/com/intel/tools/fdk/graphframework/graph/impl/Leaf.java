@@ -28,6 +28,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import com.intel.tools.fdk.graphframework.graph.ILeaf;
+import com.intel.tools.fdk.graphframework.graph.Style;
 
 /**
  * Represent the graph base element. </br>
@@ -39,6 +40,8 @@ public final class Leaf implements ILeaf, Comparable<Leaf> {
 
     /** Instance counter used to generate instanceId, this is required to handle Leaf ordered Set */
     private static int instanceCounter = 0;
+
+    private final Style style = new Style();
 
     private final int id;
 
@@ -161,6 +164,11 @@ public final class Leaf implements ILeaf, Comparable<Leaf> {
         if (this.parent != null) {
             this.parent.remove(this);
         }
+    }
+
+    @Override
+    public Style getStyle() {
+        return style;
     }
 
 }

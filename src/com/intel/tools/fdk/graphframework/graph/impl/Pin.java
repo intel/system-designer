@@ -25,11 +25,14 @@ package com.intel.tools.fdk.graphframework.graph.impl;
 import java.util.Optional;
 
 import com.intel.tools.fdk.graphframework.graph.IPin;
+import com.intel.tools.fdk.graphframework.graph.Style;
 
 /**
  * Represent a connection point of a {@link Leaf}
  */
 public abstract class Pin implements IPin {
+
+    private final Style style = new Style();
 
     private final int id;
     private final Leaf leaf;
@@ -72,6 +75,11 @@ public abstract class Pin implements IPin {
      */
     void disconnect() {
         this.link = Optional.empty();
+    }
+
+    @Override
+    public Style getStyle() {
+        return style;
     }
 
 }

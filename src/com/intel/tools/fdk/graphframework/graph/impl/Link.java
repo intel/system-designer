@@ -23,6 +23,7 @@
 package com.intel.tools.fdk.graphframework.graph.impl;
 
 import com.intel.tools.fdk.graphframework.graph.ILink;
+import com.intel.tools.fdk.graphframework.graph.Style;
 
 /**
  * Represent a graph Link (i.e Edge).</br>
@@ -31,6 +32,8 @@ import com.intel.tools.fdk.graphframework.graph.ILink;
  * The link does not carry the information of which inputs/outputs are connected.
  */
 public final class Link implements ILink {
+
+    private final Style style = new Style();
 
     private final Input input;
     private final Output output;
@@ -56,6 +59,11 @@ public final class Link implements ILink {
     public void delete() {
         this.input.disconnect();
         this.output.disconnect();
+    }
+
+    @Override
+    public Style getStyle() {
+        return style;
     }
 
 }
