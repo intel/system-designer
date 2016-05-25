@@ -53,8 +53,8 @@ public class GroupBodyFigure extends RoundedRectangle implements IGraphFigure {
         setAntialias(1);
         setLineWidth(LINE_WIDTH);
         setLineStyle(SWT.LINE_DASHDOT);
-        setBackgroundColor(IntelPalette.GREY_1);
-        setForegroundColor(IGraphFigure.DEFAULT_COLOR);
+        setBackgroundColor(group.getStyle().getBackground());
+        setForegroundColor(group.getStyle().getForeground());
 
         selection.setAlpha(128);
         selection.setFill(true);

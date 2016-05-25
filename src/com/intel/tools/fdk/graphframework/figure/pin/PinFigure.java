@@ -61,7 +61,7 @@ public abstract class PinFigure<IOType extends IPin> extends PolylineShape imple
         this.pin = pin;
 
         setSize(getDesiredWidth(), getDesiredHeight());
-        setColor(CONNECTOR_COLOR);
+        setColor(pin.getStyle().getForeground());
         setLineWidth(LINE_WIDTH);
 
         add(arrow);

@@ -24,7 +24,10 @@ package com.intel.tools.fdk.graphframework.graph;
 
 import java.util.Optional;
 
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
+
+import com.intel.tools.utils.IntelPalette;
 
 /**
  * Object representing a style of an object
@@ -32,12 +35,14 @@ import org.eclipse.swt.graphics.Image;
  * This object carry data provided by client which allows to customize the representation of a given
  * {@link IGraphElement}
  *
- * @Todo add foreground and background colors and the alpha the representation
+ * @Todo add the alpha of the representation
  */
 public class Style {
 
     private Optional<String> label = Optional.empty();
     private Optional<Image> icon = Optional.empty();
+    private Color foreground = IntelPalette.INTEL_BLUE;
+    private Color background = IntelPalette.INTEL_BLUE;
 
     /**
      * @return an optional object potentially carrying a label which should be displayed
@@ -67,6 +72,38 @@ public class Style {
      */
     public void setIcon(final Image icon) {
         this.icon = icon == null ? Optional.empty() : Optional.of(icon);
+    }
+
+    /**
+     * @return the foreground color to be used by the element representation
+     */
+    public Color getForeground() {
+        return foreground;
+    }
+
+    /**
+     * @param foreground
+     *            set a new foreground color to be used by the element representation
+     */
+    public void setForeground(final Color foreground) {
+        assert foreground != null : "Foreground color must not be null.";
+        this.foreground = foreground;
+    }
+
+    /**
+     * @return the background color to be used by the element representation
+     */
+    public Color getBackground() {
+        return background;
+    }
+
+    /**
+     * @param background
+     *            set a new background color to be used by the element representation
+     */
+    public void setBackground(final Color background) {
+        assert background != null : "Background color must not be null.";
+        this.background = background;
     }
 
 }

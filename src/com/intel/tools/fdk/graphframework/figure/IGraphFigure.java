@@ -23,20 +23,12 @@
 package com.intel.tools.fdk.graphframework.figure;
 
 import org.eclipse.draw2d.IFigure;
-import org.eclipse.swt.graphics.Color;
-
-import com.intel.tools.utils.IntelPalette;
 
 /** Defines basic behavior of figure which compose a graph draw. */
 public interface IGraphFigure extends IFigure {
 
     /** Unit size of every elements of the graph */
     int SIZE_UNIT = 16;
-    /** Graph Figure default color */
-    Color DEFAULT_COLOR = IntelPalette.INTEL_BLUE;
-    Color LINKS_COLOR = IntelPalette.GREY;
-    Color CONNECTOR_COLOR = IntelPalette.GREY;
-    Color ICON_COLOR = IntelPalette.WHITE;
 
     /** Highlight the figure */
     void select();

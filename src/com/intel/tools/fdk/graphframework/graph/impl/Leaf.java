@@ -29,6 +29,7 @@ import java.util.stream.Collectors;
 
 import com.intel.tools.fdk.graphframework.graph.ILeaf;
 import com.intel.tools.fdk.graphframework.graph.Style;
+import com.intel.tools.utils.IntelPalette;
 
 /**
  * Represent the graph base element. </br>
@@ -88,6 +89,9 @@ public final class Leaf implements ILeaf, Comparable<Leaf> {
             this.outputLinks.set(i, new Output(i, this));
         }
         this.id = id;
+
+        getStyle().setBackground(IntelPalette.INTEL_BLUE);
+        getStyle().setForeground(IntelPalette.WHITE);
     }
 
     /**

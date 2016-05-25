@@ -41,6 +41,7 @@ import com.intel.tools.fdk.graphframework.figure.pin.InputFigure;
 import com.intel.tools.fdk.graphframework.figure.pin.OutputFigure;
 import com.intel.tools.fdk.graphframework.figure.pin.PinFigure;
 import com.intel.tools.fdk.graphframework.graph.IPin;
+import com.intel.tools.utils.IntelPalette;
 
 /**
  * Controller allowing to create links by dragging a pin figure and dropping it on another pin.</br>
@@ -59,7 +60,7 @@ public class LinkToolController {
             setLineCap(SWT.CAP_ROUND);
             setLineJoin(SWT.JOIN_ROUND);
             setAntialias(1);
-            setForegroundColor(LINKS_COLOR);
+            setForegroundColor(IntelPalette.GREY);
 
             setLineWidth(LINE_WIDTH);
         }

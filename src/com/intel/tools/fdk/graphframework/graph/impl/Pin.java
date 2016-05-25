@@ -26,6 +26,7 @@ import java.util.Optional;
 
 import com.intel.tools.fdk.graphframework.graph.IPin;
 import com.intel.tools.fdk.graphframework.graph.Style;
+import com.intel.tools.utils.IntelPalette;
 
 /**
  * Represent a connection point of a {@link Leaf}
@@ -41,6 +42,8 @@ public abstract class Pin implements IPin {
     public Pin(final int id, final Leaf leaf) {
         this.id = id;
         this.leaf = leaf;
+
+        getStyle().setForeground(IntelPalette.GREY);
     }
 
     @Override

@@ -24,6 +24,7 @@ package com.intel.tools.fdk.graphframework.graph.impl;
 
 import com.intel.tools.fdk.graphframework.graph.ILink;
 import com.intel.tools.fdk.graphframework.graph.Style;
+import com.intel.tools.utils.IntelPalette;
 
 /**
  * Represent a graph Link (i.e Edge).</br>
@@ -43,6 +44,8 @@ public final class Link implements ILink {
         this.output = output;
         this.input.connect(this);
         this.output.connect(this);
+
+        getStyle().setForeground(IntelPalette.GREY);
     }
 
     @Override

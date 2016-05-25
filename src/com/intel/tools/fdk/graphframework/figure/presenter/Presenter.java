@@ -34,6 +34,7 @@ import org.eclipse.draw2d.geometry.Rectangle;
 
 import com.intel.tools.fdk.graphframework.figure.IGraphFigure;
 import com.intel.tools.fdk.graphframework.graph.INode;
+import com.intel.tools.utils.IntelPalette;
 
 /**
  * Abstract implementation of what a node presenter should be.</br>
@@ -115,7 +116,7 @@ public abstract class Presenter<T extends INode> {
     protected void addLabel(final String text, final IFigure boundFigure) {
         final Label label = new Label();
         label.setText(text);
-        label.setForegroundColor(IGraphFigure.DEFAULT_COLOR);
+        label.setForegroundColor(IntelPalette.INTEL_BLUE);
 
         // Label width is expanded to avoid cutting some text, then it is centered under the main rectangle
         final int labelWidth = (int) Math.round(label.getTextBounds().width * 1.1);

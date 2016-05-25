@@ -26,6 +26,7 @@ import java.util.Set;
 
 import com.intel.tools.fdk.graphframework.graph.IGroup;
 import com.intel.tools.fdk.graphframework.graph.INode;
+import com.intel.tools.utils.IntelPalette;
 
 /**
  * Represent a group {@link INode} which are part of a {@link Graph}.</br>
@@ -42,6 +43,8 @@ public class Group extends NodeContainer implements IGroup, Comparable<Group> {
     public Group(final Set<Leaf> leaves, final Set<Group> groups) {
         super(leaves, groups);
         this.id = instanceCounter++;
+
+        getStyle().setBackground(IntelPalette.GREY_1);
     }
 
     @Override

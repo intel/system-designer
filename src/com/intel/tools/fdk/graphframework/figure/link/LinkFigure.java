@@ -51,7 +51,7 @@ public class LinkFigure extends BeveledPolyLineConnection implements IGraphFigur
         setLineCap(SWT.CAP_ROUND);
         setLineJoin(SWT.JOIN_ROUND);
         setAntialias(1);
-        setForegroundColor(LINKS_COLOR);
+        setForegroundColor(link.getStyle().getForeground());
 
         setLineWidth(LINE_WIDTH);
     }

@@ -24,6 +24,7 @@ package com.intel.tools.fdk.graphframework.figure.node;
 
 import org.eclipse.draw2d.RectangleFigure;
 import org.eclipse.draw2d.geometry.Dimension;
+
 import com.intel.tools.fdk.graphframework.figure.IGraphFigure;
 import com.intel.tools.fdk.graphframework.graph.ILeaf;
 import com.intel.tools.utils.IntelPalette;
@@ -60,8 +61,8 @@ public class LeafBodyFigure extends RectangleFigure implements IGraphFigure {
         setAntialias(1);
         setLineWidth(LINE_WIDTH);
         setOutline(false);
-        setBackgroundColor(IntelPalette.INTEL_BLUE);
-        setForegroundColor(IntelPalette.WHITE);
+        setBackgroundColor(leaf.getStyle().getBackground());
+        setForegroundColor(leaf.getStyle().getForeground());
 
         selection.setAlpha(128);
         selection.setFill(true);
