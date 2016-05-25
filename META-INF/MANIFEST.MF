@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Graphframework
 Bundle-SymbolicName: com.intel.tools.fdk.graphframework;singleton:=true
 Bundle-Version: 1.0.0.qualifier
-Bundle-Vendor: INTEL
+Bundle-Vendor: Intel
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Export-Package: com.intel.tools.fdk.graphframework.displayer,
  com.intel.tools.fdk.graphframework.displayer.controller,
