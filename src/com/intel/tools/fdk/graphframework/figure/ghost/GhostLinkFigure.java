@@ -1,7 +1,7 @@
 /* ============================================================================
  * INTEL CONFIDENTIAL
  *
- * Copyright 2016 Intel Corporation All Rights Reserved.
+ * Copyright 2015-2016 Intel Corporation All Rights Reserved.
  *
  * The source code contained or described herein and all documents related to
  * the source code ("Material") are owned by Intel Corporation or its suppliers
@@ -20,46 +20,36 @@
  * express and approved by Intel in writing.
  * ============================================================================
  */
-package com.intel.tools.fdk.graphframework.figure.link;
+package com.intel.tools.fdk.graphframework.figure.ghost;
 
-import com.intel.tools.fdk.graphframework.figure.IGraphFigure;
-import com.intel.tools.fdk.graphframework.figure.ghost.GhostLinkFigure;
-import com.intel.tools.fdk.graphframework.graph.ILink;
+import org.eclipse.swt.SWT;
 
-/** Represent a graph link */
-public class LinkFigure extends GhostLinkFigure implements IGraphFigure {
+import com.intel.tools.fdk.graphframework.figure.link.BeveledPolyLineConnection;
+import com.intel.tools.fdk.graphframework.figure.link.LinkAnchor;
+import com.intel.tools.utils.IntelPalette;
 
-    private final ILink link;
+/** Represent a graph link with no relation with a graph element */
+public class GhostLinkFigure extends BeveledPolyLineConnection {
+
+    protected static final int LINE_WIDTH = 4;
 
     /**
-     * @param link
-     *            the represented link
      * @param source
      *            the source anchor
      * @param target
      *            the target anchor
      */
-    public LinkFigure(final ILink link, final LinkAnchor source, final LinkAnchor target) {
-        super(source, target);
-        this.link = link;
-        setForegroundColor(link.getStyle().getForeground());
-    }
+    public GhostLinkFigure(final LinkAnchor sourceAnchor, final LinkAnchor destAnchor) {
+        setSourceAnchor(sourceAnchor);
+        setTargetAnchor(destAnchor);
 
-    @Override
-    public void select() {
-        setLineWidth(getLineWidth() + 1);
-    }
+        setLineCap(SWT.CAP_ROUND);
+        setLineJoin(SWT.JOIN_ROUND);
+        setAntialias(1);
+        setForegroundColor(IntelPalette.GREY);
 
-    @Override
-    public void unselect() {
-        setLineWidth(getLineWidth() - 1);
-    }
-
-    /**
-     * @return the link graph element associated to the figure
-     */
-    public ILink getLink() {
-        return link;
+        setLineWidth(LINE_WIDTH);
     }
 
 }
+

@@ -31,48 +31,19 @@ import org.eclipse.draw2d.MouseListener;
 import org.eclipse.draw2d.MouseMotionListener;
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Rectangle;
-import org.eclipse.swt.SWT;
 
 import com.intel.tools.fdk.graphframework.displayer.GraphDisplayer;
-import com.intel.tools.fdk.graphframework.figure.IGraphFigure;
-import com.intel.tools.fdk.graphframework.figure.link.BeveledPolyLineConnection;
+import com.intel.tools.fdk.graphframework.figure.ghost.GhostLinkFigure;
 import com.intel.tools.fdk.graphframework.figure.link.LinkAnchor;
 import com.intel.tools.fdk.graphframework.figure.pin.InputFigure;
 import com.intel.tools.fdk.graphframework.figure.pin.OutputFigure;
 import com.intel.tools.fdk.graphframework.figure.pin.PinFigure;
 import com.intel.tools.fdk.graphframework.graph.IPin;
-import com.intel.tools.utils.IntelPalette;
 
 /**
  * Controller allowing to create links by dragging a pin figure and dropping it on another pin.</br>
  */
 public class LinkToolController {
-
-    public class GhostLinkFigure extends BeveledPolyLineConnection implements IGraphFigure {
-
-        private static final int LINE_WIDTH = 4;
-
-        public GhostLinkFigure(final LinkAnchor sourceAnchor, final LinkAnchor destAnchor) {
-            setSourceAnchor(sourceAnchor);
-            setTargetAnchor(destAnchor);
-
-            // Reminder: this style is copy pasted from LinkFigure, please update both
-            setLineCap(SWT.CAP_ROUND);
-            setLineJoin(SWT.JOIN_ROUND);
-            setAntialias(1);
-            setForegroundColor(IntelPalette.GREY);
-
-            setLineWidth(LINE_WIDTH);
-        }
-
-        @Override
-        public void select() {
-        }
-
-        @Override
-        public void unselect() {
-        }
-    }
 
     private static final TypeTreeSearch PIN_SEARCHER = new TypeTreeSearch(PinFigure.class);
     protected static final int GHOST_ALPHA = 128;
