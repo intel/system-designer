@@ -20,34 +20,17 @@
  * express and approved by Intel in writing.
  * ============================================================================
  */
-package com.intel.tools.fdk.graphframework.figure.link;
+package com.intel.tools.fdk.graphframework.figure.ghost;
 
-import org.eclipse.draw2d.AbstractConnectionAnchor;
-import org.eclipse.draw2d.IFigure;
-import org.eclipse.draw2d.geometry.Point;
+/**
+ * Represent a graph output with no relation with a graph element
+ *
+ * This figure looks like: >o
+ */
+public class GhostOutputFigure extends GhostPinFigure {
 
-import com.intel.tools.fdk.graphframework.figure.ghost.GhostPinFigure;
-
-/** Represent the anchor of a pin where a link is connected */
-public class LinkAnchor extends AbstractConnectionAnchor {
-
-    private final GhostPinFigure pin;
-
-    /**
-     * @param node
-     *            the complete node figure (not only the body)
-     * @param pin
-     *            the pin to link on
-     */
-    public LinkAnchor(final IFigure node, final GhostPinFigure pin) {
-        super(node);
-        this.pin = pin;
-    }
-
-    @Override
-    public Point getLocation(final Point reference) {
-        // The translation is there to take into account the way a line is rendered in draw2d
-        return pin.getConnectorCenterLocation().getTranslated(new Point(1, 1));
+    public GhostOutputFigure() {
+        setupOutputLayout();
     }
 
 }

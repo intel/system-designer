@@ -22,8 +22,6 @@
  */
 package com.intel.tools.fdk.graphframework.figure.pin;
 
-import org.eclipse.draw2d.geometry.Point;
-
 import com.intel.tools.fdk.graphframework.graph.IOutput;
 
 /**
@@ -35,13 +33,7 @@ public class OutputFigure extends PinFigure<IOutput> {
 
     public OutputFigure(final IOutput output) {
         super(output);
-
-        // Center the arrow on pin height and put it on the left side of the connector (but still touching it)
-        getArrow().setLocation(new Point(getPadding(), (getDesiredHeight() - getArrow().getBounds().height) / 2));
-        // Center the connector on pin height and put it on the right
-        getConnector().setLocation(new Point(
-                getDesiredWidth() - getConnector().getBounds().width - getPadding(),
-                (getDesiredHeight() - getConnector().getBounds().height) / 2));
+        setupOutputLayout();
     }
 
 }

@@ -22,33 +22,20 @@
  */
 package com.intel.tools.fdk.graphframework.figure.pin;
 
-import org.eclipse.draw2d.Ellipse;
 import org.eclipse.draw2d.IFigure;
-import org.eclipse.draw2d.PolylineShape;
 import org.eclipse.draw2d.RectangleFigure;
-import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.Rectangle;
-import org.eclipse.swt.graphics.Color;
 
 import com.intel.tools.fdk.graphframework.figure.IGraphFigure;
+import com.intel.tools.fdk.graphframework.figure.ghost.GhostPinFigure;
 import com.intel.tools.fdk.graphframework.graph.IPin;
 import com.intel.tools.utils.IntelPalette;
 
 /** Abstract class representing a node I/O */
-public abstract class PinFigure<IOType extends IPin> extends PolylineShape implements IGraphFigure {
-
-    private static final int LINE_WIDTH = 4;
-
-    /** Pin arrow height in {@link IGraphFigure#SIZE_UNIT} */
-    private static final int ARROW_SIZE = SIZE_UNIT;
-    /** Pin connector height in {@link IGraphFigure#SIZE_UNIT} */
-    private static final int CONNECTOR_SIZE = SIZE_UNIT / 2 + 4;
-    private static final int SELECTION_PADDING = 1;
+public abstract class PinFigure<IOType extends IPin> extends GhostPinFigure implements IGraphFigure {
 
     private final IOType pin;
 
-    private final ArrowFigure arrow = new ArrowFigure(ARROW_SIZE, LINE_WIDTH);
-    private final Ellipse connector = new Ellipse();
     private final RectangleFigure selection = new RectangleFigure();
 
     private final boolean debug = false;
@@ -59,19 +46,7 @@ public abstract class PinFigure<IOType extends IPin> extends PolylineShape imple
      */
     public PinFigure(final IOType pin) {
         this.pin = pin;
-
-        setSize(getDesiredWidth(), getDesiredHeight());
         setColor(pin.getStyle().getForeground());
-        setLineWidth(LINE_WIDTH);
-
-        add(arrow);
-        add(connector);
-        add(selection);
-
-        connector.setLineWidth(2);      // That's a workaround for
-        connector.setOutline(false);    // a draw2d bug when rendering ellipses
-        connector.setAntialias(1);
-        connector.setSize(CONNECTOR_SIZE, CONNECTOR_SIZE);
 
         selection.setAlpha(128);
         selection.setFill(true);
@@ -83,12 +58,10 @@ public abstract class PinFigure<IOType extends IPin> extends PolylineShape imple
         selection.setBounds(getBounds());
 
         if (debug) {
-            showPixelGrid(arrow);
+            showPixelGrid(getArrow());
         }
-    }
 
-    protected int getPadding() {
-        return SELECTION_PADDING;
+        add(selection);
     }
 
     private void showPixelGrid(final IFigure figure) {
@@ -105,44 +78,10 @@ public abstract class PinFigure<IOType extends IPin> extends PolylineShape imple
         }
     }
 
-    /**
-     * Retrieves the position of the connector center where link will be connected.
-     *
-     * @return the connector center location in absolute coordinates
-     */
-    public Point getConnectorCenterLocation() {
-        final Point center = connector.getBounds().getCenter();
-        translateToAbsolute(center);
-        return center;
-    }
-
-    protected int getDesiredWidth() {
-        return ARROW_SIZE + CONNECTOR_SIZE + SELECTION_PADDING * 2;
-    }
-
-    protected int getDesiredHeight() {
-        return Math.max(ARROW_SIZE, CONNECTOR_SIZE) + SELECTION_PADDING * 2;
-    }
-
-    protected ArrowFigure getArrow() {
-        return arrow;
-    }
-
-    protected Ellipse getConnector() {
-        return connector;
-    }
-
-    public void setColor(final Color color) {
-        arrow.setForegroundColor(color);
-        arrow.setBackgroundColor(color);
-        connector.setBackgroundColor(color);
-        connector.setForegroundColor(color);
-    }
-
     @Override
     public void setAlpha(final int value) {
-        arrow.setAlpha(value);
-        connector.setAlpha(value);
+        getArrow().setAlpha(value);
+        getConnector().setAlpha(value);
     }
 
     @Override

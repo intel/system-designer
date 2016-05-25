@@ -33,12 +33,14 @@ import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Rectangle;
 
 import com.intel.tools.fdk.graphframework.displayer.GraphDisplayer;
+import com.intel.tools.fdk.graphframework.figure.ghost.GhostInputFigure;
 import com.intel.tools.fdk.graphframework.figure.ghost.GhostLinkFigure;
+import com.intel.tools.fdk.graphframework.figure.ghost.GhostOutputFigure;
+import com.intel.tools.fdk.graphframework.figure.ghost.GhostPinFigure;
 import com.intel.tools.fdk.graphframework.figure.link.LinkAnchor;
 import com.intel.tools.fdk.graphframework.figure.pin.InputFigure;
 import com.intel.tools.fdk.graphframework.figure.pin.OutputFigure;
 import com.intel.tools.fdk.graphframework.figure.pin.PinFigure;
-import com.intel.tools.fdk.graphframework.graph.IPin;
 
 /**
  * Controller allowing to create links by dragging a pin figure and dropping it on another pin.</br>
@@ -58,7 +60,7 @@ public class LinkToolController {
     /** The pin figure to which the link ends */
     private IFigure destinationPinFigure;
     /** The figure really moved during drag */
-    private PinFigure<? extends IPin> ghostFigure;
+    private GhostPinFigure ghostFigure;
     private GhostLinkFigure ghostLinkFigure;
     /** Offset between the mouse click and the clicked Figure */
     private final Dimension offset = new Dimension(0, 0);
@@ -143,9 +145,9 @@ public class LinkToolController {
 
                     // Create an output pin ghost to connect to an input or vice versa
                     if (sourcePinFigure instanceof OutputFigure) {
-                        ghostFigure = new InputFigure(null);
+                        ghostFigure = new GhostInputFigure();
                     } else {
-                        ghostFigure = new OutputFigure(null);
+                        ghostFigure = new GhostOutputFigure();
                     }
                     ghostFigure.setAlpha(GHOST_ALPHA);
                     ghostFigure.setBounds(sourcePinFigure.getBounds().getCopy());
