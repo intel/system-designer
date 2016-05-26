@@ -25,14 +25,16 @@ package com.intel.tools.fdk.graphframework.figure.pin;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.RectangleFigure;
 import org.eclipse.draw2d.geometry.Rectangle;
+import org.eclipse.swt.graphics.Color;
 
 import com.intel.tools.fdk.graphframework.figure.IGraphFigure;
 import com.intel.tools.fdk.graphframework.figure.ghost.GhostPinFigure;
 import com.intel.tools.fdk.graphframework.graph.IPin;
+import com.intel.tools.fdk.graphframework.graph.Style.IStyleListener;
 import com.intel.tools.utils.IntelPalette;
 
 /** Abstract class representing a node I/O */
-public abstract class PinFigure<IOType extends IPin> extends GhostPinFigure implements IGraphFigure {
+public abstract class PinFigure<IOType extends IPin> extends GhostPinFigure implements IGraphFigure, IStyleListener {
 
     private final IOType pin;
 
@@ -62,6 +64,7 @@ public abstract class PinFigure<IOType extends IPin> extends GhostPinFigure impl
         }
 
         add(selection);
+        this.pin.getStyle().addListener(this);
     }
 
     private void showPixelGrid(final IFigure figure) {
@@ -99,6 +102,12 @@ public abstract class PinFigure<IOType extends IPin> extends GhostPinFigure impl
      */
     public IOType getPin() {
         return pin;
+    }
+
+    @Override
+    public void foregroundUpdated(final Color color) {
+        setColor(pin.getStyle().getForeground());
+        invalidate();
     }
 
 }

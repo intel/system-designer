@@ -22,12 +22,15 @@
  */
 package com.intel.tools.fdk.graphframework.figure.link;
 
+import org.eclipse.swt.graphics.Color;
+
 import com.intel.tools.fdk.graphframework.figure.IGraphFigure;
 import com.intel.tools.fdk.graphframework.figure.ghost.GhostLinkFigure;
 import com.intel.tools.fdk.graphframework.graph.ILink;
+import com.intel.tools.fdk.graphframework.graph.Style.IStyleListener;
 
 /** Represent a graph link */
-public class LinkFigure extends GhostLinkFigure implements IGraphFigure {
+public class LinkFigure extends GhostLinkFigure implements IGraphFigure, IStyleListener {
 
     private final ILink link;
 
@@ -43,6 +46,7 @@ public class LinkFigure extends GhostLinkFigure implements IGraphFigure {
         super(source, target);
         this.link = link;
         setForegroundColor(link.getStyle().getForeground());
+        this.link.getStyle().addListener(this);
     }
 
     @Override
@@ -60,6 +64,12 @@ public class LinkFigure extends GhostLinkFigure implements IGraphFigure {
      */
     public ILink getLink() {
         return link;
+    }
+
+    @Override
+    public void foregroundUpdated(final Color color) {
+        setForegroundColor(link.getStyle().getForeground());
+        invalidate();
     }
 
 }

@@ -26,12 +26,14 @@ import org.eclipse.draw2d.RectangleFigure;
 import org.eclipse.draw2d.RoundedRectangle;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Color;
 
 import com.intel.tools.fdk.graphframework.figure.IGraphFigure;
 import com.intel.tools.fdk.graphframework.graph.IGroup;
+import com.intel.tools.fdk.graphframework.graph.Style.IStyleListener;
 import com.intel.tools.utils.IntelPalette;
 
-public class GroupBodyFigure extends RoundedRectangle implements IGraphFigure {
+public class GroupBodyFigure extends RoundedRectangle implements IGraphFigure, IStyleListener {
 
     private static final int LINE_WIDTH = 2;
 
@@ -65,6 +67,7 @@ public class GroupBodyFigure extends RoundedRectangle implements IGraphFigure {
         selection.setVisible(false);
 
         add(selection);
+        group.getStyle().addListener(this);
     }
 
     @Override
@@ -92,6 +95,18 @@ public class GroupBodyFigure extends RoundedRectangle implements IGraphFigure {
      */
     public IGroup getGroup() {
         return group;
+    }
+
+    @Override
+    public void foregroundUpdated(final Color color) {
+        setForegroundColor(group.getStyle().getForeground());
+        invalidate();
+    }
+
+    @Override
+    public void backgroundUpdated(final Color color) {
+        setBackgroundColor(group.getStyle().getBackground());
+        invalidate();
     }
 
 }

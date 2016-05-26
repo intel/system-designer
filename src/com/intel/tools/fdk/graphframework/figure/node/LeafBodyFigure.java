@@ -24,9 +24,11 @@ package com.intel.tools.fdk.graphframework.figure.node;
 
 import org.eclipse.draw2d.RectangleFigure;
 import org.eclipse.draw2d.geometry.Dimension;
+import org.eclipse.swt.graphics.Color;
 
 import com.intel.tools.fdk.graphframework.figure.IGraphFigure;
 import com.intel.tools.fdk.graphframework.graph.ILeaf;
+import com.intel.tools.fdk.graphframework.graph.Style.IStyleListener;
 import com.intel.tools.utils.IntelPalette;
 
 /**
@@ -34,7 +36,7 @@ import com.intel.tools.utils.IntelPalette;
  *
  * The body has fixed width. The height has a minimum value and grows depending of the node input count.
  */
-public class LeafBodyFigure extends RectangleFigure implements IGraphFigure {
+public class LeafBodyFigure extends RectangleFigure implements IGraphFigure, IStyleListener {
 
     private static final int LINE_WIDTH = 2;
 
@@ -74,6 +76,7 @@ public class LeafBodyFigure extends RectangleFigure implements IGraphFigure {
         selection.setBounds(getBounds());
 
         add(selection);
+        this.leaf.getStyle().addListener(this);
     }
 
     @Override
@@ -91,5 +94,17 @@ public class LeafBodyFigure extends RectangleFigure implements IGraphFigure {
      */
     public ILeaf getLeaf() {
         return leaf;
+    }
+
+    @Override
+    public void foregroundUpdated(final Color color) {
+        setForegroundColor(leaf.getStyle().getForeground());
+        invalidate();
+    }
+
+    @Override
+    public void backgroundUpdated(final Color color) {
+        setBackgroundColor(leaf.getStyle().getBackground());
+        invalidate();
     }
 }
