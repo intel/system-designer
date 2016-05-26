@@ -22,6 +22,8 @@
  */
 package com.intel.tools.fdk.graphframework.graph;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import org.eclipse.swt.graphics.Color;
@@ -38,6 +40,25 @@ import com.intel.tools.utils.IntelPalette;
  * @Todo add the alpha of the representation
  */
 public class Style {
+
+    /**
+     * Class allowing to listen for style update
+     */
+    public interface IStyleListener {
+        default void labelUpdated(final Optional<String> label) {
+        }
+
+        default void iconUpdated(final Optional<Image> label) {
+        }
+
+        default void foregroundUpdated(final Color color) {
+        }
+
+        default void backgroundUpdated(final Color color) {
+        }
+    }
+
+    private final List<IStyleListener> listeners = new ArrayList<>();
 
     private Optional<String> label = Optional.empty();
     private Optional<Image> icon = Optional.empty();
@@ -57,6 +78,7 @@ public class Style {
      */
     public void setLabel(final String label) {
         this.label = label == null ? Optional.empty() : Optional.of(label);
+        listeners.forEach(l -> l.labelUpdated(this.label));
     }
 
     /**
@@ -72,6 +94,7 @@ public class Style {
      */
     public void setIcon(final Image icon) {
         this.icon = icon == null ? Optional.empty() : Optional.of(icon);
+        listeners.forEach(l -> l.iconUpdated(this.icon));
     }
 
     /**
@@ -88,6 +111,7 @@ public class Style {
     public void setForeground(final Color foreground) {
         assert foreground != null : "Foreground color must not be null.";
         this.foreground = foreground;
+        listeners.forEach(l -> l.foregroundUpdated(this.foreground));
     }
 
     /**
@@ -104,6 +128,15 @@ public class Style {
     public void setBackground(final Color background) {
         assert background != null : "Background color must not be null.";
         this.background = background;
+        listeners.forEach(l -> l.backgroundUpdated(this.background));
+    }
+
+    public void addListener(final IStyleListener listener) {
+        this.listeners.add(listener);
+    }
+
+    public void removeListener(final IStyleListener listener) {
+        this.listeners.remove(listener);
     }
 
 }
