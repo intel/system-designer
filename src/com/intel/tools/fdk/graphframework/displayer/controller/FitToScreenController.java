@@ -103,13 +103,17 @@ public class FitToScreenController {
     /**
      * Enable/Disable the fit to screen
      *
-     * This method activate the fit to screen, the screen will be fitted after each size update of the displayer.
+     * This method activate the fit to screen, the screen will be fitted after each size update of the displayer. A
+     * first fit to screen action is done when the capability is enabled.
      *
      * @param enabled
      *            true to enable false to disable
      */
     public void setFitEnabled(final boolean enabled) {
         this.fitEnabled = enabled;
+        if (this.fitEnabled) {
+            fitToScreen();
+        }
         for (final Listener listener : listeners) {
             listener.fitToScreenChanged(enabled);
         }
