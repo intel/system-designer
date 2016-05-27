@@ -47,6 +47,9 @@ public class SelectionController {
 
         default void showContextMenu(final IGraphFigure figure) {
         }
+
+        default void selectReleased(final IGraphFigure figure) {
+        }
     }
 
     private IGraphFigure currentSelection;
@@ -72,6 +75,8 @@ public class SelectionController {
         displayer.getToolsLayer().addMouseListener(toolsListener);
         displayer.getConnectionLayer().addMouseListener(new SelectionListener(displayer.getConnectionLayer()));
         displayer.getBackgroundLayer().addMouseListener(new MouseListener.Stub() {
+            private boolean justUnselected = false;
+
             @Override
             public void mousePressed(final MouseEvent event) {
                 // background cliked, deselect
@@ -79,6 +84,16 @@ public class SelectionController {
                     currentSelection.unselect();
                     fireSelect(null);
                     currentSelection = null;
+                    justUnselected = true;
+                }
+            }
+
+            @Override
+            public void mouseReleased(final MouseEvent event) {
+                super.mouseReleased(event);
+                if (justUnselected) {
+                    justUnselected = false;
+                    fireRelease(null);
                 }
             }
         });
@@ -119,7 +134,13 @@ public class SelectionController {
         }
     }
 
-    private void fireShowContextMenu(final IGraphFigure figure) {
+    protected void fireRelease(final IGraphFigure figure) {
+        for (final IListener listener : listeners) {
+            listener.selectReleased(figure);
+        }
+    }
+
+    protected void fireShowContextMenu(final IGraphFigure figure) {
         for (final IListener listener : listeners) {
             listener.showContextMenu(figure);
         }
@@ -161,6 +182,9 @@ public class SelectionController {
             // Handle right-click
             if (currentSelection != null && event.button == 3) {
                 fireShowContextMenu(currentSelection);
+            }
+            if (currentSelection != null && event.button == 1) {
+                fireRelease(currentSelection);
             }
         }
     }

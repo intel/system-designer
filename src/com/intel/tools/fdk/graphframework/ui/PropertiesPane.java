@@ -43,6 +43,7 @@ public class PropertiesPane extends ScrolledComposite {
 
     private IGraphUIProvider uiProvider;
     private final Composite containerComposite;
+    private Object lastSelectedObject = null;
 
     public PropertiesPane(final Composite parent, final int style, final IGraphUIProvider uiProvider,
             final ModelSelectionController selectionController) {
@@ -85,13 +86,15 @@ public class PropertiesPane extends ScrolledComposite {
     }
 
     public void setModelSelectionController(final ModelSelectionController selectionController) {
-        selectionController.addModelSelectionListener(new IModelSelectionListener() {
+        selectionController.addModelSelectionReleaseListener(new IModelSelectionListener() {
             @Override
             public void graphSelected(final IGraph graph) {
+
                 setRedraw(false);
-                resetUI();
-                if (uiProvider != null) {
+                if (uiProvider != null && lastSelectedObject != graph) {
+                    resetUI();
                     uiProvider.createUI(containerComposite, graph);
+                    lastSelectedObject = graph;
                 }
                 relayout();
                 setRedraw(true);
@@ -100,20 +103,23 @@ public class PropertiesPane extends ScrolledComposite {
             @Override
             public void groupSelected(final IGroup group) {
                 setRedraw(false);
-                resetUI();
-                if (uiProvider != null) {
+                if (uiProvider != null && lastSelectedObject != group) {
+                    resetUI();
                     uiProvider.createUI(containerComposite, group);
+                    lastSelectedObject = group;
                 }
                 relayout();
                 setRedraw(true);
+
             }
 
             @Override
             public void leafSelected(final ILeaf leaf) {
                 setRedraw(false);
-                resetUI();
-                if (uiProvider != null) {
+                if (uiProvider != null && lastSelectedObject != leaf) {
+                    resetUI();
                     uiProvider.createUI(containerComposite, leaf);
+                    lastSelectedObject = leaf;
                 }
                 relayout();
                 setRedraw(true);
@@ -124,6 +130,7 @@ public class PropertiesPane extends ScrolledComposite {
                 setRedraw(false);
                 resetUI();
                 // We don't have any layout to create for a pin selection.
+                lastSelectedObject = null;
                 relayout();
                 setRedraw(true);
             }
@@ -131,9 +138,10 @@ public class PropertiesPane extends ScrolledComposite {
             @Override
             public void linkSelected(final ILink link) {
                 setRedraw(false);
-                resetUI();
-                if (uiProvider != null) {
+                if (uiProvider != null && lastSelectedObject != link) {
+                    resetUI();
                     uiProvider.createUI(containerComposite, link);
+                    lastSelectedObject = link;
                 }
                 relayout();
                 setRedraw(true);

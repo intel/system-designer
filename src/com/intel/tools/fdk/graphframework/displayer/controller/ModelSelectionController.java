@@ -42,7 +42,8 @@ import com.intel.tools.fdk.graphframework.graph.adapter.IAdapter;
  * Super class to the selection controller to provide
  */
 public class ModelSelectionController extends SelectionController {
-    private final List<IModelSelectionListener> listeners = new ArrayList<>();
+    private final List<IModelSelectionListener> pressListeners = new ArrayList<>();
+    private final List<IModelSelectionListener> releaseListeners = new ArrayList<>();
     private IAdapter adapter;
 
     public interface IModelSelectionListener {
@@ -102,9 +103,14 @@ public class ModelSelectionController extends SelectionController {
 
     @Override
     protected void fireSelect(final IGraphFigure figure) {
-        notifySelectedElement(figure);
-
         super.fireSelect(figure);
+        notifySelectedElement(figure, pressListeners);
+    }
+
+    @Override
+    protected void fireRelease(final IGraphFigure figure) {
+        super.fireRelease(figure);
+        notifySelectedElement(figure, releaseListeners);
     }
 
     /**
@@ -121,36 +127,44 @@ public class ModelSelectionController extends SelectionController {
     /**
      * Find the Graph element corresponding to a given figure and sends a notification for this.
      */
-    private void notifySelectedElement(final IGraphFigure figure) {
+    private void notifySelectedElement(final IGraphFigure figure, final List<IModelSelectionListener> listenerList) {
         if (figure == null && adapter != null) {
-            for (final IModelSelectionListener iModelSelectionListener : listeners) {
+            for (final IModelSelectionListener iModelSelectionListener : listenerList) {
                 iModelSelectionListener.graphSelected(adapter.getGraph());
             }
         } else if (figure instanceof LeafBodyFigure) {
-            for (final IModelSelectionListener iModelSelectionListener : listeners) {
+            for (final IModelSelectionListener iModelSelectionListener : listenerList) {
                 iModelSelectionListener.leafSelected(((LeafBodyFigure) figure).getLeaf());
             }
         } else if (figure instanceof GroupBodyFigure) {
-            for (final IModelSelectionListener iModelSelectionListener : listeners) {
+            for (final IModelSelectionListener iModelSelectionListener : listenerList) {
                 iModelSelectionListener.groupSelected(((GroupBodyFigure) figure).getGroup());
             }
         } else if (figure instanceof LinkFigure) {
-            for (final IModelSelectionListener iModelSelectionListener : listeners) {
+            for (final IModelSelectionListener iModelSelectionListener : listenerList) {
                 iModelSelectionListener.linkSelected(((LinkFigure) figure).getLink());
             }
         } else if (figure instanceof PinFigure) {
-            for (final IModelSelectionListener iModelSelectionListener : listeners) {
+            for (final IModelSelectionListener iModelSelectionListener : listenerList) {
                 iModelSelectionListener.pinSelected(((PinFigure<?>) figure).getPin());
             }
         }
     }
 
     public void addModelSelectionListener(final IModelSelectionListener listener) {
-        listeners.add(listener);
+        pressListeners.add(listener);
     }
 
     public void removeModelSelectionListener(final IModelSelectionListener listener) {
-        listeners.remove(listener);
+        pressListeners.remove(listener);
+    }
+
+    public void addModelSelectionReleaseListener(final IModelSelectionListener listener) {
+        releaseListeners.add(listener);
+    }
+
+    public void removeModelSelectionReleaseListener(final IModelSelectionListener listener) {
+        releaseListeners.remove(listener);
     }
 
 }
