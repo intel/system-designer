@@ -84,7 +84,7 @@ public class FitToScreenController {
      *            the displayer to work on
      */
     public void fitToScreen() {
-        fitToScreen(Integer.MAX_VALUE);
+        fitToScreen(2);
     }
 
     /**
