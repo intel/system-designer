@@ -30,6 +30,8 @@ import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.ControlAdapter;
+import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
 
@@ -64,6 +66,15 @@ public class FitToScreenController {
                 }
             }
         });
+        // if the the auto fit to screen is enabled, we fit to screen at each displayer resize
+        displayer.getControl().addControlListener(new ControlAdapter() {
+            @Override
+            public void controlResized(final ControlEvent e) {
+                if (isFitEnabled()) {
+                    fitToScreen();
+                }
+            }
+        });
     }
 
     /**
@@ -89,6 +100,14 @@ public class FitToScreenController {
         centerContent(displayer);
     }
 
+    /**
+     * Enable/Disable the fit to screen
+     *
+     * This method activate the fit to screen, the screen will be fitted after each size update of the displayer.
+     *
+     * @param enabled
+     *            true to enable false to disable
+     */
     public void setFitEnabled(final boolean enabled) {
         this.fitEnabled = enabled;
         for (final Listener listener : listeners) {
