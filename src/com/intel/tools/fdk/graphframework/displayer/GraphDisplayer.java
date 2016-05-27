@@ -212,4 +212,12 @@ public class GraphDisplayer {
         viewport.setMargin(margin);
     }
 
+    /**
+     * Put scroll bars at the center of their space
+     */
+    public void centerScrollBars() {
+        viewport.getVerticalRangeModel().setValue(0);
+        viewport.getHorizontalRangeModel().setValue(0);
+    }
+
 }

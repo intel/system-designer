@@ -140,6 +140,8 @@ public class FitToScreenController {
                 }
             }
         }
+
+        displayer.centerScrollBars();
     }
 
     private void applyOffsetToFigure(final IFigure figure, final Dimension delta) {
