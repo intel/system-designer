@@ -63,10 +63,10 @@ public class ZoomController {
 
                         if (e.keyCode == SWT.KEYPAD_ADD) {
                             // Ctrl +
-                            zoom(zoomStep);
+                            zoomIn();
                         } else if (e.keyCode == SWT.KEYPAD_SUBTRACT) {
                             // Ctrl -
-                            zoom(1 / zoomStep);
+                            zoomOut();
                         }
                     } else {
                         displayer.getControl().setCursor(null);
@@ -143,6 +143,14 @@ public class ZoomController {
 
     private void zoom(final double factor) {
         zoomAt(factor, getCenterPosition().x(), getCenterPosition().y());
+    }
+
+    public void zoomIn() {
+        zoom(zoomStep);
+    }
+
+    public void zoomOut() {
+        zoom(1 / zoomStep);
     }
 
 }
