@@ -111,9 +111,7 @@ public class LeafPresenter extends Presenter<ILeaf> {
         layoutFigures(body);
 
         // Apply Style
-        if (leaf.getStyle().getLabel().isPresent()) {
-            addLabel(leaf.getStyle().getLabel().get(), body);
-        }
+        addLabel(leaf, body);
     }
 
     private void layoutFigures(final IFigure source) {

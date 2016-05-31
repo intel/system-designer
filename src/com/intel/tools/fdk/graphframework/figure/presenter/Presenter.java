@@ -24,17 +24,13 @@ package com.intel.tools.fdk.graphframework.figure.presenter;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Consumer;
 
-import org.eclipse.draw2d.AncestorListener;
 import org.eclipse.draw2d.IFigure;
-import org.eclipse.draw2d.Label;
-import org.eclipse.draw2d.geometry.Point;
-import org.eclipse.draw2d.geometry.Rectangle;
 
 import com.intel.tools.fdk.graphframework.figure.IGraphFigure;
+import com.intel.tools.fdk.graphframework.figure.LabelFigure;
+import com.intel.tools.fdk.graphframework.graph.IGraphElement;
 import com.intel.tools.fdk.graphframework.graph.INode;
-import com.intel.tools.utils.IntelPalette;
 
 /**
  * Abstract implementation of what a node presenter should be.</br>
@@ -108,49 +104,13 @@ public abstract class Presenter<T extends INode> {
      *
      * The label will be placed right under the binded figure and will follow its movement.
      *
-     * @param text
-     *            label text
+     * @param element
+     *            the decorated graph element which supply the label to display
      * @param boundFigure
      *            the figure under which the label will be positioned
      */
-    protected void addLabel(final String text, final IFigure boundFigure) {
-        final Label label = new Label();
-        label.setText(text);
-        label.setForegroundColor(IntelPalette.INTEL_BLUE);
-
-        // Label width is expanded to avoid cutting some text, then it is centered under the main rectangle
-        final int labelWidth = (int) Math.round(label.getTextBounds().width * 1.1);
-        label.setSize(labelWidth, label.getTextBounds().height);
-        // Label width is expanded to avoid cutting some text, then it is centered under the component rectangle
-
-        final Consumer<Object> layoutLabel = source -> {
-            final Rectangle bounds = boundFigure.getBounds().getCopy();
-            if (label.getParent() != null && boundFigure.getParent() != null) {
-                boundFigure.getParent().translateToAbsolute(bounds);
-                label.getParent().translateToRelative(bounds);
-                label.setLocation(new Point(bounds.x + (bounds.width - labelWidth) / 2, bounds.y + bounds.height));
-            }
-        };
-
-        final AncestorListener ancestorListener = new AncestorListener() {
-            @Override
-            public void ancestorAdded(final IFigure ancestor) {
-                layoutLabel.accept(boundFigure);
-            }
-
-            @Override
-            public void ancestorMoved(final IFigure ancestor) {
-            }
-
-            @Override
-            public void ancestorRemoved(final IFigure ancestor) {
-            }
-        };
-        boundFigure.addFigureListener(layoutLabel::accept);
-        boundFigure.addAncestorListener(ancestorListener);
-        label.addAncestorListener(ancestorListener);
-
-        displayableDecorations.add(label);
+    protected void addLabel(final IGraphElement element, final IFigure boundFigure) {
+        displayableDecorations.add(new LabelFigure(element, boundFigure));
     }
 
 }

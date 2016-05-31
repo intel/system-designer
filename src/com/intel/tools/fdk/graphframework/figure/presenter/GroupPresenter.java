@@ -89,9 +89,7 @@ public class GroupPresenter extends Presenter<IGroup> {
         getDisplayableFigures().add(boundsFigure);
 
         // Apply Style
-        if (group.getStyle().getLabel().isPresent()) {
-            addLabel(group.getStyle().getLabel().get(), boundsFigure);
-        }
+        addLabel(group, boundsFigure);
     }
 
     /**
