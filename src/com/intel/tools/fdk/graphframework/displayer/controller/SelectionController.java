@@ -193,10 +193,10 @@ public class SelectionController {
         @Override
         public void mouseReleased(final MouseEvent event) {
             // Handle right-click
-            if (currentSelection != null && event.button == 3) {
-                fireShowContextMenu(currentSelection);
-            }
-            if (currentSelection != null && event.button == 1) {
+            if (currentSelection != null) {
+                if (event.button == 3) {
+                    fireShowContextMenu(currentSelection);
+                }
                 fireRelease(currentSelection);
             }
         }
