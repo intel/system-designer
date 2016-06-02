@@ -115,9 +115,22 @@ public class SelectionController {
                 currentSelection = figure;
                 currentSelection.select();
                 fireSelect(currentSelection);
+                fireRelease(null);
                 return;
             }
         }
+    }
+
+    /**
+     * Unselect all figures
+     */
+    public void unselect() {
+        if (currentSelection != null) {
+            currentSelection.unselect();
+        }
+        currentSelection = null;
+        fireSelect(null);
+        fireRelease(null);
     }
 
     public void addListener(final IListener listener) {
