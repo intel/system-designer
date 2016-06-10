@@ -33,6 +33,7 @@ import org.eclipse.swt.widgets.Listener;
 import com.intel.tools.fdk.graphframework.displayer.controller.ModelSelectionController;
 import com.intel.tools.fdk.graphframework.displayer.controller.ModelSelectionController.IModelSelectionListener;
 import com.intel.tools.fdk.graphframework.graph.IGraph;
+import com.intel.tools.fdk.graphframework.graph.IGraphElement;
 import com.intel.tools.fdk.graphframework.graph.IGroup;
 import com.intel.tools.fdk.graphframework.graph.ILeaf;
 import com.intel.tools.fdk.graphframework.graph.ILink;
@@ -89,59 +90,54 @@ public class PropertiesPane extends ScrolledComposite {
         selectionController.addModelSelectionReleaseListener(new IModelSelectionListener() {
             @Override
             public void graphSelected(final IGraph graph) {
-
-                setRedraw(false);
-                if (uiProvider != null && lastSelectedObject != graph) {
-                    resetUI();
-                    uiProvider.createUI(containerComposite, graph);
-                    lastSelectedObject = graph;
-                }
-                relayout();
-                setRedraw(true);
+                createUI(graph);
             }
 
             @Override
             public void groupSelected(final IGroup group) {
-                setRedraw(false);
-                if (uiProvider != null && lastSelectedObject != group) {
-                    resetUI();
-                    uiProvider.createUI(containerComposite, group);
-                    lastSelectedObject = group;
-                }
-                relayout();
-                setRedraw(true);
-
+                createUI(group);
             }
 
             @Override
             public void leafSelected(final ILeaf leaf) {
-                setRedraw(false);
-                if (uiProvider != null && lastSelectedObject != leaf) {
-                    resetUI();
-                    uiProvider.createUI(containerComposite, leaf);
-                    lastSelectedObject = leaf;
-                }
-                relayout();
-                setRedraw(true);
+                createUI(leaf);
             }
 
             @Override
             public void pinSelected(final IPin pin) {
-                setRedraw(false);
-                resetUI();
-                // We don't have any layout to create for a pin selection.
-                lastSelectedObject = null;
-                relayout();
-                setRedraw(true);
+                createUI(pin);
             }
 
             @Override
             public void linkSelected(final ILink link) {
+                createUI(link);
+            }
+
+        });
+    }
+
+    protected <T extends IGraphElement> void createUI(final T obj) {
+        // We execute the UI build in an async UI thread as it may take little time to be sure
+        // Any current UI job is finished.
+        containerComposite.getDisplay().asyncExec(new Runnable() {
+
+            @Override
+            public void run() {
                 setRedraw(false);
-                if (uiProvider != null && lastSelectedObject != link) {
+                if (uiProvider != null && lastSelectedObject != obj) {
                     resetUI();
-                    uiProvider.createUI(containerComposite, link);
-                    lastSelectedObject = link;
+                    if (obj instanceof ILink) {
+                        uiProvider.createUI(containerComposite, (ILink) obj);
+                    } else if (obj instanceof ILeaf) {
+                        uiProvider.createUI(containerComposite, (ILeaf) obj);
+                    } else if (obj instanceof IGroup) {
+                        uiProvider.createUI(containerComposite, (IGroup) obj);
+                    } else if (obj instanceof IGraph) {
+                        uiProvider.createUI(containerComposite, (IGraph) obj);
+                    } else if (obj instanceof ILink) {
+                        // uiProvider.createUI(containerComposite, (ILink) obj);
+                    }
+                    lastSelectedObject = obj;
                 }
                 relayout();
                 setRedraw(true);
