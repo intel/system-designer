@@ -134,8 +134,6 @@ public class PropertiesPane extends ScrolledComposite {
                         uiProvider.createUI(containerComposite, (IGroup) obj);
                     } else if (obj instanceof IGraph) {
                         uiProvider.createUI(containerComposite, (IGraph) obj);
-                    } else if (obj instanceof ILink) {
-                        // uiProvider.createUI(containerComposite, (ILink) obj);
                     }
                     lastSelectedObject = obj;
                 }
