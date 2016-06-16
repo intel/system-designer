@@ -36,10 +36,14 @@ import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
 
 import com.intel.tools.fdk.graphframework.displayer.GraphDisplayer;
+import com.intel.tools.fdk.graphframework.figure.IGraphFigure;
 import com.intel.tools.fdk.graphframework.figure.node.GroupBodyFigure;
 import com.intel.tools.fdk.graphframework.figure.node.LeafBodyFigure;
 
 public class FitToScreenController {
+
+    /** Margin applied when fitting a graph to the screen */
+    private static final int SCREEN_MARGIN = 3 * IGraphFigure.SIZE_UNIT;
 
     public interface Listener {
         void fitToScreenChanged(boolean enabled);
@@ -126,6 +130,10 @@ public class FitToScreenController {
     private void setupScale(final GraphDisplayer displayer, final int limit) {
         double scale;
         final Dimension dimension = displayer.getContentLayer().getFreeformExtent().getCopy().getSize();
+
+        // Apply some margin to enhance graph readability
+        dimension.height += SCREEN_MARGIN;
+        dimension.width += SCREEN_MARGIN;
 
         if ((dimension.width > 0) && (dimension.height > 0)) {
             scale = (double) displayer.getControl().getViewport().getSize().width / (double) dimension.width;
