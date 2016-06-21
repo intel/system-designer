@@ -98,14 +98,15 @@ public class FlatButton extends Canvas {
     private Color selectedTextColor = IntelPalette.WHITE;
     private Color mouseOverColor = IntelPalette.PALE_BLUE;
 
-    private boolean clicked;
-    private boolean mouseIn;
-
-    private int arrowPos;
-
     private final List<SelectionListener> listeners;
 
+    private int arrowPos;
     private boolean arrowVisible = false;
+    private boolean mouseIn;
+    private boolean clicked;
+
+    protected boolean isCheckable = false;
+    protected boolean isChecked = false;
 
     private TooltipEx tooltip = null;
 
@@ -157,9 +158,15 @@ public class FlatButton extends Canvas {
         });
 
         addListener(SWT.MouseUp, new Listener() {
+
             @Override
             public void handleEvent(final Event event) {
-                clicked = false;
+                if (isCheckable) {
+                    isChecked = !isChecked;
+                    clicked = isChecked;
+                } else {
+                    clicked = false;
+                }
                 mouseIn = false;
                 redraw();
 
