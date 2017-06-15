@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin>
+   <extension-point id="audiotracewidget" name="AudioTraceWidget extension" schema="schema/audiotracewidget.exsd"/>
+
+   <extension
+         id="com.intel.audioviz.widgets.fragment"
+         point="org.eclipse.e4.workbench.model">
+      <fragment
+            uri="fragment.e4xmi">
+      </fragment>
+   </extension>
+   <extension
+         id="com.intel.audioviz.widgets.trace.waveform"
+         point="com.intel.audioviz.widgets.audiotracewidget">
+      <audiotracewidget
+            audioTraceWidgetClass="com.intel.audioviz.widgets.audiotrace.waveform.AudioWaveformTraceWidget"
+            audiotracewidgetclass="com.intel.audioviz.widgets.audiotrace.waveform.AudioWaveformTraceWidget">
+      </audiotracewidget>
+   </extension>
+
+</plugin>

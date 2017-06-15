@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="com.intel.audioviz.file.format">
+      <factory
+            factoryClass="com.intel.audioviz.file.wav.WavFileAudioTrackFactory">
+      </factory>
+   </extension>
+
+</plugin>

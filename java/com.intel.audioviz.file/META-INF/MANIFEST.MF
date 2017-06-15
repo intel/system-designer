@@ -1,0 +1,16 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: File
+Bundle-SymbolicName: com.intel.audioviz.file;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Export-Package: com.intel.audioviz.file,
+ com.intel.audioviz.file.ui.dialogs
+Require-Bundle: javax.inject,
+ org.eclipse.core.runtime,
+ org.eclipse.e4.core.contexts,
+ org.eclipse.e4.core.di,
+ org.eclipse.e4.ui.model.workbench,
+ org.eclipse.jface,
+ com.intel.audioviz,
+ org.apache.log4j
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
